@@ -29,6 +29,16 @@
 
 ## 1. Account Creation Test Cases
 
+> **SITE BEHAVIOR NOTES (Observed):**
+> - Create Account is a **MODAL POPUP** (not a separate page)
+> - Modal opens when clicking "Sign In" link in header
+> - **Form Fields:** First Name, Last Name, Email, Password, Confirm Password
+> - **Password Validation:** Minimum 8 characters, shows strength indicator ("Weak" in red)
+> - **No Terms & Conditions checkbox** observed in modal
+> - **After Successful Registration:**
+>   1. "Join Stampin' Rewards!" popup appears with "GET STARTED" and "MAYBE LATER" buttons
+>   2. Header displays "Hello, [FIRST NAME]" in top right corner
+
 ### TC-ACC-001: Successful Account Creation with Valid Data
 
 | Field | Description |
@@ -45,17 +55,18 @@
 | Step | Action | Expected Result |
 |------|--------|-----------------|
 | 1 | Navigate to www.stampinup.com | Homepage loads successfully |
-| 2 | Click on "Sign In" link in the header | Login/Registration page is displayed |
-| 3 | Click on "Create Account" or "Register" link | Registration form is displayed |
-| 4 | Enter valid email address in the email field | Email is accepted without validation errors |
-| 5 | Enter valid password meeting complexity requirements | Password is accepted; strength indicator shows acceptable level |
-| 6 | Confirm password by re-entering in confirmation field | Passwords match, no error displayed |
-| 7 | Enter First Name | First name is accepted |
-| 8 | Enter Last Name | Last name is accepted |
-| 9 | Accept Terms and Conditions checkbox (if present) | Checkbox is selected |
-| 10 | Click "Create Account" / "Register" button | - Account is created successfully<br>- User is redirected to welcome page or account dashboard<br>- Confirmation email is sent to registered email address |
+| 2 | Click on "Sign In" link in the header | Create Account modal popup opens |
+| 3 | Verify modal displays "CREATE ACCOUNT" heading | Modal shows registration form |
+| 4 | Enter First Name in the "First Name" field | First name is accepted |
+| 5 | Enter Last Name in the "Last Name" field | Last name is accepted |
+| 6 | Enter valid email address in the "Email" field | Email is accepted without validation errors |
+| 7 | Enter valid password (8+ chars) in "Password" field | Password is accepted; strength indicator improves |
+| 8 | Re-enter password in "Confirm Password" field | Passwords match, no error displayed |
+| 9 | Click "CREATE ACCOUNT" button | - Account is created successfully<br>- "Join Stampin' Rewards!" popup appears |
+| 10 | Click "MAYBE LATER" or "GET STARTED" | Popup closes |
+| 11 | Verify "Hello, [First Name]" appears in header | User is logged in and first name is displayed |
 
-**Expected Result:** User account is created successfully and user is logged in automatically or prompted to verify email.
+**Expected Result:** User account is created successfully, rewards popup appears, and user is logged in with "Hello, [Name]" displayed in header.
 
 **Postconditions:** User account exists in the system and can be used for subsequent test cases.
 
@@ -236,6 +247,28 @@
 
 ## 2. User Profile Setup Test Cases
 
+> **SITE BEHAVIOR NOTES (Observed):**
+> - Account Settings page is at `/account/settings` (dedicated page)
+> - **Page Header:** "MY ACCOUNT | [Full Name]"
+> - **Three main sections**, each with their own "EDIT" link:
+>
+> **1. CONTACT Section (left side):**
+> - View mode shows: First Name, Last Name, Email, Phone Number, Preferred Method of Contact, Birthdate
+> - Edit mode: Fields become editable inputs
+> - Buttons: "SAVE CHANGES" (pink), "CANCEL"
+>
+> **2. PASSWORD Section (below CONTACT):**
+> - Fields: Confirm Current Password, New Password, Confirm New Password
+> - Requirement: "Password must have a minimum of 8 characters with at least one capital letter and one number"
+> - Buttons: "SAVE CHANGES" (pink), "CANCEL"
+>
+> **3. COUNTRY Section (right side):**
+> - View mode shows: Country with flag, Preferred Language
+> - Edit mode: Country dropdown, Preferred Language dropdown
+> - Buttons: "SAVE CHANGES" (pink), "CANCEL"
+>
+> - **Left sidebar:** ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, MY LISTS, SUBSCRIPTIONS, DEMONSTRATOR, REWARDS, NOTIFICATIONS, SIGN OUT
+
 ### TC-PRF-001: Successful Initial Profile Setup
 
 | Field | Description |
@@ -245,24 +278,23 @@
 | **Priority** | High |
 | **Type** | Functional / Positive |
 | **Preconditions** | 1. User has created a new account (TC-ACC-001 passed)<br>2. User is logged into the account<br>3. User profile fields are empty/default |
-| **Test Data** | - First Name: John<br>- Last Name: Doe<br>- Phone: (555) 123-4567<br>- Date of Birth: 01/15/1990<br>- Gender: Male (if applicable) |
+| **Test Data** | - First Name: John<br>- Last Name: Doe<br>- Phone: (555) 123-4567<br>- Birthdate: 01/15/1990<br>- Preferred Method of Contact: Email |
 
 **Test Steps:**
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to Account Settings | Account Settings page loads |
-| 2 | Click on "Profile" or "Personal Information" section | Profile edit form is displayed |
-| 3 | Verify current profile fields are empty or have default values | Profile fields show initial state |
-| 4 | Enter First Name | First name field accepts input |
-| 5 | Enter Last Name | Last name field accepts input |
-| 6 | Enter Phone Number | Phone number is formatted/accepted |
-| 7 | Enter Date of Birth (if field exists) | Date is accepted |
-| 8 | Select Gender preference (if applicable) | Selection is made |
-| 9 | Click "Save" or "Update Profile" button | - Success message is displayed<br>- Profile information is saved<br>- Page reflects updated information |
-| 10 | Navigate away and return to profile page | Saved information persists |
+| 1 | Navigate to /account/settings | Account Settings page loads with "MY ACCOUNT" header |
+| 2 | Verify CONTACT section displays current info | First Name, Last Name, Email shown (from registration) |
+| 3 | Click "EDIT" link next to CONTACT heading | CONTACT fields become editable |
+| 4 | Enter Phone Number in "Phone Number" field | Phone number is accepted |
+| 5 | Select "Preferred Method of Contact" from dropdown | Selection is made |
+| 6 | Enter Birthdate in "Birthdate" field | Date is accepted |
+| 7 | Click "SAVE CHANGES" button (pink) | - Success message is displayed<br>- Page returns to view mode<br>- Updated information is displayed |
+| 8 | Refresh the page | Saved information persists |
+| 9 | Verify all updated fields show new values | Phone, Contact Method, Birthdate are retained |
 
-**Expected Result:** Profile information is saved and persists across sessions.
+**Expected Result:** Profile information is saved and persists across page refreshes.
 
 ---
 
@@ -394,6 +426,35 @@
 
 ## 3. Address Setup Test Cases
 
+> **SITE BEHAVIOR NOTES (Observed):**
+> - Address page is a **DEDICATED PAGE** at `/account/address/create`
+> - **Access:** Click "Hello, [Name]" dropdown in header > "Addresses"
+> - **Left sidebar:** ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, MY LISTS, SUBSCRIPTIONS, DEMONSTRATOR, REWARDS, NOTIFICATIONS, SIGN OUT
+>
+> **Form Fields (all required except Address 2):**
+> - First Name, Last Name (side by side)
+> - Address (main street address)
+> - Address 2 (optional - apt, suite, etc.)
+> - City
+> - State (dropdown)
+> - ZIP Code
+> - Phone Number
+>
+> **Checkboxes:**
+> - "Make this my default shipping address"
+> - "Make this my default mailing address"
+>
+> **Buttons:** "SAVE ADDRESS" (pink), "CANCEL"
+>
+> **Validation errors** appear in red below each field:
+> - "The First Name field is required."
+> - "The Last Name field is required."
+> - "The Address field is required."
+> - "The City field is required."
+> - "The State field is required."
+> - "The Zip Code field is required."
+> - "The Phone Number field is required."
+
 ### TC-ADD-001: Successful Address Setup for New User
 
 | Field | Description |
@@ -403,25 +464,24 @@
 | **Priority** | High |
 | **Type** | Functional / Positive |
 | **Preconditions** | 1. User has created a new account<br>2. User is logged in<br>3. No addresses are saved in the account |
-| **Test Data** | - Address Line 1: 123 Main Street<br>- Address Line 2: Apt 4B<br>- City: Austin<br>- State: Texas<br>- ZIP Code: 78701<br>- Country: United States<br>- Address Type: Shipping/Billing |
+| **Test Data** | - First Name: John<br>- Last Name: Doe<br>- Address: 123 Main Street<br>- Address 2: Apt 4B<br>- City: Austin<br>- State: Texas<br>- ZIP Code: 78701<br>- Phone Number: 512-555-1234 |
 
 **Test Steps:**
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to Account Settings | Account Settings page loads |
-| 2 | Click on "Address Book" or "Addresses" section | Address management page is displayed |
-| 3 | Verify no addresses currently exist | Empty state or "No addresses" message shown |
-| 4 | Click "Add New Address" button | Address entry form is displayed |
-| 5 | Enter Address Line 1 | Field accepts input |
-| 6 | Enter Address Line 2 (optional) | Field accepts input |
+| 1 | Navigate to /account/address/create | Add New Address page loads with form |
+| 2 | Verify page heading shows "ADD NEW ADDRESS" | Form is displayed with empty fields |
+| 3 | Enter First Name | Field accepts input |
+| 4 | Enter Last Name | Field accepts input |
+| 5 | Enter Address | Field accepts input |
+| 6 | Enter Address 2 (optional) | Field accepts input |
 | 7 | Enter City | Field accepts input |
-| 8 | Select or Enter State | State is selected/entered |
-| 9 | Enter ZIP Code | ZIP code is accepted and validated |
-| 10 | Select Country | Country is selected |
-| 11 | Select address type (Shipping/Billing) if applicable | Type is selected |
-| 12 | Check "Set as default address" if option exists | Checkbox is selected |
-| 13 | Click "Save Address" button | - Success message is displayed<br>- Address is saved and visible in address list<br>- Address is marked as default if selected |
+| 8 | Select State from dropdown | State is selected |
+| 9 | Enter ZIP Code | ZIP code is accepted |
+| 10 | Enter Phone Number | Phone number is accepted |
+| 11 | Check "Make this my default shipping address" | Checkbox is selected |
+| 12 | Click "SAVE ADDRESS" button (pink) | - Success message is displayed<br>- Address is saved and visible in address list<br>- Address is marked as default |
 
 **Expected Result:** Address is saved successfully and available for use in checkout.
 
@@ -470,17 +530,14 @@
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to Add Address form | Form is displayed |
-| 2 | Leave Address Line 1 empty, fill other fields | Fields populated except Address Line 1 |
-| 3 | Click "Save Address" | - Validation error for Address Line 1<br>- Address is NOT saved |
-| 4 | Fill Address Line 1, clear City | City field empty |
-| 5 | Click "Save Address" | - Validation error for City<br>- Address is NOT saved |
-| 6 | Fill City, clear State | State field empty |
-| 7 | Click "Save Address" | - Validation error for State<br>- Address is NOT saved |
-| 8 | Fill all required fields | All required fields populated |
-| 9 | Click "Save Address" | Address is saved successfully |
+| 1 | Navigate to /account/address/create | Form is displayed |
+| 2 | Leave all fields empty and click "SAVE ADDRESS" | Validation errors appear for all required fields |
+| 3 | Verify error messages appear | - "The First Name field is required."<br>- "The Last Name field is required."<br>- "The Address field is required."<br>- "The City field is required."<br>- "The State field is required."<br>- "The Zip Code field is required."<br>- "The Phone Number field is required." |
+| 4 | Fill First Name only, click "SAVE ADDRESS" | First Name error clears, others remain |
+| 5 | Fill all required fields | All fields populated |
+| 6 | Click "SAVE ADDRESS" | Address is saved successfully |
 
-**Expected Result:** System validates all required address fields individually.
+**Expected Result:** System validates all required address fields individually with clear error messages.
 
 ---
 
