@@ -899,106 +899,11 @@
 
 ---
 
-### TC-SEARCH-009: Search Query Persistence Across Page Refresh
+### TC-SEARCH-009: Industry Standard Comparison
 
 | Field | Description |
 |-------|-------------|
 | **Test Case ID** | TC-SEARCH-009 |
-| **Title** | Search Query Should Persist After Page Refresh |
-| **Priority** | Medium |
-| **Type** | Functional / Positive |
-| **Preconditions** | User has performed a search |
-| **Test Data** | Search term: "washi tape" |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Search for "washi tape" | Results page loads |
-| 2 | Verify URL contains search parameter | URL shows ?q=washi+tape or similar |
-| 3 | Refresh the page (F5 or Ctrl+R) | Page reloads |
-| 4 | Verify search input still contains "washi tape" | Query persists after refresh |
-| 5 | Verify results are still displayed | Same results shown |
-
-**Expected Result:** Search query and results persist after page refresh.
-
----
-
-### TC-SEARCH-010: Empty Search Handling
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-SEARCH-010 |
-| **Title** | Empty Search Should Not Display False Query |
-| **Priority** | Low |
-| **Type** | Functional / Edge Case |
-| **Preconditions** | User is on homepage |
-| **Test Data** | Empty string |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Click search input but enter nothing | Field is focused but empty |
-| 2 | Press Enter or click search button | - Search is prevented OR<br>- All products shown OR<br>- Error message appears |
-| 3 | Observe search input | Input should be empty, not show random value |
-
-**Expected Result:** Empty searches are handled gracefully; input remains empty.
-
----
-
-### TC-SEARCH-011: Long Search Query Handling
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-SEARCH-011 |
-| **Title** | Long Search Queries Should Be Handled Properly |
-| **Priority** | Low |
-| **Type** | Functional / Boundary |
-| **Preconditions** | User is on homepage |
-| **Test Data** | 100+ character search string |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Enter a very long search query (100+ characters) | Input accepts or truncates appropriately |
-| 2 | Submit search | Search is performed |
-| 3 | Verify input contains the query | Full or truncated query visible |
-| 4 | Verify no UI breakage | Search input doesn't overflow or break layout |
-
-**Expected Result:** Long queries are handled without breaking the UI.
-
----
-
-### TC-SEARCH-012: Numeric Search Query Persistence
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-SEARCH-012 |
-| **Title** | Numeric Search Queries Should Persist |
-| **Priority** | Low |
-| **Type** | Functional / Edge Case |
-| **Preconditions** | User is on homepage |
-| **Test Data** | Search term: "12345" (product number) |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Enter "12345" in search field | Numbers entered |
-| 2 | Submit search | Results page loads |
-| 3 | Verify "12345" is in search input | Numeric query persists |
-
-**Expected Result:** Numeric-only search queries persist like text queries.
-
----
-
-### TC-SEARCH-013: Industry Standard Comparison
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-SEARCH-013 |
 | **Title** | Search Behavior Should Match Industry Standards |
 | **Priority** | Medium |
 | **Type** | Usability / Benchmark |
@@ -1019,6 +924,101 @@
 
 ---
 
+### TC-SEARCH-010: Search Query Persistence Across Page Refresh
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-010 |
+| **Title** | Search Query Should Persist After Page Refresh |
+| **Priority** | Medium |
+| **Type** | Functional / Positive |
+| **Preconditions** | User has performed a search |
+| **Test Data** | Search term: "washi tape" |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Search for "washi tape" | Results page loads |
+| 2 | Verify URL contains search parameter | URL shows ?q=washi+tape or similar |
+| 3 | Refresh the page (F5 or Ctrl+R) | Page reloads |
+| 4 | Verify search input still contains "washi tape" | Query persists after refresh |
+| 5 | Verify results are still displayed | Same results shown |
+
+**Expected Result:** Search query and results persist after page refresh.
+
+---
+
+### TC-SEARCH-011: Empty Search Handling
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-011 |
+| **Title** | Empty Search Should Not Display False Query |
+| **Priority** | Low |
+| **Type** | Functional / Edge Case |
+| **Preconditions** | User is on homepage |
+| **Test Data** | Empty string |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Click search input but enter nothing | Field is focused but empty |
+| 2 | Press Enter or click search button | - Search is prevented OR<br>- All products shown OR<br>- Error message appears |
+| 3 | Observe search input | Input should be empty, not show random value |
+
+**Expected Result:** Empty searches are handled gracefully; input remains empty.
+
+---
+
+### TC-SEARCH-012: Long Search Query Handling
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-012 |
+| **Title** | Long Search Queries Should Be Handled Properly |
+| **Priority** | Low |
+| **Type** | Functional / Boundary |
+| **Preconditions** | User is on homepage |
+| **Test Data** | 100+ character search string |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Enter a very long search query (100+ characters) | Input accepts or truncates appropriately |
+| 2 | Submit search | Search is performed |
+| 3 | Verify input contains the query | Full or truncated query visible |
+| 4 | Verify no UI breakage | Search input doesn't overflow or break layout |
+
+**Expected Result:** Long queries are handled without breaking the UI.
+
+---
+
+### TC-SEARCH-013: Numeric Search Query Persistence
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-013 |
+| **Title** | Numeric Search Queries Should Persist |
+| **Priority** | Low |
+| **Type** | Functional / Edge Case |
+| **Preconditions** | User is on homepage |
+| **Test Data** | Search term: "12345" (product number) |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Enter "12345" in search field | Numbers entered |
+| 2 | Submit search | Results page loads |
+| 3 | Verify "12345" is in search input | Numeric query persists |
+
+**Expected Result:** Numeric-only search queries persist like text queries.
+
+---
+
 ## Traceability Matrix
 
 | Requirement | Test Cases | Priority |
@@ -1033,7 +1033,7 @@
 | CRUD Operations | TC-ADD-001, TC-ADD-006, TC-ADD-007 | High |
 | Search Functionality | TC-SEARCH-001 through TC-SEARCH-013 | High/Medium |
 | Search Query Persistence (Bug) | TC-SEARCH-001, TC-SEARCH-002, TC-SEARCH-004 | High |
-| Search UX Standards | TC-SEARCH-009, TC-SEARCH-013 | Medium |
+| Search UX Standards | TC-SEARCH-009 | Medium |
 
 ---
 
