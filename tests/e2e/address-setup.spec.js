@@ -13,6 +13,28 @@ const {
  * 
  * These tests cover the address management flow on www.stampinup.com
  * 
+ * SITE BEHAVIOR NOTES:
+ * - Address page is a DEDICATED PAGE at /account/address/create (not a modal)
+ * - Access: Click "Hello, [Name]" dropdown > "Addresses" in header
+ * - Left sidebar: ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, etc.
+ * 
+ * Form Fields (all required except Address 2):
+ * - First Name, Last Name
+ * - Address, Address 2 (optional)
+ * - City, State (dropdown), ZIP Code
+ * - Phone Number
+ * - Checkbox: "Make this my default shipping address"
+ * - Checkbox: "Make this my default mailing address"
+ * 
+ * Validation errors (in red below fields):
+ * - "The First Name field is required."
+ * - "The Last Name field is required."
+ * - "The Address field is required."
+ * - "The City field is required."
+ * - "The State field is required."
+ * - "The Zip Code field is required."
+ * - "The Phone Number field is required."
+ * 
  * Prerequisites: Tests require a logged-in user
  */
 

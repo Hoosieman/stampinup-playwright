@@ -47,6 +47,31 @@ tests/
   2. Header displays "Hello, [FIRST NAME]" in top right corner
 - **No Terms & Conditions checkbox** observed in the modal
 
+### Address Setup Flow
+- **Address page is a DEDICATED PAGE** at `/account/address/create` (not a modal)
+- **Access:** Click "Hello, [Name]" dropdown in header > "Addresses"
+- **Left sidebar navigation:** ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, MY LISTS, SUBSCRIPTIONS, DEMONSTRATOR, REWARDS, NOTIFICATIONS, SIGN OUT
+- **Form Fields (all required except Address 2):**
+  - First Name, Last Name (side by side)
+  - Address (main street address)
+  - Address 2 (optional - apt, suite, etc.)
+  - City
+  - State (dropdown)
+  - ZIP Code
+  - Phone Number
+- **Checkboxes:**
+  - "Make this my default shipping address"
+  - "Make this my default mailing address"
+- **Buttons:** "SAVE ADDRESS" (pink), "CANCEL"
+- **Validation errors** appear in red below each field:
+  - "The First Name field is required."
+  - "The Last Name field is required."
+  - "The Address field is required."
+  - "The City field is required."
+  - "The State field is required."
+  - "The Zip Code field is required."
+  - "The Phone Number field is required."
+
 ---
 
 ## Test Coverage

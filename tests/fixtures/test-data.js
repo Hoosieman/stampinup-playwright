@@ -93,10 +93,13 @@ const WeakPasswords = [
 
 /**
  * Generate valid US address
+ * NOTE: stampinup.com address form requires firstName and lastName
  * @returns {Object}
  */
 function generateValidUSAddress() {
   return {
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName(),
     addressLine1: faker.location.streetAddress(),
     addressLine2: `Apt ${faker.number.int({ min: 1, max: 999 })}`,
     city: faker.location.city(),
@@ -104,12 +107,14 @@ function generateValidUSAddress() {
     zipCode: faker.location.zipCode('#####'),
     country: 'United States',
     phone: faker.phone.number('###-###-####'),
-    isDefault: false,
+    isDefaultShipping: false,
+    isDefaultMailing: false,
   };
 }
 
 /**
  * Pre-defined test addresses
+ * NOTE: All addresses include firstName and lastName as required by stampinup.com
  */
 const TestAddresses = {
   // Valid US address
@@ -117,6 +122,8 @@ const TestAddresses = {
   
   // Address in Texas (specific for testing)
   texas: () => ({
+    firstName: 'John',
+    lastName: 'Smith',
     addressLine1: '123 Main Street',
     addressLine2: 'Suite 100',
     city: 'Austin',
@@ -124,49 +131,64 @@ const TestAddresses = {
     zipCode: '78701',
     country: 'United States',
     phone: '512-555-1234',
-    isDefault: true,
+    isDefaultShipping: true,
+    isDefaultMailing: false,
   }),
   
   // Address in California
   california: () => ({
+    firstName: 'Jane',
+    lastName: 'Doe',
     addressLine1: '456 Oak Avenue',
     city: 'Los Angeles',
     state: 'California',
     zipCode: '90001',
     country: 'United States',
     phone: '310-555-5678',
-    isDefault: false,
+    isDefaultShipping: false,
+    isDefaultMailing: false,
   }),
   
   // PO Box address
   poBox: () => ({
+    firstName: 'Bob',
+    lastName: 'Wilson',
     addressLine1: 'PO Box 12345',
     city: 'Houston',
     state: 'Texas',
     zipCode: '77001',
     country: 'United States',
-    isDefault: false,
+    phone: '713-555-0000',
+    isDefaultShipping: false,
+    isDefaultMailing: false,
   }),
   
   // Canadian address
   canada: () => ({
+    firstName: 'Sarah',
+    lastName: 'Johnson',
     addressLine1: '789 Maple Road',
     city: 'Toronto',
     state: 'Ontario',
     zipCode: 'M5V 1J1',
     country: 'Canada',
     phone: '416-555-9012',
-    isDefault: false,
+    isDefaultShipping: false,
+    isDefaultMailing: false,
   }),
   
   // Minimal required fields only
   minimal: () => ({
+    firstName: 'Test',
+    lastName: 'User',
     addressLine1: '100 Test Street',
     city: 'New York',
     state: 'New York',
     zipCode: '10001',
     country: 'United States',
-    isDefault: false,
+    phone: '212-555-1111',
+    isDefaultShipping: false,
+    isDefaultMailing: false,
   }),
 };
 

@@ -4,6 +4,34 @@ const { BasePage } = require('./base.page');
 /**
  * Page Object Model for Address Book/Address Settings Page
  * Covers: TC-ADD-001 through TC-ADD-009
+ * 
+ * SITE BEHAVIOR NOTES (Observed):
+ * - Address page is a DEDICATED PAGE at /account/address/create (not a modal)
+ * - Access: Click "Hello, [Name]" dropdown > "Addresses" in header
+ * - Left sidebar navigation: ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, MY LISTS, 
+ *   SUBSCRIPTIONS, DEMONSTRATOR, REWARDS, NOTIFICATIONS, SIGN OUT
+ * 
+ * Form Fields (all required except Address 2):
+ * - First Name, Last Name (side by side)
+ * - Address (main address line)
+ * - Address 2 (optional)
+ * - City
+ * - State (dropdown)
+ * - ZIP Code
+ * - Phone Number
+ * - Checkbox: "Make this my default shipping address"
+ * - Checkbox: "Make this my default mailing address"
+ * 
+ * Buttons: "SAVE ADDRESS" (pink), "CANCEL"
+ * 
+ * Validation errors appear in red below each field:
+ * - "The First Name field is required."
+ * - "The Last Name field is required."
+ * - "The Address field is required."
+ * - "The City field is required."
+ * - "The State field is required."
+ * - "The Zip Code field is required."
+ * - "The Phone Number field is required."
  */
 class AddressPage extends BasePage {
   /**
@@ -12,87 +40,85 @@ class AddressPage extends BasePage {
   constructor(page) {
     super(page);
     
-    // Navigation
-    this.addressBookLink = page.locator(
-      'a:has-text("Address Book"), a:has-text("Addresses"), ' +
-      'a:has-text("Shipping Address"), a[href*="address"]'
-    ).first();
+    // URLs
+    this.addressListUrl = '/account/address';
+    this.addAddressUrl = '/account/address/create';
     
+    // Navigation - Account dropdown menu items
+    this.accountDropdown = page.locator('a:has-text("Hello,"), text=/Hello,\\s*\\w+/i').first();
+    this.addressesMenuLink = page.locator('a:has-text("Addresses"), [href*="/account/address"]').first();
+    
+    // Left sidebar navigation
+    this.sidebarAccountSettings = page.locator('text="ACCOUNT SETTINGS", a:has-text("Account Settings")').first();
+    this.sidebarAddresses = page.locator('text="ADDRESSES", a:has-text("Addresses")').first();
+    this.sidebarPayment = page.locator('text="PAYMENT", a:has-text("Payment")').first();
+    this.sidebarMyOrders = page.locator('text="MY ORDERS", a:has-text("My Orders")').first();
+    this.sidebarSignOut = page.locator('text="SIGN OUT", a:has-text("Sign Out")').first();
+    
+    // Add address button (if on address list page)
     this.addAddressButton = page.locator(
       'button:has-text("Add Address"), button:has-text("Add New Address"), ' +
-      'a:has-text("Add Address"), [data-testid="add-address"]'
+      'a:has-text("Add Address"), a[href*="/address/create"]'
     ).first();
     
-    // Address form inputs
+    // Name fields (observed in form)
+    this.firstNameInput = page.locator(
+      'input[placeholder="First Name"], input[name*="firstName" i], input[id*="firstName" i]'
+    ).first();
+    
+    this.lastNameInput = page.locator(
+      'input[placeholder="Last Name"], input[name*="lastName" i], input[id*="lastName" i]'
+    ).first();
+    
+    // Address form inputs (observed in form)
     this.addressLine1Input = page.locator(
-      'input[name*="address1" i], input[name*="addressLine1" i], input[name*="street" i], ' +
-      'input[id*="address1" i], input[placeholder*="address line 1" i], ' +
-      'input[placeholder*="street address" i]'
+      'input[placeholder="Address"], input[name*="address1" i], input[name*="address" i]:not([name*="address2"]), ' +
+      'input[id*="address1" i], input[placeholder*="street" i]'
     ).first();
     
     this.addressLine2Input = page.locator(
-      'input[name*="address2" i], input[name*="addressLine2" i], input[name*="apt" i], ' +
-      'input[id*="address2" i], input[placeholder*="address line 2" i], ' +
-      'input[placeholder*="apt" i], input[placeholder*="suite" i]'
+      'input[placeholder="Address 2"], input[name*="address2" i], ' +
+      'input[id*="address2" i], input[placeholder*="apt" i]'
     ).first();
     
     this.cityInput = page.locator(
-      'input[name*="city" i], input[id*="city" i], input[placeholder*="city" i]'
+      'input[placeholder="City"], input[name*="city" i], input[id*="city" i]'
     ).first();
     
+    // State is a dropdown (observed)
     this.stateSelect = page.locator(
-      'select[name*="state" i], select[name*="province" i], select[name*="region" i], ' +
-      'select[id*="state" i], [role="combobox"][aria-label*="state" i]'
-    ).first();
-    
-    this.stateInput = page.locator(
-      'input[name*="state" i], input[name*="province" i], ' +
-      'input[id*="state" i], input[placeholder*="state" i]'
+      'select[placeholder="State"], select[name*="state" i], select[id*="state" i]'
     ).first();
     
     this.zipCodeInput = page.locator(
-      'input[name*="zip" i], input[name*="postal" i], input[name*="postcode" i], ' +
-      'input[id*="zip" i], input[placeholder*="zip" i], input[placeholder*="postal" i]'
-    ).first();
-    
-    this.countrySelect = page.locator(
-      'select[name*="country" i], select[id*="country" i], ' +
-      '[role="combobox"][aria-label*="country" i]'
+      'input[placeholder="ZIP Code"], input[name*="zip" i], input[name*="postal" i], ' +
+      'input[id*="zip" i]'
     ).first();
     
     this.phoneInput = page.locator(
-      'input[type="tel"], input[name*="phone" i], input[id*="phone" i]'
+      'input[placeholder="Phone Number"], input[type="tel"], input[name*="phone" i], input[id*="phone" i]'
     ).first();
     
-    this.addressNicknameInput = page.locator(
-      'input[name*="nickname" i], input[name*="label" i], input[name*="name" i]:not([name*="firstName"]):not([name*="lastName"]), ' +
-      'input[placeholder*="nickname" i], input[placeholder*="address name" i]'
+    // Default address checkboxes (observed)
+    this.defaultShippingCheckbox = page.locator(
+      'input[type="checkbox"]:near(:text("default shipping")), ' +
+      'label:has-text("Make this my default shipping address") input[type="checkbox"], ' +
+      'input[type="checkbox"][name*="shipping" i]'
     ).first();
     
-    // Address type
-    this.shippingAddressRadio = page.locator(
-      'input[type="radio"][value*="shipping" i], input[type="radio"][name*="type"][value*="ship" i], ' +
-      'label:has-text("Shipping") input[type="radio"]'
+    this.defaultMailingCheckbox = page.locator(
+      'input[type="checkbox"]:near(:text("default mailing")), ' +
+      'label:has-text("Make this my default mailing address") input[type="checkbox"], ' +
+      'input[type="checkbox"][name*="mailing" i]'
     ).first();
     
-    this.billingAddressRadio = page.locator(
-      'input[type="radio"][value*="billing" i], input[type="radio"][name*="type"][value*="bill" i], ' +
-      'label:has-text("Billing") input[type="radio"]'
-    ).first();
-    
-    this.defaultAddressCheckbox = page.locator(
-      'input[type="checkbox"][name*="default" i], input[type="checkbox"][id*="default" i], ' +
-      'label:has-text("default") input[type="checkbox"], label:has-text("primary") input[type="checkbox"]'
-    ).first();
-    
-    // Action buttons
+    // Action buttons (observed)
     this.saveAddressButton = page.locator(
-      'button:has-text("Save Address"), button:has-text("Save"), ' +
-      'button:has-text("Add Address"), input[type="submit"][value*="Save" i]'
+      'button:has-text("SAVE ADDRESS"), button:has-text("Save Address")'
     ).first();
     
     this.cancelButton = page.locator(
-      'button:has-text("Cancel"), a:has-text("Cancel")'
+      'a:has-text("CANCEL"), a:has-text("Cancel"), button:has-text("Cancel")'
     ).first();
     
     this.editAddressButton = page.locator(
@@ -171,17 +197,39 @@ class AddressPage extends BasePage {
   /**
    * Navigate to address book page
    * Assumes user is already logged in
+   * Path: Click "Hello, [Name]" dropdown > "Addresses" OR direct URL /account/address
    */
   async navigateToAddressBook() {
-    await this.goto('/account');
+    // Try direct URL navigation first (more reliable)
+    await this.goto(this.addressListUrl);
     await this.waitForPageLoad();
     await this.closeModalIfPresent();
+  }
+
+  /**
+   * Navigate to Add New Address page directly
+   * URL: /account/address/create
+   */
+  async navigateToAddAddress() {
+    await this.goto(this.addAddressUrl);
+    await this.waitForPageLoad();
+    await this.closeModalIfPresent();
+  }
+
+  /**
+   * Navigate via account dropdown menu (alternative method)
+   */
+  async navigateViaDropdown() {
+    await this.goto('/');
+    await this.waitForPageLoad();
     
-    // Find and click address book link
-    if (await this.addressBookLink.isVisible({ timeout: 5000 })) {
-      await this.addressBookLink.click();
-      await this.waitForPageLoad();
-    }
+    // Click "Hello, [Name]" to open dropdown
+    await this.accountDropdown.click();
+    await this.page.waitForTimeout(300);
+    
+    // Click "Addresses" in dropdown
+    await this.addressesMenuLink.click();
+    await this.waitForPageLoad();
   }
 
   /**
@@ -194,14 +242,22 @@ class AddressPage extends BasePage {
 
   /**
    * Fill address form
+   * Fields observed on stampinup.com/account/address/create:
+   * - First Name, Last Name, Address, Address 2, City, State (dropdown), ZIP Code, Phone Number
+   * - Checkboxes: default shipping, default mailing
    * @param {Object} addressData 
    */
   async fillAddressForm(addressData) {
-    if (addressData.country !== undefined && await this.countrySelect.isVisible()) {
-      await this.countrySelect.selectOption({ label: addressData.country });
-      await this.page.waitForTimeout(300); // Wait for form to update based on country
+    // Name fields (required)
+    if (addressData.firstName !== undefined) {
+      await this.fillInput(this.firstNameInput, addressData.firstName);
     }
     
+    if (addressData.lastName !== undefined) {
+      await this.fillInput(this.lastNameInput, addressData.lastName);
+    }
+    
+    // Address fields
     if (addressData.addressLine1 !== undefined) {
       await this.fillInput(this.addressLine1Input, addressData.addressLine1);
     }
@@ -214,12 +270,10 @@ class AddressPage extends BasePage {
       await this.fillInput(this.cityInput, addressData.city);
     }
     
-    // Handle state - could be select or input depending on country
+    // State dropdown
     if (addressData.state !== undefined) {
       if (await this.stateSelect.isVisible()) {
         await this.stateSelect.selectOption({ label: addressData.state });
-      } else if (await this.stateInput.isVisible()) {
-        await this.fillInput(this.stateInput, addressData.state);
       }
     }
     
@@ -227,25 +281,24 @@ class AddressPage extends BasePage {
       await this.fillInput(this.zipCodeInput, addressData.zipCode);
     }
     
-    if (addressData.phone !== undefined && await this.phoneInput.isVisible()) {
+    // Phone number (required)
+    if (addressData.phone !== undefined) {
       await this.fillInput(this.phoneInput, addressData.phone);
     }
     
-    if (addressData.nickname !== undefined && await this.addressNicknameInput.isVisible()) {
-      await this.fillInput(this.addressNicknameInput, addressData.nickname);
-    }
-    
-    if (addressData.isDefault === true && await this.defaultAddressCheckbox.isVisible()) {
-      const isChecked = await this.defaultAddressCheckbox.isChecked();
+    // Default address checkboxes
+    if (addressData.isDefaultShipping === true && await this.defaultShippingCheckbox.isVisible()) {
+      const isChecked = await this.defaultShippingCheckbox.isChecked();
       if (!isChecked) {
-        await this.defaultAddressCheckbox.check();
+        await this.defaultShippingCheckbox.check();
       }
     }
     
-    if (addressData.addressType === 'shipping' && await this.shippingAddressRadio.isVisible()) {
-      await this.shippingAddressRadio.check();
-    } else if (addressData.addressType === 'billing' && await this.billingAddressRadio.isVisible()) {
-      await this.billingAddressRadio.check();
+    if (addressData.isDefaultMailing === true && await this.defaultMailingCheckbox.isVisible()) {
+      const isChecked = await this.defaultMailingCheckbox.isChecked();
+      if (!isChecked) {
+        await this.defaultMailingCheckbox.check();
+      }
     }
   }
 
@@ -259,11 +312,11 @@ class AddressPage extends BasePage {
 
   /**
    * Add a new address with full flow
+   * Navigates directly to /account/address/create
    * @param {Object} addressData 
    */
   async addNewAddress(addressData) {
-    await this.navigateToAddressBook();
-    await this.clickAddAddress();
+    await this.navigateToAddAddress(); // Direct URL: /account/address/create
     await this.fillAddressForm(addressData);
     await this.saveAddress();
   }
