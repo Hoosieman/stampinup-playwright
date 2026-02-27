@@ -1,6 +1,6 @@
 # Stampin' Up! E2E Test Suite
 
-A comprehensive Playwright test suite for testing account creation, profile setup, and address management on www.stampinup.com.
+A comprehensive Playwright test suite for testing account creation, profile setup, address management, and search functionality on www.stampinup.com.
 
 ## Project Structure
 
@@ -9,9 +9,10 @@ tests/
 ├── docs/
 │   └── test-cases.md          # Detailed test case documentation
 ├── e2e/
-│   ├── account-creation.spec.js   # Account registration tests (TC-ACC-001 to TC-ACC-008)
-│   ├── user-profile.spec.js       # Profile setup tests (TC-PRF-001 to TC-PRF-006)
-│   └── address-setup.spec.js      # Address management tests (TC-ADD-001 to TC-ADD-009)
+│   ├── account-creation.spec.js       # Account registration tests (TC-ACC-001 to TC-ACC-008)
+│   ├── address-setup.spec.js          # Address management tests (TC-ADD-001 to TC-ADD-009)
+│   ├── search-query-persistence.spec.js # Search bug verification tests (TC-SEARCH-001 to TC-SEARCH-013)
+│   └── user-profile.spec.js           # Profile setup tests (TC-PRF-001 to TC-PRF-006)
 ├── fixtures/
 │   └── test-data.js           # Test data factories and constants
 ├── pages/
@@ -20,7 +21,8 @@ tests/
 │   ├── login.page.js          # Login page object
 │   ├── signup.page.js         # Registration page object
 │   ├── profile.page.js        # Profile settings page object
-│   └── address.page.js        # Address book page object
+│   ├── address.page.js        # Address book page object
+│   └── search.page.js         # Search functionality page object
 └── README.md
 ```
 
@@ -54,6 +56,24 @@ tests/
 - [x] TC-ADD-007: Delete address
 - [x] TC-ADD-008: PO Box address handling
 - [x] TC-ADD-009: International address support
+
+### Search Query Persistence (TC-SEARCH-001 to TC-SEARCH-013)
+
+> **Bug Found:** Search input field does not retain user's query after performing a search, impacting UX when users want to refine their searches.
+
+- [x] TC-SEARCH-001: Search query not persisting after search (bug reproduction)
+- [x] TC-SEARCH-002: Verify search input is not empty after search
+- [x] TC-SEARCH-003: Direct URL navigation should pre-populate search input
+- [x] TC-SEARCH-004: User search refinement workflow friction
+- [x] TC-SEARCH-005: Search query with special characters persistence
+- [x] TC-SEARCH-006: Multi-word search query persistence
+- [x] TC-SEARCH-007: Search placeholder vs actual value verification
+- [x] TC-SEARCH-008: Search via button vs Enter key consistency
+- [x] TC-SEARCH-009: Search query persistence across page refresh
+- [x] TC-SEARCH-010: Empty search handling
+- [x] TC-SEARCH-011: Long search query handling
+- [x] TC-SEARCH-012: Numeric search query persistence
+- [x] TC-SEARCH-013: Industry standard comparison benchmark
 
 ## Setup
 
@@ -110,6 +130,9 @@ pnpm exec playwright test user-profile
 
 # Run only address tests
 pnpm exec playwright test address-setup
+
+# Run only search persistence tests (bug verification)
+pnpm exec playwright test search-query-persistence
 ```
 
 ### Run on Specific Browsers
@@ -143,6 +166,7 @@ The test suite follows the Page Object Model (POM) pattern:
 - **SignupPage** - Registration form interactions
 - **ProfilePage** - Profile settings management
 - **AddressPage** - Address book operations
+- **SearchPage** - Search input and results interactions
 
 ### Using Page Objects
 
