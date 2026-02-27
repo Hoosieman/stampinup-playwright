@@ -1,11 +1,11 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage, ProfilePage } from '../pages';
-import {
+const { test, expect } = require('@playwright/test');
+const { LoginPage, ProfilePage } = require('../pages');
+const {
   generateProfileUpdateData,
   ExistingTestUser,
   InvalidPhoneNumbers,
   TestUsers,
-} from '../fixtures/test-data';
+} = require('../fixtures/test-data');
 
 /**
  * User Profile Setup Test Suite
@@ -17,8 +17,10 @@ import {
  */
 
 test.describe('User Profile Setup', () => {
-  let loginPage: LoginPage;
-  let profilePage: ProfilePage;
+  /** @type {LoginPage} */
+  let loginPage;
+  /** @type {ProfilePage} */
+  let profilePage;
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
@@ -60,9 +62,16 @@ test.describe('User Profile Setup', () => {
    * Type: Functional / Negative
    */
   test.describe('TC-PRF-002: Invalid Phone Number Validation', () => {
-    for (const invalidPhone of InvalidPhoneNumbers.slice(0, 3)) { // Test first 3
-      test(`should reject invalid phone: "${invalidPhone || '(empty)'}"`, async () => {
+    const testPhones = InvalidPhoneNumbers.slice(0, 3); // Test first 3
+    
+    for (const invalidPhone of testPhones) {
+      test(`should reject invalid phone: "${invalidPhone || '(empty)'}"`, async ({ page }) => {
         // Arrange
+        const loginPage = new LoginPage(page);
+        const profilePage = new ProfilePage(page);
+        
+        await loginPage.login(ExistingTestUser.email, ExistingTestUser.password);
+        
         const profileData = generateProfileUpdateData();
         profileData.phone = invalidPhone;
         

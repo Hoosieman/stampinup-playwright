@@ -1,19 +1,14 @@
-import { Page, Locator, expect } from '@playwright/test';
+const { expect } = require('@playwright/test');
 
 /**
  * Base Page Object containing common functionality
  * All other page objects should extend this class
  */
-export class BasePage {
-  readonly page: Page;
-  
-  // Common header elements
-  readonly signInLink: Locator;
-  readonly cartIcon: Locator;
-  readonly searchInput: Locator;
-  readonly logo: Locator;
-  
-  constructor(page: Page) {
+class BasePage {
+  /**
+   * @param {import('@playwright/test').Page} page 
+   */
+  constructor(page) {
     this.page = page;
     
     // Initialize common locators - these may need adjustment based on actual site structure
@@ -25,8 +20,9 @@ export class BasePage {
 
   /**
    * Navigate to a specific URL path
+   * @param {string} path 
    */
-  async goto(path: string = '/') {
+  async goto(path = '/') {
     await this.page.goto(path);
     await this.waitForPageLoad();
   }
@@ -49,22 +45,26 @@ export class BasePage {
 
   /**
    * Get current page URL
+   * @returns {Promise<string>}
    */
-  async getCurrentUrl(): Promise<string> {
+  async getCurrentUrl() {
     return this.page.url();
   }
 
   /**
    * Get page title
+   * @returns {Promise<string>}
    */
-  async getPageTitle(): Promise<string> {
+  async getPageTitle() {
     return this.page.title();
   }
 
   /**
    * Check if element is visible
+   * @param {import('@playwright/test').Locator} locator 
+   * @returns {Promise<boolean>}
    */
-  async isVisible(locator: Locator): Promise<boolean> {
+  async isVisible(locator) {
     try {
       await locator.waitFor({ state: 'visible', timeout: 5000 });
       return true;
@@ -75,16 +75,19 @@ export class BasePage {
 
   /**
    * Wait for element and click
+   * @param {import('@playwright/test').Locator} locator 
    */
-  async waitAndClick(locator: Locator) {
+  async waitAndClick(locator) {
     await locator.waitFor({ state: 'visible' });
     await locator.click();
   }
 
   /**
    * Fill input field with text
+   * @param {import('@playwright/test').Locator} locator 
+   * @param {string} text 
    */
-  async fillInput(locator: Locator, text: string) {
+  async fillInput(locator, text) {
     await locator.waitFor({ state: 'visible' });
     await locator.clear();
     await locator.fill(text);
@@ -126,8 +129,9 @@ export class BasePage {
 
   /**
    * Take screenshot with timestamp
+   * @param {string} name 
    */
-  async takeScreenshot(name: string) {
+  async takeScreenshot(name) {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     await this.page.screenshot({
       path: `test-results/screenshots/${name}-${timestamp}.png`,
@@ -137,15 +141,17 @@ export class BasePage {
 
   /**
    * Scroll to element
+   * @param {import('@playwright/test').Locator} locator 
    */
-  async scrollToElement(locator: Locator) {
+  async scrollToElement(locator) {
     await locator.scrollIntoViewIfNeeded();
   }
 
   /**
    * Verify success message is displayed
+   * @param {string} [expectedText] 
    */
-  async verifySuccessMessage(expectedText?: string) {
+  async verifySuccessMessage(expectedText) {
     const successMessage = this.page.locator(
       '.success, .alert-success, [role="alert"]:has-text("success"), .notification-success'
     ).first();
@@ -159,8 +165,9 @@ export class BasePage {
 
   /**
    * Verify error message is displayed
+   * @param {string} [expectedText] 
    */
-  async verifyErrorMessage(expectedText?: string) {
+  async verifyErrorMessage(expectedText) {
     const errorMessage = this.page.locator(
       '.error, .alert-error, .alert-danger, [role="alert"]:has-text("error"), .validation-error, .field-error'
     ).first();
@@ -172,3 +179,5 @@ export class BasePage {
     }
   }
 }
+
+module.exports = { BasePage };

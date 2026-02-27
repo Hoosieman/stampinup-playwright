@@ -1,11 +1,11 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage, AddressPage } from '../pages';
-import {
+const { test, expect } = require('@playwright/test');
+const { LoginPage, AddressPage } = require('../pages');
+const {
   TestAddresses,
   InvalidZipCodes,
   ExistingTestUser,
   generateValidUSAddress,
-} from '../fixtures/test-data';
+} = require('../fixtures/test-data');
 
 /**
  * Address Setup Test Suite
@@ -17,8 +17,10 @@ import {
  */
 
 test.describe('Address Setup', () => {
-  let loginPage: LoginPage;
-  let addressPage: AddressPage;
+  /** @type {LoginPage} */
+  let loginPage;
+  /** @type {AddressPage} */
+  let addressPage;
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
@@ -56,9 +58,16 @@ test.describe('Address Setup', () => {
    * Type: Functional / Negative
    */
   test.describe('TC-ADD-002: Invalid ZIP Code Validation', () => {
-    for (const invalidZip of InvalidZipCodes.US.slice(0, 3)) { // Test first 3
-      test(`should reject invalid US ZIP code: "${invalidZip || '(empty)'}"`, async () => {
+    const testZips = InvalidZipCodes.US.slice(0, 3); // Test first 3
+    
+    for (const invalidZip of testZips) {
+      test(`should reject invalid US ZIP code: "${invalidZip || '(empty)'}"`, async ({ page }) => {
         // Arrange
+        const loginPage = new LoginPage(page);
+        const addressPage = new AddressPage(page);
+        
+        await loginPage.login(ExistingTestUser.email, ExistingTestUser.password);
+        
         const addressData = generateValidUSAddress();
         addressData.zipCode = invalidZip;
         

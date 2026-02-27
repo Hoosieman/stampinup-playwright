@@ -1,39 +1,15 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { BasePage } from './base.page';
+const { expect } = require('@playwright/test');
+const { BasePage } = require('./base.page');
 
 /**
  * Page Object Model for Account Registration/Signup Page
  * Covers: TC-ACC-001 through TC-ACC-008
  */
-export class SignupPage extends BasePage {
-  // Registration form locators
-  readonly emailInput: Locator;
-  readonly passwordInput: Locator;
-  readonly confirmPasswordInput: Locator;
-  readonly firstNameInput: Locator;
-  readonly lastNameInput: Locator;
-  readonly phoneInput: Locator;
-  readonly termsCheckbox: Locator;
-  readonly newsletterCheckbox: Locator;
-  readonly createAccountButton: Locator;
-  readonly signInLink: Locator;
-  
-  // Error message locators
-  readonly emailError: Locator;
-  readonly passwordError: Locator;
-  readonly confirmPasswordError: Locator;
-  readonly firstNameError: Locator;
-  readonly lastNameError: Locator;
-  readonly generalError: Locator;
-  
-  // Password strength indicator
-  readonly passwordStrengthIndicator: Locator;
-  
-  // Success elements
-  readonly successMessage: Locator;
-  readonly welcomeMessage: Locator;
-
-  constructor(page: Page) {
+class SignupPage extends BasePage {
+  /**
+   * @param {import('@playwright/test').Page} page 
+   */
+  constructor(page) {
     super(page);
     
     // Form inputs - using multiple selector strategies for robustness
@@ -155,17 +131,9 @@ export class SignupPage extends BasePage {
 
   /**
    * Fill the registration form with provided data
+   * @param {Object} userData 
    */
-  async fillRegistrationForm(userData: {
-    email?: string;
-    password?: string;
-    confirmPassword?: string;
-    firstName?: string;
-    lastName?: string;
-    phone?: string;
-    acceptTerms?: boolean;
-    subscribeNewsletter?: boolean;
-  }) {
+  async fillRegistrationForm(userData) {
     if (userData.email !== undefined) {
       await this.fillInput(this.emailInput, userData.email);
     }
@@ -233,16 +201,9 @@ export class SignupPage extends BasePage {
 
   /**
    * Complete full registration process
+   * @param {Object} userData 
    */
-  async registerNewUser(userData: {
-    email: string;
-    password: string;
-    confirmPassword: string;
-    firstName: string;
-    lastName: string;
-    phone?: string;
-    acceptTerms?: boolean;
-  }) {
+  async registerNewUser(userData) {
     await this.navigateToSignup();
     await this.fillRegistrationForm({
       ...userData,
@@ -335,8 +296,9 @@ export class SignupPage extends BasePage {
 
   /**
    * Get password strength level
+   * @returns {Promise<string|null>}
    */
-  async getPasswordStrength(): Promise<string | null> {
+  async getPasswordStrength() {
     if (await this.passwordStrengthIndicator.isVisible()) {
       return this.passwordStrengthIndicator.textContent();
     }
@@ -353,3 +315,5 @@ export class SignupPage extends BasePage {
     await expect(termsError).toBeVisible({ timeout: 5000 });
   }
 }
+
+module.exports = { SignupPage };

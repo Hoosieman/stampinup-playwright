@@ -1,44 +1,15 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { BasePage } from './base.page';
+const { expect } = require('@playwright/test');
+const { BasePage } = require('./base.page');
 
 /**
  * Page Object Model for User Profile/Account Settings Page
  * Covers: TC-PRF-001 through TC-PRF-006
  */
-export class ProfilePage extends BasePage {
-  // Navigation
-  readonly accountSettingsLink: Locator;
-  readonly profileLink: Locator;
-  readonly personalInfoLink: Locator;
-  
-  // Profile form fields
-  readonly firstNameInput: Locator;
-  readonly lastNameInput: Locator;
-  readonly emailInput: Locator;
-  readonly phoneInput: Locator;
-  readonly dateOfBirthInput: Locator;
-  readonly genderSelect: Locator;
-  
-  // Password change fields
-  readonly currentPasswordInput: Locator;
-  readonly newPasswordInput: Locator;
-  readonly confirmNewPasswordInput: Locator;
-  
-  // Action buttons
-  readonly saveButton: Locator;
-  readonly cancelButton: Locator;
-  readonly editButton: Locator;
-  readonly changePasswordButton: Locator;
-  
-  // Messages
-  readonly successMessage: Locator;
-  readonly errorMessage: Locator;
-  
-  // Field errors
-  readonly phoneError: Locator;
-  readonly emailError: Locator;
-
-  constructor(page: Page) {
+class ProfilePage extends BasePage {
+  /**
+   * @param {import('@playwright/test').Page} page 
+   */
+  constructor(page) {
     super(page);
     
     // Navigation locators
@@ -166,13 +137,9 @@ export class ProfilePage extends BasePage {
 
   /**
    * Get current profile data
+   * @returns {Promise<Object>}
    */
-  async getCurrentProfileData(): Promise<{
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-  }> {
+  async getCurrentProfileData() {
     return {
       firstName: await this.firstNameInput.inputValue().catch(() => ''),
       lastName: await this.lastNameInput.inputValue().catch(() => ''),
@@ -183,15 +150,9 @@ export class ProfilePage extends BasePage {
 
   /**
    * Fill profile form with provided data
+   * @param {Object} profileData 
    */
-  async fillProfileForm(profileData: {
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    phone?: string;
-    dateOfBirth?: string;
-    gender?: string;
-  }) {
+  async fillProfileForm(profileData) {
     // Click edit button if in read-only mode
     if (await this.editButton.isVisible({ timeout: 2000 })) {
       await this.editButton.click();
@@ -243,14 +204,9 @@ export class ProfilePage extends BasePage {
 
   /**
    * Update profile with full flow
+   * @param {Object} profileData 
    */
-  async updateProfile(profileData: {
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    phone?: string;
-    dateOfBirth?: string;
-  }) {
+  async updateProfile(profileData) {
     await this.navigateToProfile();
     await this.fillProfileForm(profileData);
     await this.saveProfile();
@@ -277,13 +233,9 @@ export class ProfilePage extends BasePage {
 
   /**
    * Verify profile data was saved correctly
+   * @param {Object} expectedData 
    */
-  async verifyProfileData(expectedData: {
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    phone?: string;
-  }) {
+  async verifyProfileData(expectedData) {
     const currentData = await this.getCurrentProfileData();
     
     if (expectedData.firstName !== undefined) {
@@ -305,8 +257,10 @@ export class ProfilePage extends BasePage {
 
   /**
    * Check if field is marked as required
+   * @param {'firstName' | 'lastName' | 'email' | 'phone'} fieldName 
+   * @returns {Promise<boolean>}
    */
-  async isFieldRequired(fieldName: 'firstName' | 'lastName' | 'email' | 'phone'): Promise<boolean> {
+  async isFieldRequired(fieldName) {
     const fieldMap = {
       firstName: this.firstNameInput,
       lastName: this.lastNameInput,
@@ -323,8 +277,10 @@ export class ProfilePage extends BasePage {
 
   /**
    * Change password
+   * @param {string} currentPassword 
+   * @param {string} newPassword 
    */
-  async changePassword(currentPassword: string, newPassword: string) {
+  async changePassword(currentPassword, newPassword) {
     if (await this.changePasswordButton.isVisible()) {
       await this.changePasswordButton.click();
       await this.page.waitForTimeout(500);
@@ -351,3 +307,5 @@ export class ProfilePage extends BasePage {
     expect(requiredIndicators).toBeGreaterThan(0);
   }
 }
+
+module.exports = { ProfilePage };

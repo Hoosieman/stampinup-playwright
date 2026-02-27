@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker';
+const { faker } = require('@faker-js/faker');
 
 /**
  * Test Data Factory
@@ -8,8 +8,9 @@ import { faker } from '@faker-js/faker';
 /**
  * Generate unique email for testing
  * Uses timestamp to ensure uniqueness
+ * @returns {string}
  */
-export function generateUniqueEmail(): string {
+function generateUniqueEmail() {
   const timestamp = Date.now();
   const random = Math.random().toString(36).substring(7);
   return `test_user_${timestamp}_${random}@testmail.com`;
@@ -19,28 +20,17 @@ export function generateUniqueEmail(): string {
  * Generate valid password meeting typical requirements
  * - At least 8 characters
  * - Contains uppercase, lowercase, number, and special character
+ * @returns {string}
  */
-export function generateValidPassword(): string {
+function generateValidPassword() {
   return `Test${faker.string.alphanumeric(4)}@${faker.number.int({ min: 100, max: 999 })}`;
 }
 
 /**
- * User registration data interface
- */
-export interface UserRegistrationData {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  firstName: string;
-  lastName: string;
-  phone?: string;
-  acceptTerms: boolean;
-}
-
-/**
  * Generate valid user registration data
+ * @returns {Object}
  */
-export function generateValidUserData(): UserRegistrationData {
+function generateValidUserData() {
   const password = generateValidPassword();
   return {
     email: generateUniqueEmail(),
@@ -56,19 +46,19 @@ export function generateValidUserData(): UserRegistrationData {
 /**
  * Pre-defined test users for specific scenarios
  */
-export const TestUsers = {
+const TestUsers = {
   // Valid new user for registration
-  newUser: (): UserRegistrationData => generateValidUserData(),
+  newUser: () => generateValidUserData(),
   
   // User with special characters in name
-  specialCharName: (): UserRegistrationData => ({
+  specialCharName: () => ({
     ...generateValidUserData(),
     firstName: "Jean-Pierre",
     lastName: "O'Connor-Smith",
   }),
   
   // User with maximum length inputs
-  maxLengthUser: (): UserRegistrationData => ({
+  maxLengthUser: () => ({
     ...generateValidUserData(),
     firstName: faker.string.alpha(50),
     lastName: faker.string.alpha(50),
@@ -78,7 +68,7 @@ export const TestUsers = {
 /**
  * Invalid email formats for negative testing
  */
-export const InvalidEmails = [
+const InvalidEmails = [
   'invalidemail',
   'invalid@',
   '@nodomain.com',
@@ -92,7 +82,7 @@ export const InvalidEmails = [
 /**
  * Weak passwords for negative testing
  */
-export const WeakPasswords = [
+const WeakPasswords = [
   '123',           // Too short
   'password',      // Common password
   'abcdefgh',      // No numbers or special chars
@@ -102,24 +92,10 @@ export const WeakPasswords = [
 ];
 
 /**
- * Address data interface
- */
-export interface AddressData {
-  addressLine1: string;
-  addressLine2?: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-  phone?: string;
-  nickname?: string;
-  isDefault?: boolean;
-}
-
-/**
  * Generate valid US address
+ * @returns {Object}
  */
-export function generateValidUSAddress(): AddressData {
+function generateValidUSAddress() {
   return {
     addressLine1: faker.location.streetAddress(),
     addressLine2: `Apt ${faker.number.int({ min: 1, max: 999 })}`,
@@ -135,12 +111,12 @@ export function generateValidUSAddress(): AddressData {
 /**
  * Pre-defined test addresses
  */
-export const TestAddresses = {
+const TestAddresses = {
   // Valid US address
-  validUS: (): AddressData => generateValidUSAddress(),
+  validUS: () => generateValidUSAddress(),
   
   // Address in Texas (specific for testing)
-  texas: (): AddressData => ({
+  texas: () => ({
     addressLine1: '123 Main Street',
     addressLine2: 'Suite 100',
     city: 'Austin',
@@ -152,7 +128,7 @@ export const TestAddresses = {
   }),
   
   // Address in California
-  california: (): AddressData => ({
+  california: () => ({
     addressLine1: '456 Oak Avenue',
     city: 'Los Angeles',
     state: 'California',
@@ -163,7 +139,7 @@ export const TestAddresses = {
   }),
   
   // PO Box address
-  poBox: (): AddressData => ({
+  poBox: () => ({
     addressLine1: 'PO Box 12345',
     city: 'Houston',
     state: 'Texas',
@@ -173,7 +149,7 @@ export const TestAddresses = {
   }),
   
   // Canadian address
-  canada: (): AddressData => ({
+  canada: () => ({
     addressLine1: '789 Maple Road',
     city: 'Toronto',
     state: 'Ontario',
@@ -184,7 +160,7 @@ export const TestAddresses = {
   }),
   
   // Minimal required fields only
-  minimal: (): AddressData => ({
+  minimal: () => ({
     addressLine1: '100 Test Street',
     city: 'New York',
     state: 'New York',
@@ -197,7 +173,7 @@ export const TestAddresses = {
 /**
  * Invalid ZIP codes for negative testing
  */
-export const InvalidZipCodes = {
+const InvalidZipCodes = {
   US: [
     '123',           // Too short
     'ABCDE',         // Letters
@@ -215,21 +191,10 @@ export const InvalidZipCodes = {
 };
 
 /**
- * Profile update data interface
- */
-export interface ProfileUpdateData {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-  dateOfBirth?: string;
-  gender?: string;
-}
-
-/**
  * Generate profile update data
+ * @returns {Object}
  */
-export function generateProfileUpdateData(): ProfileUpdateData {
+function generateProfileUpdateData() {
   return {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
@@ -240,7 +205,7 @@ export function generateProfileUpdateData(): ProfileUpdateData {
 /**
  * Invalid phone numbers for negative testing
  */
-export const InvalidPhoneNumbers = [
+const InvalidPhoneNumbers = [
   '123',              // Too short
   'abcdefghij',       // Letters
   '123-456-789012345', // Too long
@@ -252,7 +217,7 @@ export const InvalidPhoneNumbers = [
  * Test credentials for existing user scenarios
  * Note: In real tests, these would be environment variables or test fixtures
  */
-export const ExistingTestUser = {
+const ExistingTestUser = {
   email: process.env.TEST_USER_EMAIL || 'existing_test_user@example.com',
   password: process.env.TEST_USER_PASSWORD || 'TestPassword123!',
 };
@@ -260,7 +225,7 @@ export const ExistingTestUser = {
 /**
  * State abbreviations mapping
  */
-export const StateAbbreviations: Record<string, string> = {
+const StateAbbreviations = {
   'Alabama': 'AL',
   'Alaska': 'AK',
   'Arizona': 'AZ',
@@ -311,4 +276,20 @@ export const StateAbbreviations: Record<string, string> = {
   'West Virginia': 'WV',
   'Wisconsin': 'WI',
   'Wyoming': 'WY',
+};
+
+module.exports = {
+  generateUniqueEmail,
+  generateValidPassword,
+  generateValidUserData,
+  TestUsers,
+  InvalidEmails,
+  WeakPasswords,
+  generateValidUSAddress,
+  TestAddresses,
+  InvalidZipCodes,
+  generateProfileUpdateData,
+  InvalidPhoneNumbers,
+  ExistingTestUser,
+  StateAbbreviations,
 };

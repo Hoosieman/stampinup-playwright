@@ -1,25 +1,15 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { BasePage } from './base.page';
+const { expect } = require('@playwright/test');
+const { BasePage } = require('./base.page');
 
 /**
  * Page Object Model for Login Page
  * Used for authentication before profile/address tests
  */
-export class LoginPage extends BasePage {
-  // Login form elements
-  readonly emailInput: Locator;
-  readonly passwordInput: Locator;
-  readonly loginButton: Locator;
-  readonly rememberMeCheckbox: Locator;
-  readonly forgotPasswordLink: Locator;
-  readonly createAccountLink: Locator;
-  
-  // Error messages
-  readonly loginError: Locator;
-  readonly emailError: Locator;
-  readonly passwordError: Locator;
-
-  constructor(page: Page) {
+class LoginPage extends BasePage {
+  /**
+   * @param {import('@playwright/test').Page} page 
+   */
+  constructor(page) {
     super(page);
     
     // Login form inputs
@@ -84,8 +74,10 @@ export class LoginPage extends BasePage {
 
   /**
    * Login with credentials
+   * @param {string} email 
+   * @param {string} password 
    */
-  async login(email: string, password: string) {
+  async login(email, password) {
     await this.navigateToLogin();
     await this.fillInput(this.emailInput, email);
     await this.fillInput(this.passwordInput, password);
@@ -129,8 +121,9 @@ export class LoginPage extends BasePage {
 
   /**
    * Check if user is logged in
+   * @returns {Promise<boolean>}
    */
-  async isLoggedIn(): Promise<boolean> {
+  async isLoggedIn() {
     const signOutLink = this.page.locator('a:has-text("Sign Out"), a:has-text("Log Out"), button:has-text("Sign Out")').first();
     return signOutLink.isVisible({ timeout: 3000 }).catch(() => false);
   }
@@ -147,3 +140,5 @@ export class LoginPage extends BasePage {
     }
   }
 }
+
+module.exports = { LoginPage };

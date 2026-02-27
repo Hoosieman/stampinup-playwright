@@ -1,4 +1,5 @@
-import { defineConfig, devices } from '@playwright/test';
+// @ts-check
+const { defineConfig, devices } = require('@playwright/test');
 
 /**
  * Playwright Configuration for Stampin' Up! E2E Tests
@@ -9,7 +10,7 @@ import { defineConfig, devices } from '@playwright/test';
  * Run headed: pnpm test:headed
  */
 
-export default defineConfig({
+module.exports = defineConfig({
   // Test directory
   testDir: './tests/e2e',
   

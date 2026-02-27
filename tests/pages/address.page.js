@@ -1,58 +1,15 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { BasePage } from './base.page';
+const { expect } = require('@playwright/test');
+const { BasePage } = require('./base.page');
 
 /**
  * Page Object Model for Address Book/Address Settings Page
  * Covers: TC-ADD-001 through TC-ADD-009
  */
-export class AddressPage extends BasePage {
-  // Navigation
-  readonly addressBookLink: Locator;
-  readonly addAddressButton: Locator;
-  
-  // Address form fields
-  readonly addressLine1Input: Locator;
-  readonly addressLine2Input: Locator;
-  readonly cityInput: Locator;
-  readonly stateSelect: Locator;
-  readonly stateInput: Locator;
-  readonly zipCodeInput: Locator;
-  readonly countrySelect: Locator;
-  readonly phoneInput: Locator;
-  readonly addressNicknameInput: Locator;
-  
-  // Address type options
-  readonly shippingAddressRadio: Locator;
-  readonly billingAddressRadio: Locator;
-  readonly defaultAddressCheckbox: Locator;
-  
-  // Action buttons
-  readonly saveAddressButton: Locator;
-  readonly cancelButton: Locator;
-  readonly editAddressButton: Locator;
-  readonly deleteAddressButton: Locator;
-  readonly setDefaultButton: Locator;
-  
-  // Address list
-  readonly addressCards: Locator;
-  readonly emptyAddressMessage: Locator;
-  readonly defaultAddressBadge: Locator;
-  
-  // Messages
-  readonly successMessage: Locator;
-  readonly errorMessage: Locator;
-  
-  // Field errors
-  readonly addressLine1Error: Locator;
-  readonly cityError: Locator;
-  readonly stateError: Locator;
-  readonly zipCodeError: Locator;
-  
-  // Confirmation dialog
-  readonly confirmDeleteButton: Locator;
-  readonly cancelDeleteButton: Locator;
-
-  constructor(page: Page) {
+class AddressPage extends BasePage {
+  /**
+   * @param {import('@playwright/test').Page} page 
+   */
+  constructor(page) {
     super(page);
     
     // Navigation
@@ -237,19 +194,9 @@ export class AddressPage extends BasePage {
 
   /**
    * Fill address form
+   * @param {Object} addressData 
    */
-  async fillAddressForm(addressData: {
-    addressLine1?: string;
-    addressLine2?: string;
-    city?: string;
-    state?: string;
-    zipCode?: string;
-    country?: string;
-    phone?: string;
-    nickname?: string;
-    isDefault?: boolean;
-    addressType?: 'shipping' | 'billing';
-  }) {
+  async fillAddressForm(addressData) {
     if (addressData.country !== undefined && await this.countrySelect.isVisible()) {
       await this.countrySelect.selectOption({ label: addressData.country });
       await this.page.waitForTimeout(300); // Wait for form to update based on country
@@ -312,17 +259,9 @@ export class AddressPage extends BasePage {
 
   /**
    * Add a new address with full flow
+   * @param {Object} addressData 
    */
-  async addNewAddress(addressData: {
-    addressLine1: string;
-    addressLine2?: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    country?: string;
-    phone?: string;
-    isDefault?: boolean;
-  }) {
+  async addNewAddress(addressData) {
     await this.navigateToAddressBook();
     await this.clickAddAddress();
     await this.fillAddressForm(addressData);
@@ -331,16 +270,18 @@ export class AddressPage extends BasePage {
 
   /**
    * Get count of saved addresses
+   * @returns {Promise<number>}
    */
-  async getAddressCount(): Promise<number> {
+  async getAddressCount() {
     await this.page.waitForTimeout(500); // Allow list to load
     return this.addressCards.count();
   }
 
   /**
    * Check if address book is empty
+   * @returns {Promise<boolean>}
    */
-  async isAddressBookEmpty(): Promise<boolean> {
+  async isAddressBookEmpty() {
     const emptyVisible = await this.emptyAddressMessage.isVisible({ timeout: 2000 }).catch(() => false);
     const cardCount = await this.getAddressCount();
     return emptyVisible || cardCount === 0;
@@ -367,8 +308,9 @@ export class AddressPage extends BasePage {
 
   /**
    * Verify required field validation error
+   * @param {'address' | 'city' | 'state' | 'zip'} fieldName 
    */
-  async verifyRequiredFieldError(fieldName: 'address' | 'city' | 'state' | 'zip') {
+  async verifyRequiredFieldError(fieldName) {
     const errorMap = {
       address: this.addressLine1Error,
       city: this.cityError,
@@ -381,8 +323,9 @@ export class AddressPage extends BasePage {
 
   /**
    * Edit an existing address by index (0-based)
+   * @param {number} index 
    */
-  async editAddressByIndex(index: number) {
+  async editAddressByIndex(index) {
     const addressCard = this.addressCards.nth(index);
     const editButton = addressCard.locator('button:has-text("Edit"), a:has-text("Edit"), [aria-label*="edit"]').first();
     await editButton.click();
@@ -391,8 +334,9 @@ export class AddressPage extends BasePage {
 
   /**
    * Delete an address by index (0-based)
+   * @param {number} index 
    */
-  async deleteAddressByIndex(index: number) {
+  async deleteAddressByIndex(index) {
     const addressCard = this.addressCards.nth(index);
     const deleteButton = addressCard.locator('button:has-text("Delete"), button:has-text("Remove"), [aria-label*="delete"]').first();
     await deleteButton.click();
@@ -407,8 +351,9 @@ export class AddressPage extends BasePage {
 
   /**
    * Set address as default by index
+   * @param {number} index 
    */
-  async setDefaultAddressByIndex(index: number) {
+  async setDefaultAddressByIndex(index) {
     const addressCard = this.addressCards.nth(index);
     const setDefaultBtn = addressCard.locator('button:has-text("Set as Default"), button:has-text("Make Default")').first();
     
@@ -420,8 +365,9 @@ export class AddressPage extends BasePage {
 
   /**
    * Get index of default address
+   * @returns {Promise<number>}
    */
-  async getDefaultAddressIndex(): Promise<number> {
+  async getDefaultAddressIndex() {
     const cards = await this.addressCards.all();
     
     for (let i = 0; i < cards.length; i++) {
@@ -449,13 +395,9 @@ export class AddressPage extends BasePage {
 
   /**
    * Verify address appears in list with expected data
+   * @param {Object} expectedData 
    */
-  async verifyAddressInList(expectedData: {
-    addressLine1?: string;
-    city?: string;
-    state?: string;
-    zipCode?: string;
-  }) {
+  async verifyAddressInList(expectedData) {
     const addressText = await this.addressCards.first().textContent();
     
     if (expectedData.addressLine1) {
@@ -474,9 +416,12 @@ export class AddressPage extends BasePage {
 
   /**
    * Verify PO Box warning (if applicable)
+   * @returns {Promise<boolean>}
    */
-  async checkForPOBoxWarning(): Promise<boolean> {
+  async checkForPOBoxWarning() {
     const warning = this.page.locator('text=/PO Box|shipping restriction/i');
     return warning.isVisible({ timeout: 2000 }).catch(() => false);
   }
 }
+
+module.exports = { AddressPage };

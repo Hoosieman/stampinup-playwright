@@ -1,12 +1,12 @@
-import { test, expect } from '@playwright/test';
-import { SignupPage } from '../pages';
-import {
+const { test, expect } = require('@playwright/test');
+const { SignupPage } = require('../pages');
+const {
   generateValidUserData,
   TestUsers,
   InvalidEmails,
   WeakPasswords,
   ExistingTestUser,
-} from '../fixtures/test-data';
+} = require('../fixtures/test-data');
 
 /**
  * Account Creation Test Suite
@@ -16,7 +16,8 @@ import {
  */
 
 test.describe('Account Creation', () => {
-  let signupPage: SignupPage;
+  /** @type {SignupPage} */
+  let signupPage;
 
   test.beforeEach(async ({ page }) => {
     signupPage = new SignupPage(page);
@@ -61,9 +62,12 @@ test.describe('Account Creation', () => {
    * Type: Functional / Negative
    */
   test.describe('TC-ACC-003: Invalid Email Format Validation', () => {
-    for (const invalidEmail of InvalidEmails.slice(0, 4)) { // Test first 4 invalid emails
-      test(`should reject invalid email format: "${invalidEmail || '(empty)'}"`, async () => {
+    const testEmails = InvalidEmails.slice(0, 4); // Test first 4 invalid emails
+    
+    for (const invalidEmail of testEmails) {
+      test(`should reject invalid email format: "${invalidEmail || '(empty)'}"`, async ({ page }) => {
         // Arrange
+        const signupPage = new SignupPage(page);
         const userData = generateValidUserData();
         userData.email = invalidEmail;
         
@@ -84,9 +88,12 @@ test.describe('Account Creation', () => {
    * Type: Functional / Negative / Security
    */
   test.describe('TC-ACC-004: Weak Password Validation', () => {
-    for (const weakPassword of WeakPasswords.slice(0, 3)) { // Test first 3 weak passwords
-      test(`should reject weak password: "${weakPassword}"`, async () => {
+    const testPasswords = WeakPasswords.slice(0, 3); // Test first 3 weak passwords
+    
+    for (const weakPassword of testPasswords) {
+      test(`should reject weak password: "${weakPassword}"`, async ({ page }) => {
         // Arrange
+        const signupPage = new SignupPage(page);
         const userData = generateValidUserData();
         userData.password = weakPassword;
         userData.confirmPassword = weakPassword;

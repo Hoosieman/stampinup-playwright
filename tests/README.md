@@ -9,18 +9,18 @@ tests/
 ├── docs/
 │   └── test-cases.md          # Detailed test case documentation
 ├── e2e/
-│   ├── account-creation.spec.ts   # Account registration tests (TC-ACC-001 to TC-ACC-008)
-│   ├── user-profile.spec.ts       # Profile setup tests (TC-PRF-001 to TC-PRF-006)
-│   └── address-setup.spec.ts      # Address management tests (TC-ADD-001 to TC-ADD-009)
+│   ├── account-creation.spec.js   # Account registration tests (TC-ACC-001 to TC-ACC-008)
+│   ├── user-profile.spec.js       # Profile setup tests (TC-PRF-001 to TC-PRF-006)
+│   └── address-setup.spec.js      # Address management tests (TC-ADD-001 to TC-ADD-009)
 ├── fixtures/
-│   └── test-data.ts           # Test data factories and constants
+│   └── test-data.js           # Test data factories and constants
 ├── pages/
-│   ├── index.ts               # Page object exports
-│   ├── base.page.ts           # Base page with common methods
-│   ├── login.page.ts          # Login page object
-│   ├── signup.page.ts         # Registration page object
-│   ├── profile.page.ts        # Profile settings page object
-│   └── address.page.ts        # Address book page object
+│   ├── index.js               # Page object exports
+│   ├── base.page.js           # Base page with common methods
+│   ├── login.page.js          # Login page object
+│   ├── signup.page.js         # Registration page object
+│   ├── profile.page.js        # Profile settings page object
+│   └── address.page.js        # Address book page object
 └── README.md
 ```
 
@@ -127,7 +127,7 @@ pnpm exec playwright test --project=mobile-chrome
 
 ## Test Data
 
-The test suite uses `@faker-js/faker` to generate realistic test data. Key test data utilities are in `tests/fixtures/test-data.ts`:
+The test suite uses `@faker-js/faker` to generate realistic test data. Key test data utilities are in `tests/fixtures/test-data.js`:
 
 - `generateValidUserData()` - Creates valid user registration data
 - `generateValidUSAddress()` - Creates valid US address data
@@ -146,8 +146,9 @@ The test suite follows the Page Object Model (POM) pattern:
 
 ### Using Page Objects
 
-```typescript
-import { SignupPage } from '../pages';
+```javascript
+const { test } = require('@playwright/test');
+const { SignupPage } = require('../pages');
 
 test('example test', async ({ page }) => {
   const signupPage = new SignupPage(page);
@@ -164,7 +165,7 @@ test('example test', async ({ page }) => {
 
 ## Configuration
 
-Playwright configuration is in `playwright.config.ts`:
+Playwright configuration is in `playwright.config.js`:
 
 - **Base URL**: https://www.stampinup.com
 - **Browsers**: Chrome, Firefox, Safari, Mobile Chrome, Mobile Safari
