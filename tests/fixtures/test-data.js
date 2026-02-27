@@ -49,14 +49,14 @@ function generateValidUserData() {
 const TestUsers = {
   // Valid new user for registration
   newUser: () => generateValidUserData(),
-  
+
   // User with special characters in name
   specialCharName: () => ({
     ...generateValidUserData(),
     firstName: "Jean-Pierre",
     lastName: "O'Connor-Smith",
   }),
-  
+
   // User with maximum length inputs
   maxLengthUser: () => ({
     ...generateValidUserData(),
@@ -119,7 +119,7 @@ function generateValidUSAddress() {
 const TestAddresses = {
   // Valid US address
   validUS: () => generateValidUSAddress(),
-  
+
   // Address in Texas (specific for testing)
   texas: () => ({
     firstName: 'John',
@@ -134,7 +134,7 @@ const TestAddresses = {
     isDefaultShipping: true,
     isDefaultMailing: false,
   }),
-  
+
   // Address in California
   california: () => ({
     firstName: 'Jane',
@@ -148,7 +148,7 @@ const TestAddresses = {
     isDefaultShipping: false,
     isDefaultMailing: false,
   }),
-  
+
   // PO Box address
   poBox: () => ({
     firstName: 'Bob',
@@ -162,7 +162,7 @@ const TestAddresses = {
     isDefaultShipping: false,
     isDefaultMailing: false,
   }),
-  
+
   // Canadian address
   canada: () => ({
     firstName: 'Sarah',
@@ -176,7 +176,7 @@ const TestAddresses = {
     isDefaultShipping: false,
     isDefaultMailing: false,
   }),
-  
+
   // Minimal required fields only
   minimal: () => ({
     firstName: 'Test',
@@ -240,8 +240,10 @@ const InvalidPhoneNumbers = [
  * Note: In real tests, these would be environment variables or test fixtures
  */
 const ExistingTestUser = {
-  email: process.env.TEST_USER_EMAIL || 'existing_test_user@example.com',
-  password: process.env.TEST_USER_PASSWORD || 'TestPassword123!',
+  email: process.env.TEST_USER_EMAIL || 'coleto11@icloud.com',
+  password: process.env.TEST_USER_PASSWORD || 'TestingAccount',
+  firstName: 'Bob',  // Based on observed "Hello, Bob" in screenshots
+  lastName: 'Wright',
 };
 
 /**
