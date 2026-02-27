@@ -47,6 +47,28 @@ tests/
   2. Header displays "Hello, [FIRST NAME]" in top right corner
 - **No Terms & Conditions checkbox** observed in the modal
 
+### User Profile Setup Flow
+- **Account Settings page is a DEDICATED PAGE** at `/account/settings`
+- **Page header:** "MY ACCOUNT | [Full Name]"
+- **Three main sections**, each with their own "EDIT" link:
+
+**1. CONTACT Section (left side):**
+- View mode shows: First Name, Last Name, Email, Phone Number, Preferred Method of Contact, Birthdate
+- Edit mode: Fields become editable inputs
+- Buttons: "SAVE CHANGES" (pink), "CANCEL"
+
+**2. PASSWORD Section (below CONTACT):**
+- Fields: Confirm Current Password, New Password, Confirm New Password
+- Requirement: "Password must have a minimum of 8 characters with at least one capital letter and one number"
+- Buttons: "SAVE CHANGES" (pink), "CANCEL"
+
+**3. COUNTRY Section (right side):**
+- View mode shows: Country with flag, Preferred Language
+- Edit mode: Country dropdown, Preferred Language dropdown
+- Buttons: "SAVE CHANGES" (pink), "CANCEL"
+
+- **Left sidebar:** ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, MY LISTS, SUBSCRIPTIONS, DEMONSTRATOR, REWARDS, NOTIFICATIONS, SIGN OUT
+
 ### Address Setup Flow
 - **Address page is a DEDICATED PAGE** at `/account/address/create` (not a modal)
 - **Access:** Click "Hello, [Name]" dropdown in header > "Addresses"
@@ -87,12 +109,14 @@ tests/
 - [x] TC-ACC-008: Terms and conditions validation (may be skipped - no T&C checkbox observed)
 
 ### User Profile Setup (TC-PRF-001 to TC-PRF-006)
-- [x] TC-PRF-001: Successful initial profile setup
+- [x] TC-PRF-001: Successful initial profile setup (CONTACT section edit)
 - [x] TC-PRF-002: Invalid phone number validation
 - [x] TC-PRF-003: Maximum length input handling
-- [x] TC-PRF-004: Email address change
+- [x] TC-PRF-004: Email address change (CONTACT section)
 - [x] TC-PRF-005: Cancel unsaved changes
 - [x] TC-PRF-006: Required vs optional field identification
+- Additional: Password change validation (PASSWORD section)
+- Additional: Country/language preferences (COUNTRY section)
 
 ### Address Setup (TC-ADD-001 to TC-ADD-009)
 - [x] TC-ADD-001: Successful address setup

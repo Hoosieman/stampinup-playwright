@@ -13,6 +13,23 @@ const {
  * 
  * These tests cover the user profile management flow on www.stampinup.com
  * 
+ * SITE BEHAVIOR NOTES:
+ * - Account Settings page is at /account/settings (dedicated page)
+ * - Page header: "MY ACCOUNT | [Full Name]"
+ * - Three main sections, each with their own "EDIT" link:
+ * 
+ * 1. CONTACT Section (left side):
+ *    - View mode: First Name, Last Name, Email, Phone Number, Preferred Method of Contact, Birthdate
+ *    - Edit mode: Editable input fields with "SAVE CHANGES" (pink) and "CANCEL"
+ * 
+ * 2. PASSWORD Section (below CONTACT):
+ *    - Fields: Confirm Current Password, New Password, Confirm New Password
+ *    - Requirement: "minimum of 8 characters with at least one capital letter and one number"
+ * 
+ * 3. COUNTRY Section (right side):
+ *    - View mode: Country with flag, Preferred Language
+ *    - Edit mode: Country dropdown, Preferred Language dropdown
+ * 
  * Prerequisites: Tests require a logged-in user
  */
 

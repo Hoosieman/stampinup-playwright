@@ -4,6 +4,28 @@ const { BasePage } = require('./base.page');
 /**
  * Page Object Model for User Profile/Account Settings Page
  * Covers: TC-PRF-001 through TC-PRF-006
+ * 
+ * SITE BEHAVIOR NOTES (Observed):
+ * - Account Settings page is at /account/settings (dedicated page)
+ * - Page header: "MY ACCOUNT | [Full Name]"
+ * - Three main sections, each with "EDIT" link:
+ * 
+ * 1. CONTACT Section (left side):
+ *    View mode shows: First Name, Last Name, Email, Phone Number, Preferred Method of Contact, Birthdate
+ *    Edit mode: Editable fields appear with "SAVE CHANGES" (pink) and "CANCEL" buttons
+ * 
+ * 2. PASSWORD Section (below CONTACT):
+ *    Fields: Confirm Current Password, New Password, Confirm New Password
+ *    Requirement: "Password must have a minimum of 8 characters with at least one capital letter and one number"
+ *    Buttons: "SAVE CHANGES" (pink), "CANCEL"
+ * 
+ * 3. COUNTRY Section (right side):
+ *    View mode shows: Country with flag, Preferred Language
+ *    Edit mode: Country dropdown, Preferred Language dropdown
+ *    Buttons: "SAVE CHANGES" (pink), "CANCEL"
+ * 
+ * Left sidebar: ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, MY LISTS, 
+ *               SUBSCRIPTIONS, DEMONSTRATOR, REWARDS, NOTIFICATIONS, SIGN OUT
  */
 class ProfilePage extends BasePage {
   /**
@@ -12,85 +34,94 @@ class ProfilePage extends BasePage {
   constructor(page) {
     super(page);
     
-    // Navigation locators
-    this.accountSettingsLink = page.locator(
-      'a:has-text("Account Settings"), a:has-text("My Account"), ' +
-      'a[href*="account"], [data-testid="account-settings"]'
-    ).first();
+    // URL
+    this.accountSettingsUrl = '/account/settings';
     
-    this.profileLink = page.locator(
-      'a:has-text("Profile"), a:has-text("Personal Info"), ' +
-      'a[href*="profile"], [data-testid="profile-link"]'
-    ).first();
+    // Page header
+    this.myAccountHeader = page.locator('text=/MY ACCOUNT/i, h1:has-text("MY ACCOUNT")').first();
     
-    this.personalInfoLink = page.locator(
-      'a:has-text("Personal Information"), a:has-text("Personal Info"), ' +
-      'a[href*="personal"]'
-    ).first();
+    // Left sidebar navigation
+    this.sidebarAccountSettings = page.locator('text="ACCOUNT SETTINGS"').first();
+    this.sidebarAddresses = page.locator('text="ADDRESSES"').first();
+    this.sidebarPayment = page.locator('text="PAYMENT"').first();
+    this.sidebarMyOrders = page.locator('text="MY ORDERS"').first();
+    this.sidebarMyLists = page.locator('text="MY LISTS"').first();
+    this.sidebarSubscriptions = page.locator('text="SUBSCRIPTIONS"').first();
+    this.sidebarDemonstrator = page.locator('text="DEMONSTRATOR"').first();
+    this.sidebarRewards = page.locator('text="REWARDS"').first();
+    this.sidebarNotifications = page.locator('text="NOTIFICATIONS"').first();
+    this.sidebarSignOut = page.locator('text="SIGN OUT"').first();
     
-    // Profile form inputs
+    // CONTACT section
+    this.contactSectionHeader = page.locator('text="CONTACT"').first();
+    this.contactEditLink = page.locator('text="CONTACT" >> .. >> a:has-text("EDIT"), section:has-text("CONTACT") a:has-text("EDIT")').first();
+    
+    // Contact form fields (in edit mode)
     this.firstNameInput = page.locator(
-      'input[name*="firstName" i], input[name*="first_name" i], ' +
-      'input[id*="firstName" i], input[placeholder*="first name" i]'
+      'input[placeholder="First Name"], input[name*="firstName" i], ' +
+      'label:has-text("First Name") + input, label:has-text("First Name") ~ input'
     ).first();
     
     this.lastNameInput = page.locator(
-      'input[name*="lastName" i], input[name*="last_name" i], ' +
-      'input[id*="lastName" i], input[placeholder*="last name" i]'
+      'input[placeholder="Last Name"], input[name*="lastName" i], ' +
+      'label:has-text("Last Name") + input, label:has-text("Last Name") ~ input'
     ).first();
     
     this.emailInput = page.locator(
-      'input[type="email"], input[name="email"], input[id*="email"]'
+      'input[placeholder="Email"], input[type="email"], input[name="email"]'
     ).first();
     
     this.phoneInput = page.locator(
-      'input[type="tel"], input[name*="phone" i], input[id*="phone" i]'
+      'input[placeholder="Phone Number"], input[type="tel"], input[name*="phone" i]'
     ).first();
     
-    this.dateOfBirthInput = page.locator(
-      'input[type="date"], input[name*="birth" i], input[name*="dob" i], ' +
-      'input[id*="birth" i], input[id*="dob" i]'
+    this.preferredContactSelect = page.locator(
+      'select:near(:text("Preferred Method of Contact")), ' +
+      'select[name*="contact" i], [placeholder="Preferred Method of Contact"]'
     ).first();
     
-    this.genderSelect = page.locator(
-      'select[name*="gender" i], select[id*="gender" i], ' +
-      '[role="combobox"][aria-label*="gender" i]'
+    this.birthdateInput = page.locator(
+      'input[placeholder="Birthdate"], input[name*="birth" i], input[type="date"]'
     ).first();
     
-    // Password fields
-    this.currentPasswordInput = page.locator(
-      'input[name*="currentPassword" i], input[name*="current_password" i], ' +
-      'input[id*="currentPassword" i], input[placeholder*="current password" i]'
+    // PASSWORD section
+    this.passwordSectionHeader = page.locator('text="PASSWORD"').first();
+    this.passwordEditLink = page.locator('text="PASSWORD" >> .. >> a:has-text("EDIT"), section:has-text("PASSWORD") a:has-text("EDIT")').first();
+    
+    // Password fields (observed placeholders)
+    this.confirmCurrentPasswordInput = page.locator(
+      'input[placeholder="Confirm Current Password"], input[name*="currentPassword" i]'
     ).first();
     
     this.newPasswordInput = page.locator(
-      'input[name*="newPassword" i], input[name*="new_password" i], ' +
-      'input[id*="newPassword" i], input[placeholder*="new password" i]'
+      'input[placeholder="New Password"], input[name*="newPassword" i]'
     ).first();
     
     this.confirmNewPasswordInput = page.locator(
-      'input[name*="confirmNewPassword" i], input[name*="confirm_new_password" i], ' +
-      'input[id*="confirmNewPassword" i], input[placeholder*="confirm new password" i]'
+      'input[placeholder="Confirm New Password"], input[name*="confirmPassword" i]'
     ).first();
     
-    // Buttons
-    this.saveButton = page.locator(
-      'button:has-text("Save"), button:has-text("Update"), ' +
-      'button:has-text("Save Changes"), input[type="submit"][value*="Save" i]'
+    // COUNTRY section
+    this.countrySectionHeader = page.locator('text="COUNTRY"').first();
+    this.countryEditLink = page.locator('text="COUNTRY" >> .. >> a:has-text("EDIT"), section:has-text("COUNTRY") a:has-text("EDIT")').first();
+    
+    // Country fields (in edit mode)
+    this.countrySelect = page.locator(
+      'select:near(:text("COUNTRY")), select[name*="country" i]'
+    ).first();
+    
+    this.preferredLanguageSelect = page.locator(
+      'select:near(:text("Preferred Language")), select[name*="language" i], ' +
+      '[placeholder="Preferred Language"]'
+    ).first();
+    
+    // Buttons (each section has its own SAVE CHANGES and CANCEL)
+    this.saveChangesButton = page.locator(
+      'button:has-text("SAVE CHANGES"), button:has-text("Save Changes")'
     ).first();
     
     this.cancelButton = page.locator(
-      'button:has-text("Cancel"), a:has-text("Cancel"), ' +
-      'button[type="button"]:has-text("Cancel")'
-    ).first();
-    
-    this.editButton = page.locator(
-      'button:has-text("Edit"), a:has-text("Edit Profile"), ' +
-      '[data-testid="edit-profile"]'
-    ).first();
-    
-    this.changePasswordButton = page.locator(
-      'button:has-text("Change Password"), a:has-text("Change Password")'
+      'a:has-text("CANCEL"), a:has-text("Cancel"), button:has-text("Cancel")'
     ).first();
     
     // Messages
@@ -116,23 +147,38 @@ class ProfilePage extends BasePage {
   }
 
   /**
-   * Navigate to profile settings page
+   * Navigate to Account Settings page
+   * URL: /account/settings
    * Assumes user is already logged in
    */
   async navigateToProfile() {
-    // First, try to go to account settings
-    await this.goto('/account');
+    await this.goto(this.accountSettingsUrl);
     await this.waitForPageLoad();
     await this.closeModalIfPresent();
-    
-    // If there's a profile/personal info sub-link, click it
-    if (await this.profileLink.isVisible({ timeout: 3000 })) {
-      await this.profileLink.click();
-      await this.waitForPageLoad();
-    } else if (await this.personalInfoLink.isVisible({ timeout: 3000 })) {
-      await this.personalInfoLink.click();
-      await this.waitForPageLoad();
-    }
+  }
+
+  /**
+   * Click EDIT link for CONTACT section to enable editing
+   */
+  async editContactSection() {
+    await this.contactEditLink.click();
+    await this.page.waitForTimeout(500);
+  }
+
+  /**
+   * Click EDIT link for PASSWORD section to enable editing
+   */
+  async editPasswordSection() {
+    await this.passwordEditLink.click();
+    await this.page.waitForTimeout(500);
+  }
+
+  /**
+   * Click EDIT link for COUNTRY section to enable editing
+   */
+  async editCountrySection() {
+    await this.countryEditLink.click();
+    await this.page.waitForTimeout(500);
   }
 
   /**
@@ -149,15 +195,13 @@ class ProfilePage extends BasePage {
   }
 
   /**
-   * Fill profile form with provided data
+   * Fill CONTACT section form with provided data
+   * Must click EDIT link first to enable fields
    * @param {Object} profileData 
    */
-  async fillProfileForm(profileData) {
-    // Click edit button if in read-only mode
-    if (await this.editButton.isVisible({ timeout: 2000 })) {
-      await this.editButton.click();
-      await this.page.waitForTimeout(500);
-    }
+  async fillContactForm(profileData) {
+    // Click EDIT to enable form fields
+    await this.editContactSection();
     
     if (profileData.firstName !== undefined) {
       await this.fillInput(this.firstNameInput, profileData.firstName);
@@ -175,13 +219,38 @@ class ProfilePage extends BasePage {
       await this.fillInput(this.phoneInput, profileData.phone);
     }
     
-    if (profileData.dateOfBirth !== undefined && await this.dateOfBirthInput.isVisible()) {
-      await this.fillInput(this.dateOfBirthInput, profileData.dateOfBirth);
+    if (profileData.preferredContact !== undefined && await this.preferredContactSelect.isVisible()) {
+      await this.preferredContactSelect.selectOption({ label: profileData.preferredContact });
     }
     
-    if (profileData.gender !== undefined && await this.genderSelect.isVisible()) {
-      await this.genderSelect.selectOption(profileData.gender);
+    if (profileData.birthdate !== undefined && await this.birthdateInput.isVisible()) {
+      await this.fillInput(this.birthdateInput, profileData.birthdate);
     }
+  }
+
+  /**
+   * Fill COUNTRY section form
+   * @param {Object} countryData 
+   */
+  async fillCountryForm(countryData) {
+    // Click EDIT to enable form fields
+    await this.editCountrySection();
+    
+    if (countryData.country !== undefined && await this.countrySelect.isVisible()) {
+      await this.countrySelect.selectOption({ label: countryData.country });
+    }
+    
+    if (countryData.preferredLanguage !== undefined && await this.preferredLanguageSelect.isVisible()) {
+      await this.preferredLanguageSelect.selectOption({ label: countryData.preferredLanguage });
+    }
+  }
+
+  /**
+   * Legacy method for backward compatibility
+   * @param {Object} profileData 
+   */
+  async fillProfileForm(profileData) {
+    await this.fillContactForm(profileData);
   }
 
   /**
@@ -277,23 +346,20 @@ class ProfilePage extends BasePage {
 
   /**
    * Change password
+   * Password requirement: minimum 8 characters with at least one capital letter and one number
    * @param {string} currentPassword 
    * @param {string} newPassword 
    */
   async changePassword(currentPassword, newPassword) {
-    if (await this.changePasswordButton.isVisible()) {
-      await this.changePasswordButton.click();
-      await this.page.waitForTimeout(500);
-    }
+    // Click EDIT to enable password fields
+    await this.editPasswordSection();
     
-    await this.fillInput(this.currentPasswordInput, currentPassword);
+    await this.fillInput(this.confirmCurrentPasswordInput, currentPassword);
     await this.fillInput(this.newPasswordInput, newPassword);
+    await this.fillInput(this.confirmNewPasswordInput, newPassword);
     
-    if (await this.confirmNewPasswordInput.isVisible()) {
-      await this.fillInput(this.confirmNewPasswordInput, newPassword);
-    }
-    
-    await this.saveButton.click();
+    await this.saveChangesButton.click();
+    await this.page.waitForTimeout(1000);
   }
 
   /**
