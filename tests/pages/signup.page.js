@@ -4,6 +4,21 @@ const { BasePage } = require('./base.page');
 /**
  * Page Object Model for Account Registration/Signup Page
  * Covers: TC-ACC-001 through TC-ACC-008
+ * 
+ * NOTE: On stampinup.com, the Create Account form is a MODAL POPUP, not a separate page.
+ * The modal appears when clicking "Sign In" link in header.
+ * 
+ * Form fields observed:
+ * - First Name
+ * - Last Name
+ * - Email
+ * - Password (with strength indicator showing "Weak", error: "must be at least 8 characters")
+ * - Confirm Password
+ * - CREATE ACCOUNT button
+ * 
+ * After successful registration:
+ * - "Join Stampin' Rewards!" popup appears with "GET STARTED" and "MAYBE LATER" buttons
+ * - Header shows "Hello, [FIRST NAME]" in top right corner
  */
 class SignupPage extends BasePage {
   /**
@@ -12,35 +27,41 @@ class SignupPage extends BasePage {
   constructor(page) {
     super(page);
     
-    // Form inputs - using multiple selector strategies for robustness
-    this.emailInput = page.locator(
-      'input[type="email"], input[name="email"], input[id*="email"], input[placeholder*="email" i]'
-    ).first();
+    // Create Account Modal container
+    this.createAccountModal = page.locator('[role="dialog"], .modal, [class*="modal"]').filter({ hasText: 'CREATE ACCOUNT' });
     
-    this.passwordInput = page.locator(
-      'input[type="password"][name*="password"]:not([name*="confirm"]), ' +
-      'input[id*="password"]:not([id*="confirm"]), ' +
-      'input[placeholder*="password" i]:not([placeholder*="confirm" i])'
-    ).first();
-    
-    this.confirmPasswordInput = page.locator(
-      'input[name*="confirm"], input[id*="confirm"], input[placeholder*="confirm" i]'
-    ).first();
-    
+    // Form inputs - based on observed placeholders in modal
     this.firstNameInput = page.locator(
-      'input[name*="firstName" i], input[name*="first_name" i], ' +
+      'input[placeholder="First Name"], input[name*="firstName" i], ' +
       'input[id*="firstName" i], input[placeholder*="first name" i]'
     ).first();
     
     this.lastNameInput = page.locator(
-      'input[name*="lastName" i], input[name*="last_name" i], ' +
+      'input[placeholder="Last Name"], input[name*="lastName" i], ' +
       'input[id*="lastName" i], input[placeholder*="last name" i]'
     ).first();
     
+    this.emailInput = page.locator(
+      'input[placeholder="Email"], input[type="email"], input[name="email"], ' +
+      'input[id*="email"], input[placeholder*="email" i]'
+    ).first();
+    
+    this.passwordInput = page.locator(
+      'input[placeholder="Password"]:not([placeholder*="Confirm"]), ' +
+      'input[type="password"]:not([placeholder*="Confirm"]):not([name*="confirm"])'
+    ).first();
+    
+    this.confirmPasswordInput = page.locator(
+      'input[placeholder="Confirm Password"], input[name*="confirm" i], ' +
+      'input[id*="confirm" i], input[placeholder*="confirm" i]'
+    ).first();
+    
+    // No phone input observed in the modal
     this.phoneInput = page.locator(
       'input[type="tel"], input[name*="phone" i], input[id*="phone" i]'
     ).first();
     
+    // No terms checkbox observed in the modal
     this.termsCheckbox = page.locator(
       'input[type="checkbox"][name*="terms" i], input[type="checkbox"][id*="terms" i], ' +
       'input[type="checkbox"][name*="agree" i], label:has-text("terms") input[type="checkbox"]'
@@ -51,46 +72,63 @@ class SignupPage extends BasePage {
       'label:has-text("newsletter") input[type="checkbox"]'
     ).first();
     
+    // CREATE ACCOUNT button (observed in modal)
     this.createAccountButton = page.locator(
-      'button:has-text("Create Account"), button:has-text("Register"), ' +
-      'button:has-text("Sign Up"), input[type="submit"][value*="Create" i], ' +
-      'button[type="submit"]:has-text("Account")'
+      'button:has-text("CREATE ACCOUNT"), button:has-text("Create Account"), ' +
+      'button:has-text("Register"), input[type="submit"][value*="Create" i]'
     ).first();
     
-    // Error locators
+    // Modal close button
+    this.modalCloseButton = page.locator(
+      '[role="dialog"] button[aria-label="Close"], .modal button.close, ' +
+      '[class*="modal"] button:has-text("×"), [class*="modal"] svg[class*="close"]'
+    ).first();
+    
+    // Sign In link at bottom of modal ("Already have an account?")
+    this.signInLinkInModal = page.locator('a:has-text("SIGN IN"), a:has-text("Sign In")').first();
+    
+    // Error locators - password error observed: "The Password field must be at least 8 characters long."
+    this.passwordError = page.locator(
+      'text=/Password field must be at least/i, text=/8 characters/i, ' +
+      '[data-error="password"], .password-error, .field-error:near(input[type="password"])'
+    ).first();
+    
     this.emailError = page.locator(
       '[data-error="email"], .email-error, #email-error, ' +
-      '[aria-describedby*="email"] + .error, .field-error:near(input[type="email"])'
-    ).first();
-    
-    this.passwordError = page.locator(
-      '[data-error="password"], .password-error, #password-error, ' +
-      '.field-error:near(input[type="password"])'
+      'text=/invalid email/i, text=/email is required/i'
     ).first();
     
     this.confirmPasswordError = page.locator(
       '[data-error="confirmPassword"], .confirm-password-error, ' +
-      '.field-error:near(input[name*="confirm"])'
+      'text=/passwords do not match/i, text=/confirm password/i'
     ).first();
     
     this.firstNameError = page.locator(
       '[data-error="firstName"], .firstName-error, ' +
-      '.field-error:near(input[name*="firstName" i])'
+      'text=/first name is required/i'
     ).first();
     
     this.lastNameError = page.locator(
       '[data-error="lastName"], .lastName-error, ' +
-      '.field-error:near(input[name*="lastName" i])'
+      'text=/last name is required/i'
     ).first();
     
     this.generalError = page.locator(
       '.alert-error, .alert-danger, .error-message, [role="alert"]'
     ).first();
     
-    // Password strength
+    // Password strength indicator - observed showing "Weak" in red
     this.passwordStrengthIndicator = page.locator(
-      '.password-strength, .strength-indicator, [data-password-strength]'
+      'text=/Weak|Medium|Strong/i, .password-strength, .strength-indicator'
     ).first();
+    
+    // Join Stampin' Rewards popup (appears after registration)
+    this.rewardsModal = page.locator('[role="dialog"], .modal').filter({ hasText: "JOIN STAMPIN' REWARDS" });
+    this.rewardsGetStartedButton = page.locator('button:has-text("GET STARTED")');
+    this.rewardsMaybeLaterButton = page.locator('button:has-text("MAYBE LATER"), a:has-text("MAYBE LATER")');
+    
+    // Success indicator - "Hello, [FIRST NAME]" in header
+    this.helloUserHeader = page.locator('text=/Hello,\\s*\\w+/i, a:has-text("Hello,")');
     
     // Success elements
     this.successMessage = page.locator(
@@ -103,29 +141,39 @@ class SignupPage extends BasePage {
   }
 
   /**
-   * Navigate to registration page
+   * Navigate to registration modal
+   * The Create Account form is a modal that opens when clicking "Sign In" in the header
    */
   async navigateToSignup() {
     await this.goto('/');
     await this.acceptCookiesIfPresent();
-    await this.closeModalIfPresent();
     
-    // Try to find and click the sign-in link first
+    // Click "Sign In" link in header to open auth modal
     const signInLink = this.page.locator('a:has-text("Sign In"), a:has-text("Sign in")').first();
-    if (await signInLink.isVisible()) {
-      await signInLink.click();
-      await this.waitForPageLoad();
+    await signInLink.waitFor({ state: 'visible', timeout: 10000 });
+    await signInLink.click();
+    
+    // Wait for modal to appear, then click "SIGN IN" link to switch to create account
+    // Based on screenshot: modal shows "Already have an account? Welcome back! SIGN IN"
+    // So the modal might default to Create Account view
+    await this.page.waitForTimeout(1000); // Wait for modal animation
+    
+    // Check if we're on the Create Account view (look for "CREATE ACCOUNT" heading)
+    const createAccountHeading = this.page.locator('text="CREATE ACCOUNT"');
+    if (await createAccountHeading.isVisible({ timeout: 3000 })) {
+      // Already on Create Account view
+      return;
     }
     
-    // Then look for create account/register link
+    // If we're on Sign In view, look for link to create account
     const createAccountLink = this.page.locator(
       'a:has-text("Create Account"), a:has-text("Register"), ' +
-      'a:has-text("Sign Up"), button:has-text("Create Account")'
+      'button:has-text("Create Account"), text="Create Account"'
     ).first();
     
     if (await createAccountLink.isVisible({ timeout: 5000 })) {
       await createAccountLink.click();
-      await this.waitForPageLoad();
+      await this.page.waitForTimeout(500); // Wait for view switch
     }
   }
 
@@ -214,16 +262,32 @@ class SignupPage extends BasePage {
 
   /**
    * Verify registration was successful
+   * Success indicators on stampinup.com:
+   * 1. "Join Stampin' Rewards!" popup appears
+   * 2. Header shows "Hello, [FIRST NAME]" in top right
    */
   async verifyRegistrationSuccess() {
-    // Check for success indicators
+    let successFound = false;
+    
+    // Check for "Join Stampin' Rewards!" popup (appears after registration)
+    if (await this.rewardsModal.isVisible({ timeout: 5000 }).catch(() => false)) {
+      successFound = true;
+      // Optionally dismiss the rewards popup
+      await this.dismissRewardsPopup();
+    }
+    
+    // Check for "Hello, [FIRST NAME]" in header
+    if (await this.helloUserHeader.isVisible({ timeout: 5000 }).catch(() => false)) {
+      successFound = true;
+    }
+    
+    // Fallback: check for other success indicators
     const possibleSuccessIndicators = [
       this.successMessage,
       this.welcomeMessage,
       this.page.locator('text=/welcome|account created|registration successful/i')
     ];
     
-    let successFound = false;
     for (const indicator of possibleSuccessIndicators) {
       if (await indicator.isVisible({ timeout: 3000 }).catch(() => false)) {
         successFound = true;
@@ -231,13 +295,36 @@ class SignupPage extends BasePage {
       }
     }
     
-    // Also check URL for account/dashboard redirect
-    const currentUrl = await this.getCurrentUrl();
-    if (currentUrl.includes('account') || currentUrl.includes('dashboard') || currentUrl.includes('welcome')) {
-      successFound = true;
-    }
-    
     expect(successFound).toBeTruthy();
+  }
+
+  /**
+   * Dismiss the "Join Stampin' Rewards!" popup by clicking "MAYBE LATER"
+   */
+  async dismissRewardsPopup() {
+    if (await this.rewardsMaybeLaterButton.isVisible({ timeout: 3000 })) {
+      await this.rewardsMaybeLaterButton.click();
+      await this.page.waitForTimeout(500);
+    }
+  }
+
+  /**
+   * Accept the Stampin' Rewards program by clicking "GET STARTED"
+   */
+  async acceptRewardsProgram() {
+    if (await this.rewardsGetStartedButton.isVisible({ timeout: 3000 })) {
+      await this.rewardsGetStartedButton.click();
+      await this.page.waitForTimeout(500);
+    }
+  }
+
+  /**
+   * Verify that user is logged in by checking for "Hello, [name]" in header
+   * @param {string} firstName - Expected first name to verify
+   */
+  async verifyLoggedInAs(firstName) {
+    const helloText = this.page.locator(`text=/Hello,\\s*${firstName}/i`);
+    await expect(helloText).toBeVisible({ timeout: 5000 });
   }
 
   /**

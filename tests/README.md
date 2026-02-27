@@ -26,17 +26,40 @@ tests/
 └── README.md
 ```
 
+## Site Behavior Notes (Observed)
+
+### Account Creation Flow
+- **Create Account is a MODAL POPUP** - Not a separate page
+- Opens when clicking "Sign In" link in the header
+- **Form Fields:**
+  - First Name
+  - Last Name
+  - Email
+  - Password (with strength indicator)
+  - Confirm Password
+- **Password Validation:**
+  - Minimum 8 characters required
+  - Shows strength indicator ("Weak" in red, etc.)
+  - Error message: "The Password field must be at least 8 characters long."
+- **After Successful Registration:**
+  1. "Join Stampin' Rewards!" popup appears
+     - Options: "GET STARTED" or "MAYBE LATER"
+  2. Header displays "Hello, [FIRST NAME]" in top right corner
+- **No Terms & Conditions checkbox** observed in the modal
+
+---
+
 ## Test Coverage
 
 ### Account Creation (TC-ACC-001 to TC-ACC-008)
-- [x] TC-ACC-001: Successful account creation with valid data
+- [x] TC-ACC-001: Successful account creation with valid data (verifies "Hello, [Name]" appears)
 - [x] TC-ACC-002: Duplicate email validation
 - [x] TC-ACC-003: Invalid email format validation
-- [x] TC-ACC-004: Weak password validation
+- [x] TC-ACC-004: Weak password validation (min 8 chars, strength indicator)
 - [x] TC-ACC-005: Password mismatch validation
 - [x] TC-ACC-006: Empty required fields validation
 - [x] TC-ACC-007: Special characters in name fields
-- [x] TC-ACC-008: Terms and conditions validation
+- [x] TC-ACC-008: Terms and conditions validation (may be skipped - no T&C checkbox observed)
 
 ### User Profile Setup (TC-PRF-001 to TC-PRF-006)
 - [x] TC-PRF-001: Successful initial profile setup

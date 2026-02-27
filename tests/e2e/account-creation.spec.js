@@ -13,6 +13,15 @@ const {
  * Tests: TC-ACC-001 through TC-ACC-008
  * 
  * These tests cover the user registration flow on www.stampinup.com
+ * 
+ * SITE BEHAVIOR NOTES:
+ * - Create Account is a MODAL POPUP (not a separate page)
+ * - Modal opens when clicking "Sign In" link in header
+ * - Form fields: First Name, Last Name, Email, Password, Confirm Password
+ * - Password validation: minimum 8 characters, shows strength indicator ("Weak", etc.)
+ * - After successful registration:
+ *   1. "Join Stampin' Rewards!" popup appears with "GET STARTED" and "MAYBE LATER" options
+ *   2. Header displays "Hello, [FIRST NAME]" in top right corner
  */
 
 test.describe('Account Creation', () => {
@@ -27,6 +36,13 @@ test.describe('Account Creation', () => {
    * TC-ACC-001: Successful Account Creation with Valid Data
    * Priority: High
    * Type: Functional / Positive
+   * 
+   * Expected flow:
+   * 1. Click "Sign In" in header to open modal
+   * 2. Fill First Name, Last Name, Email, Password, Confirm Password
+   * 3. Click "CREATE ACCOUNT" button
+   * 4. "Join Stampin' Rewards!" popup should appear
+   * 5. Header should show "Hello, [FIRST NAME]"
    */
   test('TC-ACC-001: should successfully create account with valid data', async () => {
     // Arrange
@@ -35,8 +51,11 @@ test.describe('Account Creation', () => {
     // Act
     await signupPage.registerNewUser(userData);
     
-    // Assert
+    // Assert - Check for rewards popup and/or "Hello, [name]" in header
     await signupPage.verifyRegistrationSuccess();
+    
+    // Additional verification: check header shows user's first name
+    await signupPage.verifyLoggedInAs(userData.firstName);
   });
 
   /**
@@ -86,6 +105,10 @@ test.describe('Account Creation', () => {
    * TC-ACC-004: Account Creation with Weak Password
    * Priority: High
    * Type: Functional / Negative / Security
+   * 
+   * Site behavior observed:
+   * - Password field shows strength indicator ("Weak" in red)
+   * - Error message: "The Password field must be at least 8 characters long."
    */
   test.describe('TC-ACC-004: Weak Password Validation', () => {
     const testPasswords = WeakPasswords.slice(0, 3); // Test first 3 weak passwords
