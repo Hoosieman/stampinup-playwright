@@ -14,7 +14,8 @@
 2. [Account Creation Test Cases](#1-account-creation-test-cases)
 3. [User Profile Setup Test Cases](#2-user-profile-setup-test-cases)
 4. [Address Setup Test Cases](#3-address-setup-test-cases)
-5. [Traceability Matrix](#traceability-matrix)
+5. [Search Query Persistence Test Cases](#4-search-query-persistence-test-cases)
+6. [Traceability Matrix](#traceability-matrix)
 
 ---
 
@@ -22,6 +23,7 @@
 - **TC-ACC-XXX:** Account Creation related test cases
 - **TC-PRF-XXX:** Profile Setup related test cases
 - **TC-ADD-XXX:** Address Setup related test cases
+- **TC-SEARCH-XXX:** Search functionality related test cases
 
 ---
 
@@ -635,6 +637,331 @@
 
 ---
 
+## 4. Search Query Persistence Test Cases
+
+> **Note:** These test cases were created based on a discovered bug where the search input field does not retain the user's query after performing a search.
+
+### TC-SEARCH-001: Search Query Not Persisting After Search (Bug Reproduction)
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-001 |
+| **Title** | Search Query Should Persist in Input Field After Search |
+| **Priority** | High |
+| **Type** | Functional / Bug Verification |
+| **Bug Status** | Open - Reported |
+| **Preconditions** | 1. User is on the Stampin' Up! homepage<br>2. Search functionality is available |
+| **Test Data** | Search term: "butterfly" |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Navigate to www.stampinup.com | Homepage loads successfully |
+| 2 | Locate the search input field in the header | Search field is visible |
+| 3 | Enter "butterfly" in the search field | Text appears in search field |
+| 4 | Press Enter or click the search button | Search results page loads |
+| 5 | Observe the search input field | **Expected:** Search field contains "butterfly"<br>**Actual (Bug):** Search field is empty |
+
+**Expected Result:** After performing a search, the search input field should retain the search query so users can easily modify their search.
+
+**Actual Result (Bug):** The search input field is cleared after the search is performed, forcing users to re-type their entire query if they want to refine it.
+
+**Impact:** Poor user experience when users want to refine their search queries.
+
+---
+
+### TC-SEARCH-002: Verify Search Input Is Not Empty After Search
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-002 |
+| **Title** | Search Input Should Display Current Query |
+| **Priority** | High |
+| **Type** | Functional / Positive |
+| **Preconditions** | User is on the homepage |
+| **Test Data** | Search term: "stamps" |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Navigate to homepage | Page loads |
+| 2 | Enter "stamps" in search field | Text entered |
+| 3 | Submit search | Results page loads |
+| 4 | Check search input value | Input should contain "stamps", not be empty |
+| 5 | Check input is not showing placeholder text | Actual value present, not placeholder |
+
+**Expected Result:** Search input displays the current search term, not placeholder or empty.
+
+---
+
+### TC-SEARCH-003: Direct URL Navigation Should Pre-populate Search Input
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-003 |
+| **Title** | URL Query Parameter Should Pre-populate Search Field |
+| **Priority** | Medium |
+| **Type** | Functional / Positive |
+| **Preconditions** | None |
+| **Test Data** | URL: stampinup.com/search?q=flowers |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Navigate directly to search URL with query parameter | Search results page loads |
+| 2 | Observe search input field | Search input should contain "flowers" |
+| 3 | Verify results match the query | Results are relevant to "flowers" |
+
+**Expected Result:** When navigating directly to a search URL, the search input should be pre-populated with the query from the URL.
+
+---
+
+### TC-SEARCH-004: User Search Refinement Workflow
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-004 |
+| **Title** | User Should Be Able to Refine Search Without Retyping |
+| **Priority** | High |
+| **Type** | Functional / Usability |
+| **Preconditions** | User is on homepage |
+| **Test Data** | Initial: "card" → Refined: "card making" |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Search for "card" | Results for "card" appear |
+| 2 | Verify "card" is in search input | Search field contains "card" |
+| 3 | Click at end of search input | Cursor is placed in field |
+| 4 | Add " making" to existing text | Search field shows "card making" |
+| 5 | Submit refined search | Results for "card making" appear |
+
+**Expected Result:** User can easily refine search by modifying existing query without retyping.
+
+---
+
+### TC-SEARCH-005: Search Query with Special Characters
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-005 |
+| **Title** | Search Query with Special Characters Should Persist |
+| **Priority** | Medium |
+| **Type** | Functional / Edge Case |
+| **Preconditions** | User is on homepage |
+| **Test Data** | Search terms: "mother's day", "red & blue", "50% off" |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Search for "mother's day" | Results appear |
+| 2 | Verify search input contains "mother's day" | Apostrophe preserved in input |
+| 3 | Search for "red & blue" | Results appear |
+| 4 | Verify search input contains "red & blue" | Ampersand preserved in input |
+
+**Expected Result:** Special characters in search queries are preserved in the input field after search.
+
+---
+
+### TC-SEARCH-006: Multi-word Search Query Persistence
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-006 |
+| **Title** | Multi-word Queries Should Fully Persist |
+| **Priority** | High |
+| **Type** | Functional / Positive |
+| **Preconditions** | User is on homepage |
+| **Test Data** | Search term: "happy birthday card stamps" |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Enter "happy birthday card stamps" in search | Text entered |
+| 2 | Submit search | Results page loads |
+| 3 | Verify entire phrase is in search input | All four words present in input |
+| 4 | Verify no truncation occurred | Complete phrase visible |
+
+**Expected Result:** Multi-word search queries are fully retained without truncation.
+
+---
+
+### TC-SEARCH-007: Search Placeholder vs Actual Value
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-007 |
+| **Title** | Distinguish Between Placeholder Text and Search Value |
+| **Priority** | Medium |
+| **Type** | Functional / UI Verification |
+| **Preconditions** | User is on homepage |
+| **Test Data** | Search term: "ink pads" |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Observe search input before any interaction | Placeholder text may be visible (e.g., "Search...") |
+| 2 | Note placeholder styling (usually lighter color) | Placeholder styling observed |
+| 3 | Search for "ink pads" | Search performed |
+| 4 | Observe search input styling | Text should be in normal value styling, not placeholder styling |
+| 5 | Verify input.value equals "ink pads" | Programmatic value check passes |
+
+**Expected Result:** After search, the input shows an actual value (not placeholder) with appropriate styling.
+
+---
+
+### TC-SEARCH-008: Search via Button vs Enter Key
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-008 |
+| **Title** | Query Persistence Should Work for Both Search Methods |
+| **Priority** | Medium |
+| **Type** | Functional / Positive |
+| **Preconditions** | User is on homepage |
+| **Test Data** | Search term: "embossing" |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Enter "embossing" and press Enter key | Search results appear |
+| 2 | Verify "embossing" in search input | Query persists |
+| 3 | Clear search and enter "embossing" again | Text entered |
+| 4 | Click search button instead of Enter | Search results appear |
+| 5 | Verify "embossing" in search input | Query persists regardless of submit method |
+
+**Expected Result:** Search query persists regardless of whether user pressed Enter or clicked the search button.
+
+---
+
+### TC-SEARCH-009: Search Query Persistence Across Page Refresh
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-009 |
+| **Title** | Search Query Should Persist After Page Refresh |
+| **Priority** | Medium |
+| **Type** | Functional / Positive |
+| **Preconditions** | User has performed a search |
+| **Test Data** | Search term: "washi tape" |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Search for "washi tape" | Results page loads |
+| 2 | Verify URL contains search parameter | URL shows ?q=washi+tape or similar |
+| 3 | Refresh the page (F5 or Ctrl+R) | Page reloads |
+| 4 | Verify search input still contains "washi tape" | Query persists after refresh |
+| 5 | Verify results are still displayed | Same results shown |
+
+**Expected Result:** Search query and results persist after page refresh.
+
+---
+
+### TC-SEARCH-010: Empty Search Handling
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-010 |
+| **Title** | Empty Search Should Not Display False Query |
+| **Priority** | Low |
+| **Type** | Functional / Edge Case |
+| **Preconditions** | User is on homepage |
+| **Test Data** | Empty string |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Click search input but enter nothing | Field is focused but empty |
+| 2 | Press Enter or click search button | - Search is prevented OR<br>- All products shown OR<br>- Error message appears |
+| 3 | Observe search input | Input should be empty, not show random value |
+
+**Expected Result:** Empty searches are handled gracefully; input remains empty.
+
+---
+
+### TC-SEARCH-011: Long Search Query Handling
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-011 |
+| **Title** | Long Search Queries Should Be Handled Properly |
+| **Priority** | Low |
+| **Type** | Functional / Boundary |
+| **Preconditions** | User is on homepage |
+| **Test Data** | 100+ character search string |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Enter a very long search query (100+ characters) | Input accepts or truncates appropriately |
+| 2 | Submit search | Search is performed |
+| 3 | Verify input contains the query | Full or truncated query visible |
+| 4 | Verify no UI breakage | Search input doesn't overflow or break layout |
+
+**Expected Result:** Long queries are handled without breaking the UI.
+
+---
+
+### TC-SEARCH-012: Numeric Search Query Persistence
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-012 |
+| **Title** | Numeric Search Queries Should Persist |
+| **Priority** | Low |
+| **Type** | Functional / Edge Case |
+| **Preconditions** | User is on homepage |
+| **Test Data** | Search term: "12345" (product number) |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Enter "12345" in search field | Numbers entered |
+| 2 | Submit search | Results page loads |
+| 3 | Verify "12345" is in search input | Numeric query persists |
+
+**Expected Result:** Numeric-only search queries persist like text queries.
+
+---
+
+### TC-SEARCH-013: Industry Standard Comparison
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-SEARCH-013 |
+| **Title** | Search Behavior Should Match Industry Standards |
+| **Priority** | Medium |
+| **Type** | Usability / Benchmark |
+| **Preconditions** | Access to comparison sites |
+| **Test Data** | Same search term across multiple sites |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Perform search on Amazon.com | Query persists in search input |
+| 2 | Perform search on Target.com | Query persists in search input |
+| 3 | Perform search on Etsy.com | Query persists in search input |
+| 4 | Perform same search on stampinup.com | Query should persist (currently does not) |
+| 5 | Document the deviation from standard | Bug report references industry standards |
+
+**Expected Result:** Stampin' Up! search should follow the same UX pattern as major e-commerce sites.
+
+---
+
 ## Traceability Matrix
 
 | Requirement | Test Cases | Priority |
@@ -647,6 +974,9 @@
 | Data Validation | TC-ACC-003, TC-ACC-006, TC-ADD-002, TC-ADD-003 | High |
 | Default Settings | TC-ADD-005 | Medium |
 | CRUD Operations | TC-ADD-001, TC-ADD-006, TC-ADD-007 | High |
+| Search Functionality | TC-SEARCH-001 through TC-SEARCH-013 | High/Medium |
+| Search Query Persistence (Bug) | TC-SEARCH-001, TC-SEARCH-002, TC-SEARCH-004 | High |
+| Search UX Standards | TC-SEARCH-009, TC-SEARCH-013 | Medium |
 
 ---
 
