@@ -23,7 +23,7 @@
 - **TC-ACC-XXX:** Account Creation related test cases
 - **TC-PRF-XXX:** Profile Setup related test cases
 - **TC-ADD-XXX:** Address Setup related test cases
-- **TC-SEARCH-00X:** Search functionality related test cases (001-005)
+- **TC-SEARCH-XXX:** Search functionality related test cases (001-005)
 
 ---
 
