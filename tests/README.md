@@ -10,7 +10,7 @@ tests/
 │   └── test-cases.md          # Detailed test case documentation
 ├── e2e/
 │   ├── account-creation.spec.js       # Account registration tests (TC-ACC-001 to TC-ACC-008)
-│   ├── address-setup.spec.js          # Address management tests (TC-ADD-001 to TC-ADD-009)
+│   ├── address-setup.spec.js          # Address management tests (TC-ADD-001 to TC-ADD-010)
 │   ├── search-query-persistence.spec.js # Search bug verification tests (TC-SEARCH-001 to TC-SEARCH-013)
 │   └── user-profile.spec.js           # Profile setup tests (TC-PRF-001 to TC-PRF-006)
 ├── fixtures/
@@ -70,17 +70,28 @@ tests/
 - **Left sidebar:** ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, MY LISTS, SUBSCRIPTIONS, DEMONSTRATOR, REWARDS, NOTIFICATIONS, SIGN OUT
 
 ### Address Setup Flow
-- **Address page is a DEDICATED PAGE** at `/account/address/create` (not a modal)
+- **Add Address page:** `/account/address/create`
+- **Address List page:** `/account/address`
 - **Access:** Click "Hello, [Name]" dropdown in header > "Addresses"
 - **Left sidebar navigation:** ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, MY LISTS, SUBSCRIPTIONS, DEMONSTRATOR, REWARDS, NOTIFICATIONS, SIGN OUT
-- **Form Fields (all required except Address 2):**
-  - First Name, Last Name (side by side)
-  - Address (main street address)
-  - Address 2 (optional - apt, suite, etc.)
-  - City
-  - State (dropdown)
-  - ZIP Code
-  - Phone Number
+
+**Address List Page (`/account/address`):**
+- Note: "Updates made on this page don't apply to your subscriptions..."
+- **DEFAULT SHIPPING ADDRESS** section (left) with EDIT link
+- **DEFAULT MAILING ADDRESS** section (right):
+  - If no default: "There is no default address selected." with **"USE MY SHIPPING ADDRESS"** link
+  - If set: Shows address with EDIT link
+- **OTHER SAVED ADDRESSES** section
+- **"+ ADD NEW ADDRESS"** button
+
+**Add Address Form Fields (all required except Address 2):**
+- First Name, Last Name (side by side)
+- Address (main street address)
+- Address 2 (optional - apt, suite, etc.)
+- City
+- State (dropdown)
+- ZIP Code
+- Phone Number
 - **Checkboxes:**
   - "Make this my default shipping address"
   - "Make this my default mailing address"
@@ -118,7 +129,7 @@ tests/
 - Additional: Password change validation (PASSWORD section)
 - Additional: Country/language preferences (COUNTRY section)
 
-### Address Setup (TC-ADD-001 to TC-ADD-009)
+### Address Setup (TC-ADD-001 to TC-ADD-010)
 - [x] TC-ADD-001: Successful address setup
 - [x] TC-ADD-002: Invalid ZIP code validation
 - [x] TC-ADD-003: Missing required fields validation
@@ -128,6 +139,7 @@ tests/
 - [x] TC-ADD-007: Delete address
 - [x] TC-ADD-008: PO Box address handling
 - [x] TC-ADD-009: International address support
+- [x] TC-ADD-010: Use shipping address for default mailing address
 
 ### Search Query Persistence (TC-SEARCH-001 to TC-SEARCH-013)
 

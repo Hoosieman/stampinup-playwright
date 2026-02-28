@@ -694,6 +694,37 @@
 
 ---
 
+### TC-ADD-010: Use Shipping Address for Default Mailing Address
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-ADD-010 |
+| **Title** | Copy Shipping Address to Default Mailing Address |
+| **Priority** | Medium |
+| **Type** | Functional / Positive |
+| **Preconditions** | 1. User is logged in<br>2. User has a default shipping address set<br>3. User has NO default mailing address set |
+| **Test Data** | Existing shipping address |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Navigate to /account/address | Address list page loads |
+| 2 | Verify DEFAULT SHIPPING ADDRESS section shows saved address | Shipping address is displayed with EDIT link |
+| 3 | Verify DEFAULT MAILING ADDRESS section shows "There is no default address selected." | No mailing address message appears |
+| 4 | Verify "USE MY SHIPPING ADDRESS" link is visible | Link is clickable |
+| 5 | Click "USE MY SHIPPING ADDRESS" link | - Link is clicked<br>- Page may reload or update |
+| 6 | Verify DEFAULT MAILING ADDRESS section now shows the shipping address | - "There is no default address selected." message is gone<br>- Shipping address details now appear in mailing section<br>- EDIT link appears for mailing address |
+
+**Expected Result:** Clicking "USE MY SHIPPING ADDRESS" copies the default shipping address to become the default mailing address, eliminating the need to re-enter the same address.
+
+**Notes:**
+- This is a convenience feature for users who want the same address for shipping and mailing
+- The address list page is at /account/address (not /account/address/create)
+- Note on page: "Updates made on this page don't apply to your subscriptions. To update your subscription information, go to the Subscriptions tab."
+
+---
+
 ## 4. Search Query Persistence Test Cases
 
 > **Note:** These test cases were created based on a discovered bug where the search input field does not retain the user's query after performing a search.

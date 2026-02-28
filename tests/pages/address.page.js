@@ -3,15 +3,25 @@ const { BasePage } = require('./base.page');
 
 /**
  * Page Object Model for Address Book/Address Settings Page
- * Covers: TC-ADD-001 through TC-ADD-009
+ * Covers: TC-ADD-001 through TC-ADD-010
  * 
  * SITE BEHAVIOR NOTES (Observed):
- * - Address page is a DEDICATED PAGE at /account/address/create (not a modal)
+ * - Add Address page is at /account/address/create
+ * - Address List page is at /account/address
  * - Access: Click "Hello, [Name]" dropdown > "Addresses" in header
  * - Left sidebar navigation: ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, MY LISTS, 
  *   SUBSCRIPTIONS, DEMONSTRATOR, REWARDS, NOTIFICATIONS, SIGN OUT
  * 
- * Form Fields (all required except Address 2):
+ * ADDRESS LIST PAGE (/account/address):
+ * - Note: "Updates made on this page don't apply to your subscriptions..."
+ * - DEFAULT SHIPPING ADDRESS section (left) with EDIT link
+ * - DEFAULT MAILING ADDRESS section (right):
+ *   - If no default: "There is no default address selected." with "USE MY SHIPPING ADDRESS" link
+ *   - If set: Shows address with EDIT link
+ * - OTHER SAVED ADDRESSES section
+ * - "+ ADD NEW ADDRESS" button
+ * 
+ * ADD ADDRESS FORM Fields (all required except Address 2):
  * - First Name, Last Name (side by side)
  * - Address (main address line)
  * - Address 2 (optional)
@@ -58,7 +68,24 @@ class AddressPage extends BasePage {
     // Add address button (if on address list page)
     this.addAddressButton = page.locator(
       'button:has-text("Add Address"), button:has-text("Add New Address"), ' +
-      'a:has-text("Add Address"), a[href*="/address/create"]'
+      'a:has-text("Add Address"), a:has-text("ADD NEW ADDRESS"), a[href*="/address/create"]'
+    ).first();
+    
+    // Address list page elements (observed at /account/address)
+    this.defaultShippingAddressSection = page.locator('text="DEFAULT SHIPPING ADDRESS"').first();
+    this.defaultMailingAddressSection = page.locator('text="DEFAULT MAILING ADDRESS"').first();
+    this.noDefaultMailingMessage = page.locator('text="There is no default address selected."').first();
+    this.useMyShippingAddressLink = page.locator(
+      'a:has-text("USE MY SHIPPING ADDRESS"), button:has-text("USE MY SHIPPING ADDRESS")'
+    ).first();
+    this.otherSavedAddressesSection = page.locator('text="OTHER SAVED ADDRESSES"').first();
+    this.shippingAddressEditLink = page.locator(
+      'section:has-text("DEFAULT SHIPPING ADDRESS") a:has-text("EDIT"), ' +
+      'div:has-text("DEFAULT SHIPPING ADDRESS") a:has-text("EDIT")'
+    ).first();
+    this.mailingAddressEditLink = page.locator(
+      'section:has-text("DEFAULT MAILING ADDRESS") a:has-text("EDIT"), ' +
+      'div:has-text("DEFAULT MAILING ADDRESS") a:has-text("EDIT")'
     ).first();
     
     // Name fields (observed in form)
@@ -338,6 +365,51 @@ class AddressPage extends BasePage {
     const emptyVisible = await this.emptyAddressMessage.isVisible({ timeout: 2000 }).catch(() => false);
     const cardCount = await this.getAddressCount();
     return emptyVisible || cardCount === 0;
+  }
+
+  /**
+   * Click "USE MY SHIPPING ADDRESS" link to copy shipping address to mailing address
+   * TC-ADD-010: Use shipping address for default mailing address
+   */
+  async useShippingAddressForMailing() {
+    await this.navigateToAddressBook();
+    await this.useMyShippingAddressLink.click();
+    await this.page.waitForTimeout(1000);
+  }
+
+  /**
+   * Verify "USE MY SHIPPING ADDRESS" link is visible (when no default mailing set)
+   * @returns {Promise<boolean>}
+   */
+  async isUseShippingAddressLinkVisible() {
+    return this.useMyShippingAddressLink.isVisible({ timeout: 3000 }).catch(() => false);
+  }
+
+  /**
+   * Verify default mailing address is set (no "USE MY SHIPPING ADDRESS" link visible)
+   * @returns {Promise<boolean>}
+   */
+  async isDefaultMailingAddressSet() {
+    const noDefaultMsg = await this.noDefaultMailingMessage.isVisible({ timeout: 2000 }).catch(() => false);
+    return !noDefaultMsg;
+  }
+
+  /**
+   * Get default shipping address text
+   * @returns {Promise<string>}
+   */
+  async getDefaultShippingAddressText() {
+    const section = this.page.locator('section:has-text("DEFAULT SHIPPING ADDRESS"), div:has-text("DEFAULT SHIPPING ADDRESS")').first();
+    return section.textContent();
+  }
+
+  /**
+   * Get default mailing address text
+   * @returns {Promise<string>}
+   */
+  async getDefaultMailingAddressText() {
+    const section = this.page.locator('section:has-text("DEFAULT MAILING ADDRESS"), div:has-text("DEFAULT MAILING ADDRESS")').first();
+    return section.textContent();
   }
 
   /**

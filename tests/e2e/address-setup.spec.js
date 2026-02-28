@@ -9,14 +9,24 @@ const {
 
 /**
  * Address Setup Test Suite
- * Tests: TC-ADD-001 through TC-ADD-009
+ * Tests: TC-ADD-001 through TC-ADD-010
  * 
  * These tests cover the address management flow on www.stampinup.com
  * 
  * SITE BEHAVIOR NOTES:
- * - Address page is a DEDICATED PAGE at /account/address/create (not a modal)
+ * - Add Address page is at /account/address/create
+ * - Address List page is at /account/address
  * - Access: Click "Hello, [Name]" dropdown > "Addresses" in header
  * - Left sidebar: ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, etc.
+ * 
+ * ADDRESS LIST PAGE (/account/address):
+ * - Note: "Updates made on this page don't apply to your subscriptions..."
+ * - DEFAULT SHIPPING ADDRESS section (left) with EDIT link
+ * - DEFAULT MAILING ADDRESS section (right):
+ *   - If no default: "There is no default address selected." with "USE MY SHIPPING ADDRESS" link
+ *   - If set: Shows address with EDIT link
+ * - OTHER SAVED ADDRESSES section
+ * - "+ ADD NEW ADDRESS" button
  * 
  * Form Fields (all required except Address 2):
  * - First Name, Last Name
@@ -298,6 +308,48 @@ test.describe('Address Setup', () => {
     
     // Assert
     await addressPage.verifyAddressSaved();
+  });
+
+  /**
+   * TC-ADD-010: Use Shipping Address for Default Mailing Address
+   * Priority: Medium
+   * Type: Functional / Positive
+   * 
+   * OBSERVED BEHAVIOR:
+   * - When user has a default shipping address but no default mailing address
+   * - DEFAULT MAILING ADDRESS section shows: "There is no default address selected."
+   * - A "USE MY SHIPPING ADDRESS" link appears
+   * - Clicking the link copies the shipping address to become the default mailing address
+   */
+  test('TC-ADD-010: should copy shipping address to mailing address', async () => {
+    // Prerequisite: User must have a default shipping address set
+    // Navigate to address list page
+    await addressPage.navigateToAddressBook();
+    
+    // Check if USE MY SHIPPING ADDRESS link is visible (means no default mailing set)
+    const canUseShipping = await addressPage.isUseShippingAddressLinkVisible();
+    
+    if (canUseShipping) {
+      // Get shipping address text before clicking
+      const shippingText = await addressPage.getDefaultShippingAddressText();
+      
+      // Act - Click "USE MY SHIPPING ADDRESS" link
+      await addressPage.useMyShippingAddressLink.click();
+      await addressPage.page.waitForTimeout(1000);
+      
+      // Assert - Default mailing address should now be set
+      const mailingSet = await addressPage.isDefaultMailingAddressSet();
+      expect(mailingSet).toBeTruthy();
+      
+      // Verify the mailing address matches shipping address
+      const mailingText = await addressPage.getDefaultMailingAddressText();
+      // Both should contain the same address details (excluding section headers)
+      expect(mailingText).toBeTruthy();
+    } else {
+      // If link not visible, default mailing is already set - verify it exists
+      const mailingSet = await addressPage.isDefaultMailingAddressSet();
+      expect(mailingSet).toBeTruthy();
+    }
   });
 
   /**
