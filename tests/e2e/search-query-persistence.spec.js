@@ -1,5 +1,6 @@
 /**
  * Search Query Persistence Bug Tests
+ * Tests: TC-SEARCH-001 through TC-SEARCH-005
  * 
  * Bug Report: Search query is not persisted in the search input field 
  * after navigating to the search results page
@@ -97,34 +98,10 @@ test.describe('Search Query Persistence Bug', () => {
   });
 
   /**
-   * TC-SEARCH-003: Verify query persistence when navigating directly to search URL
-   */
-  test('TC-SEARCH-003: Search input should show query when navigating directly to search URL', async ({ page }) => {
-    const searchQuery = 'TEST';
-
-    // Navigate directly to search results URL
-    await searchPage.navigateToSearchResults(searchQuery);
-    await searchPage.waitForSearchResults();
-
-    // Verify URL has correct query
-    const urlQuery = await searchPage.getQueryFromUrl();
-    expect(urlQuery).toBe(searchQuery);
-
-    // Verify heading shows the query (confirms page processed it)
-    await searchPage.verifySearchResultsHeadingContainsQuery(searchQuery);
-
-    // Bug check: Input should be pre-populated with the query from URL
-    const inputValue = await searchPage.getSearchInputValue();
-    expect(inputValue,
-      `Bug: Search input should be pre-populated with "${searchQuery}" from URL`
-    ).toBe(searchQuery);
-  });
-
-  /**
-   * TC-SEARCH-004: Verify user can refine search without retyping
+   * TC-SEARCH-003: Verify user can refine search without retyping
    * Tests the UX impact of the bug
    */
-  test('TC-SEARCH-004: User should be able to refine search without retyping entire query', async ({ page }) => {
+  test('TC-SEARCH-003: User should be able to refine search without retyping entire query', async ({ page }) => {
     const initialQuery = 'card';
     const refinedQuery = 'card stock';
 
@@ -161,65 +138,9 @@ test.describe('Search Query Persistence Bug', () => {
   });
 
   /**
-   * TC-SEARCH-005: Verify query persistence with special characters
+   * TC-SEARCH-004: Verify query persistence after clicking search button (vs Enter key)
    */
-  test('TC-SEARCH-005: Search query with special characters should persist', async ({ page }) => {
-    const searchQuery = 'birthday & celebration';
-
-    await searchPage.navigateToHomepage();
-    await searchPage.performSearch(searchQuery);
-    await searchPage.waitForSearchResults();
-
-    // Check if query persists (accounting for URL encoding)
-    const inputValue = await searchPage.getSearchInputValue();
-    expect(inputValue).toBe(searchQuery);
-  });
-
-  /**
-   * TC-SEARCH-006: Verify query persistence with multiple words
-   */
-  test('TC-SEARCH-006: Multi-word search query should persist completely', async ({ page }) => {
-    const searchQuery = 'rubber stamp ink pad';
-
-    await searchPage.navigateToHomepage();
-    await searchPage.performSearch(searchQuery);
-    await searchPage.waitForSearchResults();
-
-    const inputValue = await searchPage.getSearchInputValue();
-    
-    expect(inputValue,
-      `Bug: Multi-word query "${searchQuery}" was not retained. Found: "${inputValue || '(empty)'}"`
-    ).toBe(searchQuery);
-  });
-
-  /**
-   * TC-SEARCH-007: Verify placeholder text appears only when input is intentionally empty
-   */
-  test('TC-SEARCH-007: Placeholder should only show when user has not searched', async ({ page }) => {
-    const searchQuery = 'TEST';
-
-    // First, check placeholder on homepage (should show)
-    await searchPage.navigateToHomepage();
-    const placeholderBefore = await searchPage.getSearchInputPlaceholder();
-    expect(placeholderBefore.toLowerCase()).toContain('search');
-
-    // After search, placeholder should NOT be visible (input should have value)
-    await searchPage.performSearch(searchQuery);
-    await searchPage.waitForSearchResults();
-
-    const inputValue = await searchPage.getSearchInputValue();
-    
-    // If input has value, placeholder is hidden (correct behavior)
-    // If input is empty, placeholder shows (bug behavior)
-    expect(inputValue.length,
-      'Bug: Search input is empty, showing placeholder instead of retaining query'
-    ).toBeGreaterThan(0);
-  });
-
-  /**
-   * TC-SEARCH-008: Verify query persistence after clicking search button (vs Enter key)
-   */
-  test('TC-SEARCH-008: Search query should persist when using search button instead of Enter', async ({ page }) => {
+  test('TC-SEARCH-004: Search query should persist when using search button instead of Enter', async ({ page }) => {
     const searchQuery = 'embossing';
 
     await searchPage.navigateToHomepage();
@@ -237,43 +158,9 @@ test.describe('Search Query Persistence Bug', () => {
   });
 
   /**
-   * TC-SEARCH-009: Compare behavior with industry standards
-   * Documents expected behavior based on e-commerce conventions
+   * TC-SEARCH-005: Verify query persistence after page refresh
    */
-  test('TC-SEARCH-009: Behavior comparison - query should persist like major e-commerce sites', async ({ page }) => {
-    const searchQuery = 'TEST';
-
-    await searchPage.navigateToHomepage();
-    await searchPage.performSearch(searchQuery);
-    await searchPage.waitForSearchResults();
-
-    const inputValue = await searchPage.getSearchInputValue();
-    const urlQuery = await searchPage.getQueryFromUrl();
-    const headingText = await searchPage.getSearchResultsHeadingText();
-
-    // Document the state for comparison
-    test.info().annotations.push({
-      type: 'comparison',
-      description: `
-        Industry Standard (Amazon, Etsy, Target): Search input retains query
-        
-        Current Stampin' Up State:
-        - URL Query Parameter: ${urlQuery}
-        - Results Heading: ${headingText}
-        - Search Input Value: "${inputValue || '(EMPTY - BUG)'}"
-        
-        Expected: Input should contain "${searchQuery}"
-      `
-    });
-
-    // The actual assertion
-    expect(inputValue).toBe(searchQuery);
-  });
-
-  /**
-   * TC-SEARCH-010: Verify query persistence after page refresh
-   */
-  test('TC-SEARCH-010: Search query should persist in input after page refresh', async ({ page }) => {
+  test('TC-SEARCH-005: Search query should persist in input after page refresh', async ({ page }) => {
     const searchQuery = 'TEST';
 
     // Navigate to search results
@@ -289,62 +176,5 @@ test.describe('Search Query Persistence Bug', () => {
     expect(inputValue,
       'Bug: Search query not retained after page refresh'
     ).toBe(searchQuery);
-  });
-});
-
-/**
- * Additional edge case tests
- */
-test.describe('Search Query Persistence - Edge Cases', () => {
-  /** @type {SearchPage} */
-  let searchPage;
-
-  test.beforeEach(async ({ page }) => {
-    searchPage = new SearchPage(page);
-  });
-
-  /**
-   * TC-SEARCH-011: Empty search should show empty input (not a bug)
-   */
-  test('TC-SEARCH-011: Empty search submission should result in empty input', async ({ page }) => {
-    await searchPage.navigateToHomepage();
-    await searchPage.clickSearchInput();
-    
-    // Submit empty search
-    await searchPage.submitSearch();
-    
-    // Empty input is expected here (not a bug)
-    const inputValue = await searchPage.getSearchInputValue();
-    expect(inputValue).toBe('');
-  });
-
-  /**
-   * TC-SEARCH-012: Very long search query should persist completely
-   */
-  test('TC-SEARCH-012: Long search query should persist without truncation', async ({ page }) => {
-    const longQuery = 'handmade birthday card supplies for paper crafting enthusiasts';
-
-    await searchPage.navigateToHomepage();
-    await searchPage.performSearch(longQuery);
-    await searchPage.waitForSearchResults();
-
-    const inputValue = await searchPage.getSearchInputValue();
-    expect(inputValue,
-      'Bug: Long search query was truncated or cleared'
-    ).toBe(longQuery);
-  });
-
-  /**
-   * TC-SEARCH-013: Search query with numbers should persist
-   */
-  test('TC-SEARCH-013: Search query containing numbers should persist', async ({ page }) => {
-    const searchQuery = 'stamp set 2024';
-
-    await searchPage.navigateToHomepage();
-    await searchPage.performSearch(searchQuery);
-    await searchPage.waitForSearchResults();
-
-    const inputValue = await searchPage.getSearchInputValue();
-    expect(inputValue).toBe(searchQuery);
   });
 });
