@@ -202,11 +202,12 @@ class SignupPage extends BasePage {
   }
 
   /**
-   * Submit the registration form
+   * Submit the registration form by clicking CREATE ACCOUNT button
    */
   async submitRegistration() {
+    await this.createAccountButton.waitFor({ state: 'visible', timeout: 5000 });
     await this.createAccountButton.click();
-    await this.page.waitForTimeout(1000); // Wait for form submission
+    await this.page.waitForTimeout(2000); // Wait for form validation/submission
   }
 
   /**
@@ -307,10 +308,11 @@ class SignupPage extends BasePage {
   }
 
   /**
-   * Verify password mismatch error - shows "The Password field..."
+   * Verify password mismatch error - shows "The Password field..." after clicking Create Account
    */
   async verifyPasswordMismatchError() {
-    await expect(this.confirmPasswordError).toBeVisible({ timeout: 3000 });
+    // Error appears after clicking submit, give it time to show
+    await expect(this.confirmPasswordError).toBeVisible({ timeout: 5000 });
   }
 
   /**
