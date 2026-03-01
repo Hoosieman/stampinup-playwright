@@ -21,10 +21,10 @@ class LoginPage extends BasePage {
     // Sign in button in header
     this.signInButton = page.getByTestId('menu-user-btn-signin');
     
-    // Login form inputs (in modal)
-    this.emailInput = page.getByTestId('signin-email');
-    this.passwordInput = page.getByTestId('signin-password');
-    this.loginButton = page.getByTestId('signin-submit');
+    // Login form inputs (in modal) - from Playwright codegen
+    this.emailInput = page.getByTestId('auth-email');
+    this.passwordInput = page.getByRole('textbox', { name: 'Password' });
+    this.loginButton = page.getByTestId('auth-submit');
     
     // Hello button appears after successful login
     this.helloButton = page.getByRole('button', { name: /Hello\s*,/i });
