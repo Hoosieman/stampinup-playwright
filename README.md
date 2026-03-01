@@ -1,6 +1,6 @@
 # Stampin' Up! E2E Test Suite
 
-A comprehensive Playwright test suite for testing account creation, profile setup, address management, and search functionality on www.stampinup.com.
+A comprehensive Playwright test suite for testing account creation, profile setup, and address management on www.stampinup.com.
 
 ## Project Structure
 
@@ -67,7 +67,6 @@ tests/
 - Edit mode: Country dropdown, Preferred Language dropdown
 - Buttons: "SAVE CHANGES" (pink), "CANCEL"
 
-- **Left sidebar:** ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, MY LISTS, SUBSCRIPTIONS, DEMONSTRATOR, REWARDS, NOTIFICATIONS, SIGN OUT
 
 ### Address Setup Flow
 - **Add Address page:** `/account/address/create`
@@ -206,9 +205,6 @@ pnpm exec playwright test --project=chromium
 
 # Run on Firefox only
 pnpm exec playwright test --project=firefox
-
-# Run on Mobile Chrome
-pnpm exec playwright test --project=mobile-chrome
 ```
 
 ## Test Data
@@ -229,100 +225,4 @@ The test suite follows the Page Object Model (POM) pattern:
 - **SignupPage** - Registration form interactions
 - **ProfilePage** - Profile settings management
 - **AddressPage** - Address book operations
-- **SearchPage** - Search input and results interactions
 
-### Using Page Objects
-
-```javascript
-const { test } = require('@playwright/test');
-const { SignupPage } = require('../pages');
-
-test('example test', async ({ page }) => {
-  const signupPage = new SignupPage(page);
-  await signupPage.navigateToSignup();
-  await signupPage.fillRegistrationForm({
-    email: 'test@example.com',
-    password: 'SecurePass123!',
-    // ...
-  });
-  await signupPage.submitRegistration();
-  await signupPage.verifyRegistrationSuccess();
-});
-```
-
-## Configuration
-
-Playwright configuration is in `playwright.config.js`:
-
-- **Base URL**: https://www.stampinup.com
-- **Browsers**: Chrome, Firefox, Safari, Mobile Chrome, Mobile Safari
-- **Timeouts**: 60s test timeout, 15s action timeout
-- **Retries**: 2 on CI, 0 locally
-- **Artifacts**: Screenshots on failure, video on retry, trace on retry
-
-## Reports
-
-After running tests, view the HTML report:
-
-```bash
-pnpm test:report
-```
-
-Reports are generated in:
-- `playwright-report/` - HTML report
-- `test-results/results.json` - JSON results
-- `test-results/screenshots/` - Failure screenshots
-
-## Best Practices Demonstrated
-
-1. **Page Object Model** - Encapsulated page interactions
-2. **Data-Driven Testing** - Parameterized tests with multiple data sets
-3. **Test Independence** - Each test can run independently
-4. **Proper Assertions** - Clear expected outcomes
-5. **Error Handling** - Graceful handling of dynamic elements
-6. **Cross-Browser Testing** - Multi-browser configuration
-7. **Mobile Testing** - Responsive viewport testing
-8. **Test Documentation** - Comprehensive test case documentation
-
-## Known Limitations
-
-1. Tests target a live production site - some tests may require existing accounts
-2. Email verification tests may need manual intervention
-3. Rate limiting may affect rapid test execution
-4. Some selectors may need adjustment based on site changes
-
-## Troubleshooting
-
-### Common Issues
-
-**Tests failing on login:**
-- Verify test credentials in environment variables
-- Check if account exists on the live site
-
-**Element not found:**
-- Site structure may have changed
-- Update selectors in page objects
-
-**Timeout errors:**
-- Increase timeout in playwright.config.ts
-- Check network connectivity
-
-### Debug Mode
-
-Run tests in debug mode to step through:
-
-```bash
-pnpm test:debug
-```
-
-Use `await page.pause()` in tests to pause execution.
-
-## Contributing
-
-When adding new tests:
-
-1. Add test case documentation to `tests/docs/test-cases.md`
-2. Create or update page objects as needed
-3. Follow existing naming conventions (TC-XXX-NNN)
-4. Include positive and negative test scenarios
-5. Use test data factories for dynamic data
