@@ -75,10 +75,8 @@ class SignupPage extends BasePage {
     // Email error shows "The Email Address field must..."
     this.emailError = page.getByText('The Email Address field must');
     
-    this.confirmPasswordError = page.locator(
-      '[data-error="confirmPassword"], .confirm-password-error, ' +
-      'text=/passwords do not match/i, text=/confirm password/i'
-    ).first();
+    // Password mismatch error - shows "The Password field..."
+    this.confirmPasswordError = page.getByText('The Password field');
     
     this.firstNameError = page.locator(
       '[data-error="firstName"], .firstName-error, ' +
@@ -309,15 +307,10 @@ class SignupPage extends BasePage {
   }
 
   /**
-   * Verify password mismatch error
+   * Verify password mismatch error - shows "The Password field..."
    */
   async verifyPasswordMismatchError() {
-    const confirmErrorVisible = await this.confirmPasswordError.isVisible({ timeout: 3000 }).catch(() => false);
-    const generalErrorWithMismatch = await this.generalError.textContent()
-      .then(text => text?.toLowerCase().includes('match') || text?.toLowerCase().includes('confirm'))
-      .catch(() => false);
-    
-    expect(confirmErrorVisible || generalErrorWithMismatch).toBeTruthy();
+    await expect(this.confirmPasswordError).toBeVisible({ timeout: 3000 });
   }
 
   /**
