@@ -67,16 +67,13 @@ class SignupPage extends BasePage {
     // Sign In link at bottom of modal ("Already have an account?")
     this.signInLinkInModal = page.locator('a:has-text("SIGN IN"), a:has-text("Sign In")').first();
     
-    // Error locators - password error observed: "The Password field must be at least 8 characters long."
-    this.passwordError = page.locator(
-      'text=/Password field must be at least/i, text=/8 characters/i, ' +
-      '[data-error="password"], .password-error, .field-error:near(input[type="password"])'
-    ).first();
+    // Live validation error locators - these appear WHILE typing, not after submit
+    // Password shows "Weak" indicator when password is too weak
+    this.passwordWeakIndicator = page.getByText('Weak');
+    this.passwordError = page.getByText('Weak'); // "Weak" is the password error indicator
     
-    this.emailError = page.locator(
-      '[data-error="email"], .email-error, #email-error, ' +
-      'text=/invalid email/i, text=/email is required/i'
-    ).first();
+    // Email error shows "The Email Address field must..."
+    this.emailError = page.getByText('The Email Address field must');
     
     this.confirmPasswordError = page.locator(
       '[data-error="confirmPassword"], .confirm-password-error, ' +
@@ -97,10 +94,8 @@ class SignupPage extends BasePage {
       '.alert-error, .alert-danger, .error-message, [role="alert"]'
     ).first();
     
-    // Password strength indicator - observed showing "Weak" in red
-    this.passwordStrengthIndicator = page.locator(
-      'text=/Weak|Medium|Strong/i, .password-strength, .strength-indicator'
-    ).first();
+    // Password strength indicator - shows "Weak" (red), "Medium", or "Strong"
+    this.passwordStrengthIndicator = page.getByText('Weak').or(page.getByText('Medium')).or(page.getByText('Strong'));
     
     // Join Stampin' Rewards popup (appears after registration)
     this.rewardsModal = page.locator('[role="dialog"], .modal').filter({ hasText: "JOIN STAMPIN' REWARDS" });
@@ -293,27 +288,25 @@ class SignupPage extends BasePage {
   }
 
   /**
-   * Verify email validation error is displayed
+   * Verify email validation error is displayed (live validation)
+   * Error text: "The Email Address field must..."
    */
   async verifyEmailValidationError() {
-    const emailErrorVisible = await this.emailError.isVisible({ timeout: 3000 }).catch(() => false);
-    const generalErrorWithEmail = await this.generalError.textContent()
-      .then(text => text?.toLowerCase().includes('email'))
-      .catch(() => false);
-    
-    expect(emailErrorVisible || generalErrorWithEmail).toBeTruthy();
+    await expect(this.emailError).toBeVisible({ timeout: 3000 });
   }
 
   /**
-   * Verify password validation error is displayed
+   * Verify password is weak (live validation shows "Weak" indicator)
    */
   async verifyPasswordValidationError() {
-    const passwordErrorVisible = await this.passwordError.isVisible({ timeout: 3000 }).catch(() => false);
-    const generalErrorWithPassword = await this.generalError.textContent()
-      .then(text => text?.toLowerCase().includes('password'))
-      .catch(() => false);
-    
-    expect(passwordErrorVisible || generalErrorWithPassword).toBeTruthy();
+    await expect(this.passwordWeakIndicator).toBeVisible({ timeout: 3000 });
+  }
+
+  /**
+   * Verify password strength shows "Weak"
+   */
+  async verifyPasswordIsWeak() {
+    await expect(this.passwordWeakIndicator).toBeVisible({ timeout: 3000 });
   }
 
   /**
