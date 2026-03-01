@@ -11,8 +11,8 @@ class BasePage {
   constructor(page) {
     this.page = page;
     
-    // Initialize common locators - these may need adjustment based on actual site structure
-    this.signInLink = page.getByRole('link', { name: /sign in/i }).first();
+    // Initialize common locators - Site uses Vuetify buttons with span.v-btn__content
+    this.signInLink = page.locator('.v-btn:has-text("Sign in"), button:has-text("Sign in"), span.v-btn__content:has-text("Sign in")').first();
     this.cartIcon = page.locator('[data-testid="cart-icon"], .cart-icon, [aria-label*="cart"]').first();
     this.searchInput = page.getByRole('searchbox').or(page.locator('input[type="search"], input[placeholder*="search" i]')).first();
     this.logo = page.locator('.logo, [alt*="Stampin"], header img').first();

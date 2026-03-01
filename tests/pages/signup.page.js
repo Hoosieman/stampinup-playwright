@@ -148,8 +148,9 @@ class SignupPage extends BasePage {
     await this.goto('/');
     await this.acceptCookiesIfPresent();
     
-    // Click "Sign In" link in header to open auth modal
-    const signInLink = this.page.locator('a:has-text("Sign In"), a:has-text("Sign in")').first();
+    // Click "Sign In" button in header to open auth modal
+    // Site uses Vuetify - the button has span.v-btn__content containing "Sign in"
+    const signInLink = this.page.locator('.v-btn:has-text("Sign in"), button:has-text("Sign in"), span.v-btn__content:has-text("Sign in")').first();
     await signInLink.waitFor({ state: 'visible', timeout: 10000 });
     await signInLink.click();
     
