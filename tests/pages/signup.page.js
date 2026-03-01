@@ -27,34 +27,17 @@ class SignupPage extends BasePage {
   constructor(page) {
     super(page);
     
-    // Create Account Modal container
-    this.createAccountModal = page.locator('[role="dialog"], .modal, [class*="modal"]').filter({ hasText: 'CREATE ACCOUNT' });
+    // Create Account Modal elements - using data-testid selectors from Playwright codegen
+    this.createAccountButton_header = page.getByTestId('btn-create-account'); // Button to switch to create account view
     
-    // Form inputs - based on observed placeholders in modal
-    this.firstNameInput = page.locator(
-      'input[placeholder="First Name"], input[name*="firstName" i], ' +
-      'input[id*="firstName" i], input[placeholder*="first name" i]'
-    ).first();
+    // Form inputs - using data-testid selectors
+    this.firstNameInput = page.getByTestId('reg-first-name');
+    this.lastNameInput = page.getByTestId('reg-last-name');
+    this.emailInput = page.getByTestId('reg-email');
     
-    this.lastNameInput = page.locator(
-      'input[placeholder="Last Name"], input[name*="lastName" i], ' +
-      'input[id*="lastName" i], input[placeholder*="last name" i]'
-    ).first();
-    
-    this.emailInput = page.locator(
-      'input[placeholder="Email"], input[type="email"], input[name="email"], ' +
-      'input[id*="email"], input[placeholder*="email" i]'
-    ).first();
-    
-    this.passwordInput = page.locator(
-      'input[placeholder="Password"]:not([placeholder*="Confirm"]), ' +
-      'input[type="password"]:not([placeholder*="Confirm"]):not([name*="confirm"])'
-    ).first();
-    
-    this.confirmPasswordInput = page.locator(
-      'input[placeholder="Confirm Password"], input[name*="confirm" i], ' +
-      'input[id*="confirm" i], input[placeholder*="confirm" i]'
-    ).first();
+    // Password fields use role selector (no data-testid)
+    this.passwordInput = page.getByRole('textbox', { name: 'Password', exact: true });
+    this.confirmPasswordInput = page.getByRole('textbox', { name: 'Confirm Password' });
     
     // No phone input observed in the modal
     this.phoneInput = page.locator(
@@ -72,11 +55,8 @@ class SignupPage extends BasePage {
       'label:has-text("newsletter") input[type="checkbox"]'
     ).first();
     
-    // CREATE ACCOUNT button (observed in modal)
-    this.createAccountButton = page.locator(
-      'button:has-text("CREATE ACCOUNT"), button:has-text("Create Account"), ' +
-      'button:has-text("Register"), input[type="submit"][value*="Create" i]'
-    ).first();
+    // CREATE ACCOUNT submit button - using data-testid
+    this.createAccountButton = page.getByTestId('reg-submit');
     
     // Modal close button
     this.modalCloseButton = page.locator(
@@ -149,33 +129,17 @@ class SignupPage extends BasePage {
     await this.acceptCookiesIfPresent();
     
     // Click "Sign In" button in header to open auth modal
-    // Using data-testid selector (found via Playwright codegen)
-    const signInLink = this.page.getByTestId('menu-user-btn-signin');
-    await signInLink.waitFor({ state: 'visible', timeout: 10000 });
-    await signInLink.click();
+    const signInBtn = this.page.getByTestId('menu-user-btn-signin');
+    await signInBtn.waitFor({ state: 'visible', timeout: 10000 });
+    await signInBtn.click();
     
-    // Wait for modal to appear, then click "SIGN IN" link to switch to create account
-    // Based on screenshot: modal shows "Already have an account? Welcome back! SIGN IN"
-    // So the modal might default to Create Account view
-    await this.page.waitForTimeout(1000); // Wait for modal animation
+    // Wait for modal, then click "Create Account" button to switch to registration view
+    await this.page.waitForTimeout(1000);
     
-    // Check if we're on the Create Account view (look for "CREATE ACCOUNT" heading)
-    const createAccountHeading = this.page.locator('text="CREATE ACCOUNT"');
-    if (await createAccountHeading.isVisible({ timeout: 3000 })) {
-      // Already on Create Account view
-      return;
-    }
-    
-    // If we're on Sign In view, look for link to create account
-    const createAccountLink = this.page.locator(
-      'a:has-text("Create Account"), a:has-text("Register"), ' +
-      'button:has-text("Create Account"), text="Create Account"'
-    ).first();
-    
-    if (await createAccountLink.isVisible({ timeout: 5000 })) {
-      await createAccountLink.click();
-      await this.page.waitForTimeout(500); // Wait for view switch
-    }
+    // Click the "Create Account" button in modal
+    await this.createAccountButton_header.waitFor({ state: 'visible', timeout: 5000 });
+    await this.createAccountButton_header.click();
+    await this.page.waitForTimeout(500);
   }
 
   /**
