@@ -4,6 +4,12 @@ const { BasePage } = require('./base.page');
 /**
  * Page Object Model for Login Page
  * Used for authentication before profile/address tests
+ * 
+ * Login flow:
+ * 1. Click "Sign in" button (data-testid: menu-user-btn-signin)
+ * 2. Modal appears with email/password fields
+ * 3. Fill credentials and submit
+ * 4. On success: "Hello, [Name]" button appears in header
  */
 class LoginPage extends BasePage {
   /**
@@ -12,64 +18,32 @@ class LoginPage extends BasePage {
   constructor(page) {
     super(page);
     
-    // Login form inputs
-    this.emailInput = page.locator(
-      'input[type="email"], input[name="email"], input[id*="email"], ' +
-      'input[placeholder*="email" i], input[name="username"]'
-    ).first();
+    // Sign in button in header
+    this.signInButton = page.getByTestId('menu-user-btn-signin');
     
-    this.passwordInput = page.locator(
-      'input[type="password"], input[name="password"], input[id*="password"]'
-    ).first();
+    // Login form inputs (in modal)
+    this.emailInput = page.getByTestId('signin-email');
+    this.passwordInput = page.getByTestId('signin-password');
+    this.loginButton = page.getByTestId('signin-submit');
     
-    this.loginButton = page.locator(
-      'button:has-text("Sign In"), button:has-text("Log In"), button:has-text("Login"), ' +
-      'input[type="submit"][value*="Sign In" i], input[type="submit"][value*="Log In" i]'
-    ).first();
-    
-    this.rememberMeCheckbox = page.locator(
-      'input[type="checkbox"][name*="remember" i], input[type="checkbox"][id*="remember" i], ' +
-      'label:has-text("Remember") input[type="checkbox"]'
-    ).first();
-    
-    this.forgotPasswordLink = page.locator(
-      'a:has-text("Forgot Password"), a:has-text("Reset Password"), ' +
-      'a[href*="forgot"], a[href*="reset"]'
-    ).first();
-    
-    this.createAccountLink = page.locator(
-      'a:has-text("Create Account"), a:has-text("Register"), a:has-text("Sign Up")'
-    ).first();
+    // Hello button appears after successful login
+    this.helloButton = page.getByRole('button', { name: /Hello\s*,/i });
     
     // Error messages
-    this.loginError = page.locator(
-      '.login-error, .alert-error, .alert-danger, ' +
-      '[role="alert"]:has-text("invalid"), [role="alert"]:has-text("incorrect")'
-    ).first();
-    
-    this.emailError = page.locator(
-      '[data-error="email"], .email-error, #email-error'
-    ).first();
-    
-    this.passwordError = page.locator(
-      '[data-error="password"], .password-error, #password-error'
-    ).first();
+    this.loginError = page.locator('[role="alert"]').first();
   }
 
   /**
-   * Navigate to login page
+   * Navigate to login modal
    */
   async navigateToLogin() {
     await this.goto('/');
     await this.acceptCookiesIfPresent();
-    await this.closeModalIfPresent();
     
-    // Click sign in link
-    const signInLink = this.page.locator('a:has-text("Sign In"), a:has-text("Sign in")').first();
-    if (await signInLink.isVisible()) {
-      await signInLink.click();
-      await this.waitForPageLoad();
-    }
+    // Click sign in button in header
+    await this.signInButton.waitFor({ state: 'visible', timeout: 10000 });
+    await this.signInButton.click();
+    await this.page.waitForTimeout(1000);
   }
 
   /**
@@ -79,44 +53,24 @@ class LoginPage extends BasePage {
    */
   async login(email, password) {
     await this.navigateToLogin();
-    await this.fillInput(this.emailInput, email);
-    await this.fillInput(this.passwordInput, password);
+    
+    // Fill email
+    await this.emailInput.waitFor({ state: 'visible', timeout: 5000 });
+    await this.emailInput.fill(email);
+    
+    // Fill password
+    await this.passwordInput.fill(password);
+    
+    // Click submit
     await this.loginButton.click();
-    await this.waitForPageLoad();
+    await this.page.waitForTimeout(2000);
   }
 
   /**
-   * Verify successful login
+   * Verify successful login - "Hello, [Name]" button visible
    */
   async verifyLoginSuccess() {
-    // Check for indicators of successful login
-    const loggedInIndicators = [
-      this.page.locator('text=/my account|account settings|sign out|log out/i'),
-      this.page.locator('[data-testid="user-menu"], .user-menu, .account-dropdown'),
-    ];
-    
-    let loginSuccessful = false;
-    for (const indicator of loggedInIndicators) {
-      if (await indicator.isVisible({ timeout: 5000 }).catch(() => false)) {
-        loginSuccessful = true;
-        break;
-      }
-    }
-    
-    // Also check URL
-    const currentUrl = await this.getCurrentUrl();
-    if (currentUrl.includes('account') || currentUrl.includes('dashboard')) {
-      loginSuccessful = true;
-    }
-    
-    expect(loginSuccessful).toBeTruthy();
-  }
-
-  /**
-   * Verify login error is displayed
-   */
-  async verifyLoginError() {
-    await expect(this.loginError).toBeVisible({ timeout: 5000 });
+    await expect(this.helloButton).toBeVisible({ timeout: 10000 });
   }
 
   /**
@@ -124,20 +78,7 @@ class LoginPage extends BasePage {
    * @returns {Promise<boolean>}
    */
   async isLoggedIn() {
-    const signOutLink = this.page.locator('a:has-text("Sign Out"), a:has-text("Log Out"), button:has-text("Sign Out")').first();
-    return signOutLink.isVisible({ timeout: 3000 }).catch(() => false);
-  }
-
-  /**
-   * Logout if currently logged in
-   */
-  async logout() {
-    const signOutLink = this.page.locator('a:has-text("Sign Out"), a:has-text("Log Out"), button:has-text("Sign Out")').first();
-    
-    if (await signOutLink.isVisible({ timeout: 3000 })) {
-      await signOutLink.click();
-      await this.waitForPageLoad();
-    }
+    return this.helloButton.isVisible({ timeout: 3000 }).catch(() => false);
   }
 }
 

@@ -182,23 +182,27 @@ class AddressPage extends BasePage {
   /**
    * Navigate to address book page
    * Assumes user is already logged in
-   * Path: Click "Hello, [Name]" dropdown > "Addresses" OR direct URL /account/address
+   * Path: Click "Hello, [Name]" button > "Addresses" menuitem
    */
   async navigateToAddressBook() {
-    // Try direct URL navigation first (more reliable)
-    await this.goto(this.addressListUrl);
+    // Click "Hello, [Name]" button to open dropdown
+    await this.accountDropdown.waitFor({ state: 'visible', timeout: 10000 });
+    await this.accountDropdown.click();
+    await this.page.waitForTimeout(500);
+    
+    // Click "Addresses" menuitem in dropdown
+    await this.addressesMenuLink.waitFor({ state: 'visible', timeout: 5000 });
+    await this.addressesMenuLink.click();
     await this.waitForPageLoad();
-    await this.closeModalIfPresent();
   }
 
   /**
-   * Navigate to Add New Address page directly
-   * URL: /account/address/create
+   * Navigate to Add New Address form
+   * Goes to address book first, then clicks "+ ADD NEW ADDRESS"
    */
   async navigateToAddAddress() {
-    await this.goto(this.addAddressUrl);
-    await this.waitForPageLoad();
-    await this.closeModalIfPresent();
+    await this.navigateToAddressBook();
+    await this.clickAddAddress();
   }
 
   /**
