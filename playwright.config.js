@@ -14,8 +14,8 @@ module.exports = defineConfig({
   // Test directory
   testDir: './tests/e2e',
   
-  // Run tests in files in parallel
-  fullyParallel: true,
+  // Run tests sequentially (one at a time) for easier debugging
+  fullyParallel: false,
   
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
@@ -23,8 +23,8 @@ module.exports = defineConfig({
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
   
-  // Opt out of parallel tests on CI
-  workers: process.env.CI ? 1 : undefined,
+  // Run one test at a time (set to higher number for parallel execution)
+  workers: 1,
   
   // Reporter to use
   reporter: [
