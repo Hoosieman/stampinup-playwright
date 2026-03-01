@@ -37,52 +37,29 @@ class ProfilePage extends BasePage {
     // URL
     this.accountSettingsUrl = '/account/settings';
     
-    // Page header
-    this.myAccountHeader = page.locator('text=/MY ACCOUNT/i, h1:has-text("MY ACCOUNT")').first();
+    // Navigation - using role selectors from codegen
+    this.helloButton = page.getByRole('button', { name: /Hello\s*,/i });
+    this.accountSettingsMenuItem = page.getByRole('menuitem', { name: 'Account Settings' });
     
-    // Left sidebar navigation
-    this.sidebarAccountSettings = page.locator('text="ACCOUNT SETTINGS"').first();
-    this.sidebarAddresses = page.locator('text="ADDRESSES"').first();
-    this.sidebarPayment = page.locator('text="PAYMENT"').first();
-    this.sidebarMyOrders = page.locator('text="MY ORDERS"').first();
-    this.sidebarMyLists = page.locator('text="MY LISTS"').first();
-    this.sidebarSubscriptions = page.locator('text="SUBSCRIPTIONS"').first();
-    this.sidebarDemonstrator = page.locator('text="DEMONSTRATOR"').first();
-    this.sidebarRewards = page.locator('text="REWARDS"').first();
-    this.sidebarNotifications = page.locator('text="NOTIFICATIONS"').first();
-    this.sidebarSignOut = page.locator('text="SIGN OUT"').first();
+    // CONTACT section - using data-testid selectors from codegen
+    this.contactCard = page.getByTestId('account-card-contact');
+    this.contactEditLink = page.getByTestId('account-card-contact').getByTestId('edit-contact-setting');
     
-    // CONTACT section
-    this.contactSectionHeader = page.locator('text="CONTACT"').first();
-    this.contactEditLink = page.locator('text="CONTACT" >> .. >> a:has-text("EDIT"), section:has-text("CONTACT") a:has-text("EDIT")').first();
+    // Contact form fields (in edit mode) - using data-testid
+    this.firstNameInput = page.getByTestId('account-card-firstName');
+    this.lastNameInput = page.getByTestId('account-card-lastName');
+    this.emailInput = page.getByTestId('account-card-email');
+    this.phoneInput = page.getByTestId('account-card-phone');
     
-    // Contact form fields (in edit mode)
-    this.firstNameInput = page.locator(
-      'input[placeholder="First Name"], input[name*="firstName" i], ' +
-      'label:has-text("First Name") + input, label:has-text("First Name") ~ input'
-    ).first();
+    // Preferred contact method dropdown (Vuetify)
+    this.preferredContactInput = page.getByRole('textbox', { name: 'Preferred Method of Contact' });
+    this.preferredContactEmailOption = page.locator('div').filter({ hasText: /^Email$/ }).nth(5);
     
-    this.lastNameInput = page.locator(
-      'input[placeholder="Last Name"], input[name*="lastName" i], ' +
-      'label:has-text("Last Name") + input, label:has-text("Last Name") ~ input'
-    ).first();
+    // Birthday date picker
+    this.birthdatePicker = page.getByTestId('birthday-date-picker');
     
-    this.emailInput = page.locator(
-      'input[placeholder="Email"], input[type="email"], input[name="email"]'
-    ).first();
-    
-    this.phoneInput = page.locator(
-      'input[placeholder="Phone Number"], input[type="tel"], input[name*="phone" i]'
-    ).first();
-    
-    this.preferredContactSelect = page.locator(
-      'select:near(:text("Preferred Method of Contact")), ' +
-      'select[name*="contact" i], [placeholder="Preferred Method of Contact"]'
-    ).first();
-    
-    this.birthdateInput = page.locator(
-      'input[placeholder="Birthdate"], input[name*="birth" i], input[type="date"]'
-    ).first();
+    // Save button for contact section
+    this.saveChangesButton = page.getByTestId('save-changes');
     
     // PASSWORD section
     this.passwordSectionHeader = page.locator('text="PASSWORD"').first();
@@ -148,19 +125,26 @@ class ProfilePage extends BasePage {
 
   /**
    * Navigate to Account Settings page
-   * URL: /account/settings
+   * Click "Hello, [Name]" button > then "Account Settings" menuitem
    * Assumes user is already logged in
    */
   async navigateToProfile() {
-    await this.goto(this.accountSettingsUrl);
+    // Click "Hello, [Name]" button to open dropdown
+    await this.helloButton.waitFor({ state: 'visible', timeout: 10000 });
+    await this.helloButton.click();
+    await this.page.waitForTimeout(500);
+    
+    // Click "Account Settings" menuitem
+    await this.accountSettingsMenuItem.waitFor({ state: 'visible', timeout: 5000 });
+    await this.accountSettingsMenuItem.click();
     await this.waitForPageLoad();
-    await this.closeModalIfPresent();
   }
 
   /**
    * Click EDIT link for CONTACT section to enable editing
    */
   async editContactSection() {
+    await this.contactEditLink.waitFor({ state: 'visible', timeout: 5000 });
     await this.contactEditLink.click();
     await this.page.waitForTimeout(500);
   }
@@ -204,27 +188,49 @@ class ProfilePage extends BasePage {
     await this.editContactSection();
     
     if (profileData.firstName !== undefined) {
-      await this.fillInput(this.firstNameInput, profileData.firstName);
+      await this.firstNameInput.click();
+      await this.firstNameInput.fill(profileData.firstName);
     }
     
     if (profileData.lastName !== undefined) {
-      await this.fillInput(this.lastNameInput, profileData.lastName);
+      await this.lastNameInput.click();
+      await this.lastNameInput.fill(profileData.lastName);
     }
     
     if (profileData.email !== undefined) {
-      await this.fillInput(this.emailInput, profileData.email);
+      await this.emailInput.click();
+      await this.emailInput.fill(profileData.email);
     }
     
     if (profileData.phone !== undefined) {
-      await this.fillInput(this.phoneInput, profileData.phone);
+      await this.phoneInput.click();
+      await this.phoneInput.fill(profileData.phone);
     }
     
-    if (profileData.preferredContact !== undefined && await this.preferredContactSelect.isVisible()) {
-      await this.preferredContactSelect.selectOption({ label: profileData.preferredContact });
+    // Preferred contact method - Vuetify dropdown
+    if (profileData.preferredContact !== undefined) {
+      await this.preferredContactInput.click();
+      await this.page.waitForTimeout(300);
+      // Select the option (e.g., "Email")
+      const option = this.page.locator('div').filter({ hasText: new RegExp(`^${profileData.preferredContact}$`) }).nth(5);
+      await option.click();
+      await this.page.waitForTimeout(300);
     }
     
-    if (profileData.birthdate !== undefined && await this.birthdateInput.isVisible()) {
-      await this.fillInput(this.birthdateInput, profileData.birthdate);
+    // Birthday date picker - complex Vuetify date picker
+    if (profileData.birthdate !== undefined) {
+      await this.birthdatePicker.click();
+      await this.page.waitForTimeout(300);
+      // Select year, month, day from picker
+      if (profileData.birthYear) {
+        await this.page.getByText(profileData.birthYear).click();
+      }
+      if (profileData.birthMonth) {
+        await this.page.getByRole('button', { name: profileData.birthMonth }).click();
+      }
+      if (profileData.birthDay) {
+        await this.page.getByRole('button', { name: profileData.birthDay, exact: true }).click();
+      }
     }
   }
 
@@ -257,7 +263,8 @@ class ProfilePage extends BasePage {
    * Save profile changes
    */
   async saveProfile() {
-    await this.saveButton.click();
+    await this.saveChangesButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.saveChangesButton.click();
     await this.page.waitForTimeout(1000);
   }
 
