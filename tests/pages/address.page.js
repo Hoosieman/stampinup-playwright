@@ -54,9 +54,9 @@ class AddressPage extends BasePage {
     this.addressListUrl = '/account/address';
     this.addAddressUrl = '/account/address/create';
     
-    // Navigation - Account dropdown menu items
-    this.accountDropdown = page.locator('a:has-text("Hello,"), text=/Hello,\\s*\\w+/i').first();
-    this.addressesMenuLink = page.locator('a:has-text("Addresses"), [href*="/account/address"]').first();
+    // Navigation - Account dropdown menu items (using role selectors from codegen)
+    this.accountDropdown = page.getByRole('button', { name: /Hello\s*,/i });
+    this.addressesMenuLink = page.getByRole('menuitem', { name: 'Addresses' });
     
     // Left sidebar navigation
     this.sidebarAccountSettings = page.locator('text="ACCOUNT SETTINGS", a:has-text("Account Settings")').first();
@@ -88,65 +88,23 @@ class AddressPage extends BasePage {
       'div:has-text("DEFAULT MAILING ADDRESS") a:has-text("EDIT")'
     ).first();
     
-    // Name fields (observed in form)
-    this.firstNameInput = page.locator(
-      'input[placeholder="First Name"], input[name*="firstName" i], input[id*="firstName" i]'
-    ).first();
+    // Form fields - using data-testid selectors from Playwright codegen
+    this.firstNameInput = page.getByTestId('address-field-first-name');
+    this.lastNameInput = page.getByTestId('address-field-last-name');
+    this.addressLine1Input = page.getByTestId('address.addressLine1');
+    this.addressLine2Input = page.getByTestId('address-field-addressLine2');
+    this.cityInput = page.getByTestId('address-field-city');
+    this.stateSelect = page.getByTestId('autocomplete-field-div'); // State dropdown
+    this.zipCodeInput = page.getByTestId('address-field-postalCode');
+    this.phoneInput = page.getByTestId('address-telephone');
     
-    this.lastNameInput = page.locator(
-      'input[placeholder="Last Name"], input[name*="lastName" i], input[id*="lastName" i]'
-    ).first();
+    // Default address checkboxes (Vuetify ripple elements)
+    this.defaultShippingCheckbox = page.locator('.v-input--selection-controls__ripple').first();
+    this.defaultMailingCheckbox = page.locator('div:nth-child(5) > .col > .v-input > .v-input__control > .v-input__slot > .v-input--selection-controls__input > .v-input--selection-controls__ripple');
     
-    // Address form inputs (observed in form)
-    this.addressLine1Input = page.locator(
-      'input[placeholder="Address"], input[name*="address1" i], input[name*="address" i]:not([name*="address2"]), ' +
-      'input[id*="address1" i], input[placeholder*="street" i]'
-    ).first();
-    
-    this.addressLine2Input = page.locator(
-      'input[placeholder="Address 2"], input[name*="address2" i], ' +
-      'input[id*="address2" i], input[placeholder*="apt" i]'
-    ).first();
-    
-    this.cityInput = page.locator(
-      'input[placeholder="City"], input[name*="city" i], input[id*="city" i]'
-    ).first();
-    
-    // State is a dropdown (observed)
-    this.stateSelect = page.locator(
-      'select[placeholder="State"], select[name*="state" i], select[id*="state" i]'
-    ).first();
-    
-    this.zipCodeInput = page.locator(
-      'input[placeholder="ZIP Code"], input[name*="zip" i], input[name*="postal" i], ' +
-      'input[id*="zip" i]'
-    ).first();
-    
-    this.phoneInput = page.locator(
-      'input[placeholder="Phone Number"], input[type="tel"], input[name*="phone" i], input[id*="phone" i]'
-    ).first();
-    
-    // Default address checkboxes (observed)
-    this.defaultShippingCheckbox = page.locator(
-      'input[type="checkbox"]:near(:text("default shipping")), ' +
-      'label:has-text("Make this my default shipping address") input[type="checkbox"], ' +
-      'input[type="checkbox"][name*="shipping" i]'
-    ).first();
-    
-    this.defaultMailingCheckbox = page.locator(
-      'input[type="checkbox"]:near(:text("default mailing")), ' +
-      'label:has-text("Make this my default mailing address") input[type="checkbox"], ' +
-      'input[type="checkbox"][name*="mailing" i]'
-    ).first();
-    
-    // Action buttons (observed)
-    this.saveAddressButton = page.locator(
-      'button:has-text("SAVE ADDRESS"), button:has-text("Save Address")'
-    ).first();
-    
-    this.cancelButton = page.locator(
-      'a:has-text("CANCEL"), a:has-text("Cancel"), button:has-text("Cancel")'
-    ).first();
+    // Action buttons - using data-testid
+    this.saveAddressButton = page.getByTestId('address-save');
+    this.cancelButton = page.getByTestId('cancelButton');
     
     this.editAddressButton = page.locator(
       'button:has-text("Edit"), a:has-text("Edit"), [data-testid="edit-address"], ' +
@@ -244,17 +202,20 @@ class AddressPage extends BasePage {
   }
 
   /**
-   * Navigate via account dropdown menu (alternative method)
+   * Navigate via account dropdown menu
+   * Click "Hello, [Name]" button > then "Addresses" menuitem
    */
   async navigateViaDropdown() {
     await this.goto('/');
     await this.waitForPageLoad();
     
-    // Click "Hello, [Name]" to open dropdown
+    // Click "Hello, [Name]" button to open dropdown
+    await this.accountDropdown.waitFor({ state: 'visible', timeout: 5000 });
     await this.accountDropdown.click();
-    await this.page.waitForTimeout(300);
+    await this.page.waitForTimeout(500);
     
-    // Click "Addresses" in dropdown
+    // Click "Addresses" menuitem in dropdown
+    await this.addressesMenuLink.waitFor({ state: 'visible', timeout: 3000 });
     await this.addressesMenuLink.click();
     await this.waitForPageLoad();
   }
@@ -269,63 +230,65 @@ class AddressPage extends BasePage {
 
   /**
    * Fill address form
-   * Fields observed on stampinup.com/account/address/create:
-   * - First Name, Last Name, Address, Address 2, City, State (dropdown), ZIP Code, Phone Number
-   * - Checkboxes: default shipping, default mailing
+   * Fields on stampinup.com/account/address/create using data-testid selectors
    * @param {Object} addressData 
    */
   async fillAddressForm(addressData) {
     // Name fields (required)
     if (addressData.firstName !== undefined) {
-      await this.fillInput(this.firstNameInput, addressData.firstName);
+      await this.firstNameInput.click();
+      await this.firstNameInput.fill(addressData.firstName);
     }
     
     if (addressData.lastName !== undefined) {
-      await this.fillInput(this.lastNameInput, addressData.lastName);
+      await this.lastNameInput.click();
+      await this.lastNameInput.fill(addressData.lastName);
     }
     
     // Address fields
     if (addressData.addressLine1 !== undefined) {
-      await this.fillInput(this.addressLine1Input, addressData.addressLine1);
+      await this.addressLine1Input.click();
+      await this.addressLine1Input.fill(addressData.addressLine1);
     }
     
-    if (addressData.addressLine2 !== undefined && await this.addressLine2Input.isVisible()) {
-      await this.fillInput(this.addressLine2Input, addressData.addressLine2);
+    if (addressData.addressLine2 !== undefined) {
+      await this.addressLine2Input.click();
+      await this.addressLine2Input.fill(addressData.addressLine2);
     }
     
     if (addressData.city !== undefined) {
-      await this.fillInput(this.cityInput, addressData.city);
+      await this.cityInput.click();
+      await this.cityInput.fill(addressData.city);
     }
     
-    // State dropdown
+    // State dropdown (Vuetify autocomplete)
     if (addressData.state !== undefined) {
-      if (await this.stateSelect.isVisible()) {
-        await this.stateSelect.selectOption({ label: addressData.state });
-      }
+      await this.stateSelect.click();
+      await this.page.waitForTimeout(300);
+      // Type state and select from dropdown
+      await this.page.keyboard.type(addressData.state);
+      await this.page.waitForTimeout(300);
+      await this.page.keyboard.press('Enter');
     }
     
     if (addressData.zipCode !== undefined) {
-      await this.fillInput(this.zipCodeInput, addressData.zipCode);
+      await this.zipCodeInput.click();
+      await this.zipCodeInput.fill(addressData.zipCode);
     }
     
     // Phone number (required)
     if (addressData.phone !== undefined) {
-      await this.fillInput(this.phoneInput, addressData.phone);
+      await this.phoneInput.click();
+      await this.phoneInput.fill(addressData.phone);
     }
     
-    // Default address checkboxes
-    if (addressData.isDefaultShipping === true && await this.defaultShippingCheckbox.isVisible()) {
-      const isChecked = await this.defaultShippingCheckbox.isChecked();
-      if (!isChecked) {
-        await this.defaultShippingCheckbox.check();
-      }
+    // Default address checkboxes (click the ripple element)
+    if (addressData.isDefaultShipping === true) {
+      await this.defaultShippingCheckbox.click();
     }
     
-    if (addressData.isDefaultMailing === true && await this.defaultMailingCheckbox.isVisible()) {
-      const isChecked = await this.defaultMailingCheckbox.isChecked();
-      if (!isChecked) {
-        await this.defaultMailingCheckbox.check();
-      }
+    if (addressData.isDefaultMailing === true) {
+      await this.defaultMailingCheckbox.click();
     }
   }
 
