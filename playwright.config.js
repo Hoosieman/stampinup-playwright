@@ -57,15 +57,11 @@ module.exports = defineConfig({
     viewport: { width: 1280, height: 720 },
   },
 
-  // Configure projects for major browsers (desktop only)
+  // Configure projects for major browsers (desktop only, no Firefox)
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
     },
     {
       name: 'webkit',
