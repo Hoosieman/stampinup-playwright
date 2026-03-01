@@ -78,24 +78,19 @@ class ProfilePage extends BasePage {
       'input[placeholder="Confirm New Password"], input[name*="confirmPassword" i]'
     ).first();
     
-    // COUNTRY section
-    this.countrySectionHeader = page.locator('text="COUNTRY"').first();
-    this.countryEditLink = page.locator('text="COUNTRY" >> .. >> a:has-text("EDIT"), section:has-text("COUNTRY") a:has-text("EDIT")').first();
+    // COUNTRY section - using data-testid selectors from codegen
+    this.countryCard = page.getByTestId('account-card-country');
+    this.countryEditLink = page.getByTestId('account-card-country').getByTestId('edit-contact-setting');
     
-    // Country fields (in edit mode)
-    this.countrySelect = page.locator(
-      'select:near(:text("COUNTRY")), select[name*="country" i]'
-    ).first();
+    // Country dropdown (in edit mode)
+    this.countrySelect = page.getByTestId('country-select');
     
-    this.preferredLanguageSelect = page.locator(
-      'select:near(:text("Preferred Language")), select[name*="language" i], ' +
-      '[placeholder="Preferred Language"]'
-    ).first();
+    // Confirm dialog after country change
+    this.confirmDialogButton = page.getByTestId('confirm-dialog-btn-confirm');
     
-    // Buttons (each section has its own SAVE CHANGES and CANCEL)
-    this.saveChangesButton = page.locator(
-      'button:has-text("SAVE CHANGES"), button:has-text("Save Changes")'
-    ).first();
+    // Localized greeting buttons (changes based on country)
+    this.bonjourButton = page.getByRole('button', { name: /Bonjour\s*,/i }); // French
+    this.helloButtonAlt = page.getByRole('button', { name: /Hello\s*,/i }); // English/default
     
     this.cancelButton = page.locator(
       'a:has-text("CANCEL"), a:has-text("Cancel"), button:has-text("Cancel")'
@@ -161,6 +156,7 @@ class ProfilePage extends BasePage {
    * Click EDIT link for COUNTRY section to enable editing
    */
   async editCountrySection() {
+    await this.countryEditLink.waitFor({ state: 'visible', timeout: 5000 });
     await this.countryEditLink.click();
     await this.page.waitForTimeout(500);
   }
@@ -236,19 +232,51 @@ class ProfilePage extends BasePage {
 
   /**
    * Fill COUNTRY section form
+   * After changing country, a confirm dialog appears and redirects to homepage with localized greeting
    * @param {Object} countryData 
    */
   async fillCountryForm(countryData) {
     // Click EDIT to enable form fields
     await this.editCountrySection();
     
-    if (countryData.country !== undefined && await this.countrySelect.isVisible()) {
-      await this.countrySelect.selectOption({ label: countryData.country });
+    // Click country dropdown and select option
+    if (countryData.country !== undefined) {
+      await this.countrySelect.click();
+      await this.page.waitForTimeout(300);
+      // Select country from dropdown using role option
+      const countryOption = this.page.getByRole('option', { name: countryData.country });
+      await countryOption.click();
+      await this.page.waitForTimeout(300);
     }
+  }
+
+  /**
+   * Change country and confirm
+   * Full flow: edit country section -> select country -> save -> confirm dialog -> verify localized greeting
+   * @param {string} country - Country name (e.g., "France")
+   */
+  async changeCountry(country) {
+    await this.fillCountryForm({ country });
+    await this.saveProfile();
     
-    if (countryData.preferredLanguage !== undefined && await this.preferredLanguageSelect.isVisible()) {
-      await this.preferredLanguageSelect.selectOption({ label: countryData.preferredLanguage });
-    }
+    // Confirm the country change dialog
+    await this.confirmDialogButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.confirmDialogButton.click();
+    await this.page.waitForTimeout(2000); // Wait for redirect to homepage
+  }
+
+  /**
+   * Verify country was changed to France (checks for "Bonjour" in header)
+   */
+  async verifyCountryChangedToFrance() {
+    await expect(this.bonjourButton).toBeVisible({ timeout: 10000 });
+  }
+
+  /**
+   * Verify country is set to US/English (checks for "Hello" in header)
+   */
+  async verifyCountryIsEnglish() {
+    await expect(this.helloButtonAlt).toBeVisible({ timeout: 10000 });
   }
 
   /**
