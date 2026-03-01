@@ -65,7 +65,6 @@ test.describe('Address Setup', () => {
   /**
    * TC-ADD-001: Successful Address Setup for New User
    * Priority: High
-   * Type: Functional / Positive
    */
   test('TC-ADD-001: should successfully add new address', async () => {
     // Arrange
@@ -87,7 +86,6 @@ test.describe('Address Setup', () => {
   /**
    * TC-ADD-002: Address Setup with Invalid ZIP Code
    * Priority: High
-   * Type: Functional / Negative
    */
   test.describe('TC-ADD-002: Invalid ZIP Code Validation', () => {
     const testZips = InvalidZipCodes.US.slice(0, 3); // Test first 3
@@ -118,7 +116,6 @@ test.describe('Address Setup', () => {
   /**
    * TC-ADD-003: Address Setup with Missing Required Fields
    * Priority: High
-   * Type: Functional / Negative
    */
   test('TC-ADD-003: should show errors for missing required fields', async () => {
     // Act - Try to save without filling any fields
@@ -158,7 +155,6 @@ test.describe('Address Setup', () => {
   /**
    * TC-ADD-004: Adding Multiple Addresses
    * Priority: Medium
-   * Type: Functional / Positive
    */
   test('TC-ADD-004: should allow adding multiple addresses', async () => {
     // Arrange
@@ -186,7 +182,6 @@ test.describe('Address Setup', () => {
   /**
    * TC-ADD-005: Setting Default Address
    * Priority: Medium
-   * Type: Functional / Positive
    */
   test('TC-ADD-005: should allow setting and changing default address', async () => {
     // Prerequisite: Need at least 2 addresses
@@ -214,7 +209,6 @@ test.describe('Address Setup', () => {
   /**
    * TC-ADD-006: Edit Existing Address
    * Priority: High
-   * Type: Functional / Positive
    */
   test('TC-ADD-006: should allow editing existing address', async () => {
     // Prerequisite: Need at least 1 address
@@ -244,7 +238,6 @@ test.describe('Address Setup', () => {
   /**
    * TC-ADD-007: Delete Address
    * Priority: Medium
-   * Type: Functional / Positive
    */
   test('TC-ADD-007: should allow deleting an address', async () => {
     // Prerequisite: Need at least 2 addresses (keep one after delete)
@@ -271,7 +264,6 @@ test.describe('Address Setup', () => {
   /**
    * TC-ADD-008: Address Validation with PO Box
    * Priority: Medium
-   * Type: Functional / Edge Case
    */
   test('TC-ADD-008: should handle PO Box addresses appropriately', async () => {
     // Arrange
@@ -294,7 +286,6 @@ test.describe('Address Setup', () => {
   /**
    * TC-ADD-009: International Address Setup
    * Priority: Medium
-   * Type: Functional / Positive
    */
   test('TC-ADD-009: should support international addresses', async () => {
     // Arrange
@@ -313,7 +304,6 @@ test.describe('Address Setup', () => {
   /**
    * TC-ADD-010: Use Shipping Address for Default Mailing Address
    * Priority: Medium
-   * Type: Functional / Positive
    * 
    * OBSERVED BEHAVIOR:
    * - When user has a default shipping address but no default mailing address
@@ -355,7 +345,6 @@ test.describe('Address Setup', () => {
   /**
    * Additional Test: Address book page loads correctly
    * Priority: High
-   * Type: Smoke Test
    */
   test('Address book page should load correctly', async () => {
     // Act
@@ -373,7 +362,6 @@ test.describe('Address Setup', () => {
   /**
    * Additional Test: Address form fields load correctly
    * Priority: High
-   * Type: Smoke Test
    */
   test('Add address form should display all required fields', async () => {
     // Act
@@ -390,7 +378,6 @@ test.describe('Address Setup', () => {
   /**
    * Additional Test: Verify country selection changes form
    * Priority: Low
-   * Type: UI / UX
    */
   test('Country selection should update form appropriately', async () => {
     // Act
@@ -416,7 +403,6 @@ test.describe('Address Setup', () => {
   /**
    * Additional Test: Cancel should discard unsaved address
    * Priority: Medium
-   * Type: Functional / Usability
    */
   test('Cancel should discard unsaved address changes', async () => {
     // Arrange

@@ -51,7 +51,6 @@ test.describe('User Profile Setup', () => {
   /**
    * TC-PRF-001: Successful Initial Profile Setup
    * Priority: High
-   * Type: Functional / Positive
    */
   test('TC-PRF-001: should successfully setup initial profile for new user', async () => {
     // Arrange
@@ -76,7 +75,6 @@ test.describe('User Profile Setup', () => {
   /**
    * TC-PRF-002: Profile Update with Invalid Phone Number
    * Priority: Medium
-   * Type: Functional / Negative
    */
   test.describe('TC-PRF-002: Invalid Phone Number Validation', () => {
     const testPhones = InvalidPhoneNumbers.slice(0, 3); // Test first 3
@@ -106,7 +104,6 @@ test.describe('User Profile Setup', () => {
   /**
    * TC-PRF-003: Profile Update with Maximum Length Inputs
    * Priority: Low
-   * Type: Functional / Boundary
    */
   test('TC-PRF-003: should handle maximum length inputs gracefully', async () => {
     // Arrange - Generate very long names
@@ -129,7 +126,6 @@ test.describe('User Profile Setup', () => {
   /**
    * TC-PRF-004: Profile Update with Email Change
    * Priority: High
-   * Type: Functional / Positive
    */
   test('TC-PRF-004: should allow email address change', async () => {
     // Arrange
@@ -154,7 +150,6 @@ test.describe('User Profile Setup', () => {
   /**
    * TC-PRF-005: Profile Update - Cancel Changes
    * Priority: Medium
-   * Type: Functional / Usability
    */
   test('TC-PRF-005: should discard changes when canceling', async () => {
     // Arrange
@@ -181,7 +176,6 @@ test.describe('User Profile Setup', () => {
   /**
    * TC-PRF-006: Profile Setup - Required vs Optional Fields
    * Priority: Medium
-   * Type: Functional / UI Verification
    */
   test('TC-PRF-006: should identify required vs optional fields', async () => {
     // Act
@@ -198,7 +192,6 @@ test.describe('User Profile Setup', () => {
   /**
    * Additional Test: Profile page loads correctly
    * Priority: High
-   * Type: Smoke Test
    */
   test('Profile page should load with user data', async () => {
     // Act
@@ -213,7 +206,6 @@ test.describe('User Profile Setup', () => {
   /**
    * Additional Test: Profile data persists across sessions
    * Priority: Medium
-   * Type: Functional / Data Persistence
    */
   test('Profile data should persist after page refresh', async () => {
     // Arrange
@@ -234,7 +226,6 @@ test.describe('User Profile Setup', () => {
   /**
    * Additional Test: Verify save button state
    * Priority: Low
-   * Type: UI / UX
    */
   test('Save button should be accessible after making changes', async () => {
     // Act

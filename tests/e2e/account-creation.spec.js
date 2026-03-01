@@ -35,7 +35,6 @@ test.describe('Account Creation', () => {
   /**
    * TC-ACC-001: Successful Account Creation with Valid Data
    * Priority: High
-   * Type: Functional / Positive
    * 
    * Expected flow:
    * 1. Click "Sign In" in header to open modal
@@ -61,7 +60,6 @@ test.describe('Account Creation', () => {
   /**
    * TC-ACC-002: Account Creation with Already Registered Email
    * Priority: High
-   * Type: Functional / Negative
    */
   test('TC-ACC-002: should show error for already registered email', async () => {
     // Arrange - Use an email that's already registered
@@ -78,7 +76,6 @@ test.describe('Account Creation', () => {
   /**
    * TC-ACC-003: Account Creation with Invalid Email Format
    * Priority: High
-   * Type: Functional / Negative
    */
   test.describe('TC-ACC-003: Invalid Email Format Validation', () => {
     const testEmails = InvalidEmails.slice(0, 4); // Test first 4 invalid emails
@@ -104,7 +101,6 @@ test.describe('Account Creation', () => {
   /**
    * TC-ACC-004: Account Creation with Weak Password
    * Priority: High
-   * Type: Functional / Negative / Security
    * 
    * Site behavior observed:
    * - Password field shows strength indicator ("Weak" in red)
@@ -135,7 +131,6 @@ test.describe('Account Creation', () => {
   /**
    * TC-ACC-005: Account Creation with Password Mismatch
    * Priority: Medium
-   * Type: Functional / Negative
    */
   test('TC-ACC-005: should show error when passwords do not match', async () => {
     // Arrange
@@ -154,7 +149,6 @@ test.describe('Account Creation', () => {
   /**
    * TC-ACC-006: Account Creation with Empty Required Fields
    * Priority: High
-   * Type: Functional / Negative
    */
   test('TC-ACC-006: should show errors for empty required fields', async () => {
     // Act
@@ -168,7 +162,6 @@ test.describe('Account Creation', () => {
   /**
    * TC-ACC-007: Account Creation with Special Characters in Name Fields
    * Priority: Medium
-   * Type: Functional / Boundary
    */
   test('TC-ACC-007: should accept special characters in name fields', async () => {
     // Arrange
@@ -190,7 +183,6 @@ test.describe('Account Creation', () => {
   /**
    * TC-ACC-008: Account Creation - Terms and Conditions Validation
    * Priority: High
-   * Type: Functional / Negative / Compliance
    */
   test('TC-ACC-008: should require terms and conditions acceptance', async () => {
     // Arrange
@@ -216,7 +208,6 @@ test.describe('Account Creation', () => {
   /**
    * Additional Test: Verify registration form loads correctly
    * Priority: High
-   * Type: Smoke Test
    */
   test('Registration form should load with all required fields', async () => {
     // Act
@@ -231,7 +222,6 @@ test.describe('Account Creation', () => {
   /**
    * Additional Test: Password strength indicator
    * Priority: Low
-   * Type: UI / UX
    */
   test('Password field should show strength indicator for weak password', async ({ page }) => {
     // Arrange
