@@ -14,8 +14,7 @@
 2. [Account Creation Test Cases](#1-account-creation-test-cases)
 3. [User Profile Setup Test Cases](#2-user-profile-setup-test-cases)
 4. [Address Setup Test Cases](#3-address-setup-test-cases)
-5. [Search Query Persistence Test Cases](#4-search-query-persistence-test-cases)
-6. [Traceability Matrix](#traceability-matrix)
+5. [Traceability Matrix](#traceability-matrix)
 
 ---
 
@@ -23,7 +22,6 @@
 - **TC-ACC-XXX:** Account Creation related test cases
 - **TC-PRF-XXX:** Profile Setup related test cases
 - **TC-ADD-XXX:** Address Setup related test cases
-- **TC-SEARCH-XXX:** Search functionality related test cases (001-005)
 
 ---
 
@@ -725,140 +723,6 @@
 
 ---
 
-## 4. Search Query Persistence Test Cases
-
-> **Note:** These test cases were created based on a discovered bug where the search input field does not retain the user's query after performing a search.
-
-### TC-SEARCH-001: Search Query Not Persisting After Search (Bug Reproduction)
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-SEARCH-001 |
-| **Title** | Search Query Should Persist in Input Field After Search |
-| **Priority** | High |
-| **Type** | Functional / Bug Verification |
-| **Bug Status** | Open - Reported |
-| **Preconditions** | 1. User is on the Stampin' Up! homepage<br>2. Search functionality is available |
-| **Test Data** | Search term: "butterfly" |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Navigate to www.stampinup.com | Homepage loads successfully |
-| 2 | Locate the search input field in the header | Search field is visible |
-| 3 | Enter "butterfly" in the search field | Text appears in search field |
-| 4 | Press Enter or click the search button | Search results page loads |
-| 5 | Observe the search input field | **Expected:** Search field contains "butterfly"<br>**Actual (Bug):** Search field is empty |
-
-**Expected Result:** After performing a search, the search input field should retain the search query so users can easily modify their search.
-
-**Actual Result (Bug):** The search input field is cleared after the search is performed, forcing users to re-type their entire query if they want to refine it.
-
-**Impact:** Poor user experience when users want to refine their search queries.
-
----
-
-### TC-SEARCH-002: Verify Search Input Is Not Empty After Search
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-SEARCH-002 |
-| **Title** | Search Input Should Display Current Query |
-| **Priority** | High |
-| **Type** | Functional / Positive |
-| **Preconditions** | User is on the homepage |
-| **Test Data** | Search term: "stamps" |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Navigate to homepage | Page loads |
-| 2 | Enter "stamps" in search field | Text entered |
-| 3 | Submit search | Results page loads |
-| 4 | Check search input value | Input should contain "stamps", not be empty |
-| 5 | Check input is not showing placeholder text | Actual value present, not placeholder |
-
-**Expected Result:** Search input displays the current search term, not placeholder or empty.
-
----
-
-### TC-SEARCH-003: User Search Refinement Workflow
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-SEARCH-003 |
-| **Title** | User Should Be Able to Refine Search Without Retyping |
-| **Priority** | High |
-| **Type** | Functional / Usability |
-| **Preconditions** | User is on homepage |
-| **Test Data** | Initial: "card" → Refined: "card making" |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Search for "card" | Results for "card" appear |
-| 2 | Verify "card" is in search input | Search field contains "card" |
-| 3 | Click at end of search input | Cursor is placed in field |
-| 4 | Add " making" to existing text | Search field shows "card making" |
-| 5 | Submit refined search | Results for "card making" appear |
-
-**Expected Result:** User can easily refine search by modifying existing query without retyping.
-
----
-
-### TC-SEARCH-004: Search via Button vs Enter Key
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-SEARCH-004 |
-| **Title** | Query Persistence Should Work for Both Search Methods |
-| **Priority** | Medium |
-| **Type** | Functional / Positive |
-| **Preconditions** | User is on homepage |
-| **Test Data** | Search term: "embossing" |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Enter "embossing" and press Enter key | Search results appear |
-| 2 | Verify "embossing" in search input | Query persists |
-| 3 | Clear search and enter "embossing" again | Text entered |
-| 4 | Click search button instead of Enter | Search results appear |
-| 5 | Verify "embossing" in search input | Query persists regardless of submit method |
-
-**Expected Result:** Search query persists regardless of whether user pressed Enter or clicked the search button.
-
----
-
-### TC-SEARCH-005: Search Query Persistence Across Page Refresh
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-SEARCH-005 |
-| **Title** | Search Query Should Persist After Page Refresh |
-| **Priority** | Medium |
-| **Type** | Functional / Positive |
-| **Preconditions** | User has performed a search |
-| **Test Data** | Search term: "washi tape" |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Search for "washi tape" | Results page loads |
-| 2 | Verify URL contains search parameter | URL shows ?q=washi+tape or similar |
-| 3 | Refresh the page (F5 or Ctrl+R) | Page reloads |
-| 4 | Verify search input still contains "washi tape" | Query persists after refresh |
-| 5 | Verify results are still displayed | Same results shown |
-
-**Expected Result:** Search query and results persist after page refresh.
-
----
-
 ## Traceability Matrix
 
 | Requirement | Test Cases | Priority |
@@ -871,8 +735,6 @@
 | Data Validation | TC-ACC-003, TC-ACC-006, TC-ADD-002, TC-ADD-003 | High |
 | Default Settings | TC-ADD-005, TC-ADD-010 | Medium |
 | CRUD Operations | TC-ADD-001, TC-ADD-006, TC-ADD-007 | High |
-| Search Functionality | TC-SEARCH-001 through TC-SEARCH-005 | High/Medium |
-| Search Query Persistence (Bug) | TC-SEARCH-001, TC-SEARCH-002, TC-SEARCH-003 | High |
 
 ---
 

@@ -8,7 +8,6 @@ const { LoginPage } = require('./login.page');
 const { SignupPage } = require('./signup.page');
 const { ProfilePage } = require('./profile.page');
 const { AddressPage } = require('./address.page');
-const { SearchPage } = require('./search.page');
 
 module.exports = {
   BasePage,
@@ -16,5 +15,4 @@ module.exports = {
   SignupPage,
   ProfilePage,
   AddressPage,
-  SearchPage,
 };

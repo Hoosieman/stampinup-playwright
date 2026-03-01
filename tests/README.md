@@ -11,7 +11,6 @@ tests/
 ├── e2e/
 │   ├── account-creation.spec.js       # Account registration tests (TC-ACC-001 to TC-ACC-008)
 │   ├── address-setup.spec.js          # Address management tests (TC-ADD-001 to TC-ADD-010)
-│   ├── search-query-persistence.spec.js # Search bug verification tests (TC-SEARCH-001 to TC-SEARCH-005)
 │   └── user-profile.spec.js           # Profile setup tests (TC-PRF-001 to TC-PRF-006)
 ├── fixtures/
 │   └── test-data.js           # Test data factories and constants
@@ -21,8 +20,9 @@ tests/
 │   ├── login.page.js          # Login page object
 │   ├── signup.page.js         # Registration page object
 │   ├── profile.page.js        # Profile settings page object
-│   ├── address.page.js        # Address book page object
-│   └── search.page.js         # Search functionality page object
+│   └── address.page.js        # Address book page object
+├── sql/
+│   └── sql-answers.md         # SQL interview questions and answers
 └── README.md
 ```
 
@@ -141,16 +141,6 @@ tests/
 - [x] TC-ADD-009: International address support
 - [x] TC-ADD-010: Use shipping address for default mailing address
 
-### Search Query Persistence (TC-SEARCH-001 to TC-SEARCH-005)
-
-> **Bug Found:** Search input field does not retain user's query after performing a search, impacting UX when users want to refine their searches.
-
-- [x] TC-SEARCH-001: Search query not persisting after search (bug reproduction)
-- [x] TC-SEARCH-002: Verify search input is not empty after search
-- [x] TC-SEARCH-003: User search refinement workflow friction
-- [x] TC-SEARCH-004: Search via button vs Enter key consistency
-- [x] TC-SEARCH-005: Search query persistence across page refresh
-
 ## Setup
 
 ### Prerequisites
@@ -206,9 +196,6 @@ pnpm exec playwright test user-profile
 
 # Run only address tests
 pnpm exec playwright test address-setup
-
-# Run only search persistence tests (bug verification)
-pnpm exec playwright test search-query-persistence
 ```
 
 ### Run on Specific Browsers
