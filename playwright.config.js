@@ -82,8 +82,8 @@ module.exports = defineConfig({
   // Output directory for test artifacts
   outputDir: 'test-results/',
   
-  // Timeout for each test
-  timeout: 60000,
+  // Timeout for each test (3 minutes to allow time for manual CAPTCHA solving)
+  timeout: 180000,
   
   // Expect timeout
   expect: {

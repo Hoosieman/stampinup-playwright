@@ -37,6 +37,40 @@ class BasePage {
     await this.page.waitForLoadState('load');
     // Small buffer for any JavaScript to initialize
     await this.page.waitForTimeout(500);
+    // Check for CAPTCHA and wait if detected
+    await this.waitForCaptchaIfPresent();
+  }
+
+  /**
+   * Detect CAPTCHA/bot protection and pause to allow manual completion
+   * Checks for Incapsula/hCaptcha security pages
+   */
+  async waitForCaptchaIfPresent() {
+    try {
+      // Check for Incapsula/hCaptcha security page indicators
+      const captchaIndicators = [
+        'text="I am human"',
+        'text="Additional security check"',
+        'iframe[src*="hcaptcha"]',
+        'text="Incapsula"',
+      ];
+      
+      for (const selector of captchaIndicators) {
+        const element = this.page.locator(selector).first();
+        if (await element.isVisible({ timeout: 1000 }).catch(() => false)) {
+          console.log('[v0] CAPTCHA detected! Please solve it manually. Waiting up to 2 minutes...');
+          // Wait for CAPTCHA to disappear (user solved it) or for main site content to appear
+          await this.page.waitForSelector('[data-testid="menu-user-btn-signin"], .logo, header', { 
+            timeout: 120000 
+          });
+          console.log('[v0] CAPTCHA completed, continuing test...');
+          await this.page.waitForTimeout(1000);
+          break;
+        }
+      }
+    } catch {
+      // No CAPTCHA or already solved, continue
+    }
   }
 
   /**
