@@ -29,10 +29,14 @@ class BasePage {
 
   /**
    * Wait for page to fully load
+   * Note: Avoiding 'networkidle' as sites with analytics/chat widgets never reach idle state
    */
   async waitForPageLoad() {
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForLoadState('networkidle');
+    // Use 'load' instead of 'networkidle' - more reliable for sites with continuous network activity
+    await this.page.waitForLoadState('load');
+    // Small buffer for any JavaScript to initialize
+    await this.page.waitForTimeout(500);
   }
 
   /**
@@ -40,7 +44,8 @@ class BasePage {
    */
   async clickSignIn() {
     await this.signInLink.click();
-    await this.waitForPageLoad();
+    // Wait for modal/page transition rather than full page load
+    await this.page.waitForTimeout(1000);
   }
 
   /**
