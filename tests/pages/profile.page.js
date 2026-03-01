@@ -61,22 +61,14 @@ class ProfilePage extends BasePage {
     // Save button for contact section
     this.saveChangesButton = page.getByTestId('save-changes');
     
-    // PASSWORD section
-    this.passwordSectionHeader = page.locator('text="PASSWORD"').first();
-    this.passwordEditLink = page.locator('text="PASSWORD" >> .. >> a:has-text("EDIT"), section:has-text("PASSWORD") a:has-text("EDIT")').first();
+    // PASSWORD section - using data-testid selectors from codegen
+    this.passwordCard = page.getByTestId('account-card-password');
+    this.passwordEditLink = page.getByTestId('account-card-password').getByTestId('edit-contact-setting');
     
-    // Password fields (observed placeholders)
-    this.confirmCurrentPasswordInput = page.locator(
-      'input[placeholder="Confirm Current Password"], input[name*="currentPassword" i]'
-    ).first();
-    
-    this.newPasswordInput = page.locator(
-      'input[placeholder="New Password"], input[name*="newPassword" i]'
-    ).first();
-    
-    this.confirmNewPasswordInput = page.locator(
-      'input[placeholder="Confirm New Password"], input[name*="confirmPassword" i]'
-    ).first();
+    // Password fields (in edit mode) - using data-testid and role selectors
+    this.currentPasswordInput = page.getByTestId('current-password');
+    this.newPasswordInput = page.getByRole('textbox', { name: 'New Password', exact: true });
+    this.confirmNewPasswordInput = page.getByRole('textbox', { name: 'Confirm New Password' });
     
     // COUNTRY section - using data-testid selectors from codegen
     this.countryCard = page.getByTestId('account-card-country');
@@ -148,6 +140,7 @@ class ProfilePage extends BasePage {
    * Click EDIT link for PASSWORD section to enable editing
    */
   async editPasswordSection() {
+    await this.passwordEditLink.waitFor({ state: 'visible', timeout: 5000 });
     await this.passwordEditLink.click();
     await this.page.waitForTimeout(500);
   }
@@ -382,6 +375,7 @@ class ProfilePage extends BasePage {
   /**
    * Change password
    * Password requirement: minimum 8 characters with at least one capital letter and one number
+   * Note: After successful change, an email notification is sent to the user
    * @param {string} currentPassword 
    * @param {string} newPassword 
    */
@@ -389,10 +383,19 @@ class ProfilePage extends BasePage {
     // Click EDIT to enable password fields
     await this.editPasswordSection();
     
-    await this.fillInput(this.confirmCurrentPasswordInput, currentPassword);
-    await this.fillInput(this.newPasswordInput, newPassword);
-    await this.fillInput(this.confirmNewPasswordInput, newPassword);
+    // Fill current password
+    await this.currentPasswordInput.click();
+    await this.currentPasswordInput.fill(currentPassword);
     
+    // Fill new password
+    await this.newPasswordInput.click();
+    await this.newPasswordInput.fill(newPassword);
+    
+    // Fill confirm new password
+    await this.confirmNewPasswordInput.click();
+    await this.confirmNewPasswordInput.fill(newPassword);
+    
+    // Save changes
     await this.saveChangesButton.click();
     await this.page.waitForTimeout(1000);
   }
