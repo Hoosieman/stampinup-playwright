@@ -55,18 +55,24 @@ module.exports = defineConfig({
     
     // Viewport size
     viewport: { width: 1280, height: 720 },
+    
+    // Slow down actions to avoid bot detection (milliseconds between actions)
+    launchOptions: {
+      slowMo: 500, // 500ms delay between actions
+    },
   },
 
-  // Configure projects for major browsers (desktop only, no Firefox)
+  // Configure projects - Chromium only to reduce bot detection triggers
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // Uncomment webkit when needed:
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
   ],
 
   // Global setup and teardown
