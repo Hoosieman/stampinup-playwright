@@ -97,13 +97,17 @@ class SignupPage extends BasePage {
     // Password strength indicator - shows "Weak" (red), "Medium", or "Strong"
     this.passwordStrengthIndicator = page.getByText('Weak').or(page.getByText('Medium')).or(page.getByText('Strong'));
     
-    // Join Stampin' Rewards popup (appears after registration)
-    this.rewardsModal = page.locator('[role="dialog"], .modal').filter({ hasText: "JOIN STAMPIN' REWARDS" });
+    // Join Stampin' Rewards popup (appears after registration) - using data-testid
+    this.rewardsMaybeLaterButton = page.getByTestId('rewards-maybe-later');
     this.rewardsGetStartedButton = page.locator('button:has-text("GET STARTED")');
-    this.rewardsMaybeLaterButton = page.locator('button:has-text("MAYBE LATER"), a:has-text("MAYBE LATER")');
     
-    // Success indicator - "Hello, [FIRST NAME]" in header
-    this.helloUserHeader = page.locator('text=/Hello,\\s*\\w+/i, a:has-text("Hello,")');
+    // Confirm dialog that appears after clicking MAYBE LATER
+    this.confirmDialog = page.getByTestId('confirm-dialog');
+    this.confirmDialogCloseButton = page.getByTestId('confirm-dialog').locator('button').filter({ hasText: 'Close' });
+    
+    // Success indicator - "Hello, [FIRST NAME]" button in header
+    // Example: page.getByRole('button', { name: 'Hello ,  Test' })
+    this.helloUserButton = page.getByRole('button', { name: /Hello\s*,\s*\w+/i });
     
     // Success elements
     this.successMessage = page.locator(
@@ -222,48 +226,43 @@ class SignupPage extends BasePage {
 
   /**
    * Verify registration was successful
-   * Success indicators on stampinup.com:
-   * 1. "Join Stampin' Rewards!" popup appears
-   * 2. Header shows "Hello, [FIRST NAME]" in top right
+   * Success flow on stampinup.com:
+   * 1. "Join Stampin' Rewards!" popup appears - click "MAYBE LATER"
+   * 2. Confirm dialog appears - click "Close"
+   * 3. Header shows "Hello, [FIRST NAME]" button
    */
-  async verifyRegistrationSuccess() {
-    let successFound = false;
+  async verifyRegistrationSuccess(firstName) {
+    // Step 1: Click "MAYBE LATER" on rewards popup
+    await this.rewardsMaybeLaterButton.waitFor({ state: 'visible', timeout: 10000 });
+    await this.rewardsMaybeLaterButton.click();
+    await this.page.waitForTimeout(500);
     
-    // Check for "Join Stampin' Rewards!" popup (appears after registration)
-    if (await this.rewardsModal.isVisible({ timeout: 5000 }).catch(() => false)) {
-      successFound = true;
-      // Optionally dismiss the rewards popup
-      await this.dismissRewardsPopup();
+    // Step 2: Click "Close" on confirm dialog
+    await this.confirmDialogCloseButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.confirmDialogCloseButton.click();
+    await this.page.waitForTimeout(500);
+    
+    // Step 3: Verify "Hello, [FIRST NAME]" button is visible in header
+    if (firstName) {
+      const helloButton = this.page.getByRole('button', { name: new RegExp(`Hello\\s*,\\s*${firstName}`, 'i') });
+      await expect(helloButton).toBeVisible({ timeout: 5000 });
+    } else {
+      await expect(this.helloUserButton).toBeVisible({ timeout: 5000 });
     }
-    
-    // Check for "Hello, [FIRST NAME]" in header
-    if (await this.helloUserHeader.isVisible({ timeout: 5000 }).catch(() => false)) {
-      successFound = true;
-    }
-    
-    // Fallback: check for other success indicators
-    const possibleSuccessIndicators = [
-      this.successMessage,
-      this.welcomeMessage,
-      this.page.locator('text=/welcome|account created|registration successful/i')
-    ];
-    
-    for (const indicator of possibleSuccessIndicators) {
-      if (await indicator.isVisible({ timeout: 3000 }).catch(() => false)) {
-        successFound = true;
-        break;
-      }
-    }
-    
-    expect(successFound).toBeTruthy();
   }
 
   /**
-   * Dismiss the "Join Stampin' Rewards!" popup by clicking "MAYBE LATER"
+   * Dismiss the "Join Stampin' Rewards!" popup by clicking "MAYBE LATER" then "Close"
    */
   async dismissRewardsPopup() {
+    // Click MAYBE LATER
     if (await this.rewardsMaybeLaterButton.isVisible({ timeout: 3000 })) {
       await this.rewardsMaybeLaterButton.click();
+      await this.page.waitForTimeout(500);
+    }
+    // Click Close on confirm dialog
+    if (await this.confirmDialogCloseButton.isVisible({ timeout: 3000 })) {
+      await this.confirmDialogCloseButton.click();
       await this.page.waitForTimeout(500);
     }
   }
@@ -279,12 +278,12 @@ class SignupPage extends BasePage {
   }
 
   /**
-   * Verify that user is logged in by checking for "Hello, [name]" in header
+   * Verify that user is logged in by checking for "Hello, [name]" button in header
    * @param {string} firstName - Expected first name to verify
    */
   async verifyLoggedInAs(firstName) {
-    const helloText = this.page.locator(`text=/Hello,\\s*${firstName}/i`);
-    await expect(helloText).toBeVisible({ timeout: 5000 });
+    const helloButton = this.page.getByRole('button', { name: new RegExp(`Hello\\s*,\\s*${firstName}`, 'i') });
+    await expect(helloButton).toBeVisible({ timeout: 5000 });
   }
 
   /**
