@@ -265,14 +265,15 @@ class AddressPage extends BasePage {
       await this.cityInput.fill(addressData.city);
     }
     
-    // State dropdown (Vuetify autocomplete)
+    // State dropdown (Vuetify autocomplete) - click to open, then select option
     if (addressData.state !== undefined) {
       await this.stateSelect.click();
+      await this.page.waitForTimeout(500);
+      // Click on the state option from the dropdown list
+      const stateOption = this.page.getByRole('option', { name: addressData.state });
+      await stateOption.waitFor({ state: 'visible', timeout: 3000 });
+      await stateOption.click();
       await this.page.waitForTimeout(300);
-      // Type state and select from dropdown
-      await this.page.keyboard.type(addressData.state);
-      await this.page.waitForTimeout(300);
-      await this.page.keyboard.press('Enter');
     }
     
     if (addressData.zipCode !== undefined) {
