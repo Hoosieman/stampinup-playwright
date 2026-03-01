@@ -723,39 +723,4 @@
 
 ---
 
-## Traceability Matrix
 
-| Requirement | Test Cases | Priority |
-|-------------|------------|----------|
-| User Registration | TC-ACC-001 through TC-ACC-008 | High |
-| Email Validation | TC-ACC-002, TC-ACC-003, TC-PRF-004 | High |
-| Password Security | TC-ACC-004, TC-ACC-005 | High |
-| Profile Management | TC-PRF-001 through TC-PRF-006 | High/Medium |
-| Address Management | TC-ADD-001 through TC-ADD-010 | High/Medium |
-| Data Validation | TC-ACC-003, TC-ACC-006, TC-ADD-002, TC-ADD-003 | High |
-| Default Settings | TC-ADD-005, TC-ADD-010 | Medium |
-| CRUD Operations | TC-ADD-001, TC-ADD-006, TC-ADD-007 | High |
-
----
-
-## Test Execution Notes
-
-### Environment Requirements
-- Supported browsers: Chrome (latest), Firefox (latest), Safari (latest), Edge (latest)
-- Screen resolutions: 1920x1080, 1366x768, Mobile (375x667)
-- Network conditions: Standard broadband
-
-### Test Data Management
-- Use unique timestamps for email generation to avoid conflicts
-- Clean up test accounts after test suite completion when possible
-- Use realistic but fake data for all PII fields
-
-### Known Limitations
-- Tests require a live site connection
-- Some tests may require manual email verification
-- Rate limiting may affect rapid test execution
-
----
-
-*Document prepared for QA Technical Assessment*
-*Stampin' Up! E-commerce Platform Testing*
