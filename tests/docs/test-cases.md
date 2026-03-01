@@ -716,11 +716,6 @@
 
 **Expected Result:** Clicking "USE MY SHIPPING ADDRESS" copies the default shipping address to become the default mailing address, eliminating the need to re-enter the same address.
 
-**Notes:**
-- This is a convenience feature for users who want the same address for shipping and mailing
-- The address list page is at /account/address (not /account/address/create)
-- Note on page: "Updates made on this page don't apply to your subscriptions. To update your subscription information, go to the Subscriptions tab."
-
 ---
 
 
