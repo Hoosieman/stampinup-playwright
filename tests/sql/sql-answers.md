@@ -1,30 +1,10 @@
 # SQL Interview Questions & Answers
 
-## Table Schemas
-
-**Customers Table:**
-| Column | Type |
-|--------|------|
-| CustomerId | INT (PK) |
-| Name | VARCHAR |
-| Email | VARCHAR |
-
-**Orders Table:**
-| Column | Type |
-|--------|------|
-| OrderId | INT (PK) |
-| CustomerId | INT (FK) |
-| OrderDate | DATE |
-| Status | VARCHAR |
-| Total | DECIMAL |
-
----
-
 ## Question 1: Find Failed Orders in Last 30 Days
 
 **Question:** Given an Orders table with columns OrderId, CustomerId, OrderDate, Status, and Total, write a query to find all orders placed in the last 30 days with a status of 'Failed'.
 
-**Answer:**
+**My Answer:**
 ```sql
 SELECT OrderId, CustomerId, OrderDate, Status, Total
 FROM Orders
@@ -32,21 +12,7 @@ WHERE Status = 'Failed'
   AND OrderDate >= DATEADD(DAY, -30, GETDATE());
 ```
 
-**Alternative (MySQL):**
-```sql
-SELECT OrderId, CustomerId, OrderDate, Status, Total
-FROM Orders
-WHERE Status = 'Failed'
-  AND OrderDate >= DATE_SUB(CURDATE(), INTERVAL 30 DAY);
-```
-
-**Alternative (PostgreSQL):**
-```sql
-SELECT OrderId, CustomerId, OrderDate, Status, Total
-FROM Orders
-WHERE Status = 'Failed'
-  AND OrderDate >= CURRENT_DATE - INTERVAL '30 days';
-```
+**My thought process:** I need to filter on two conditions - the status must be 'Failed' and the order date must be within the last 30 days. I use `DATEADD` to calculate 30 days ago from today's date with `GETDATE()`.
 
 ---
 
@@ -54,7 +20,7 @@ WHERE Status = 'Failed'
 
 **Question:** Given a Customers table (CustomerId, Name, Email) and the Orders table above, write a query that returns the customer name, email, and order total for all orders over $100.
 
-**Answer:**
+**My Answer:**
 ```sql
 SELECT c.Name, c.Email, o.Total
 FROM Customers c
@@ -62,10 +28,7 @@ INNER JOIN Orders o ON c.CustomerId = o.CustomerId
 WHERE o.Total > 100;
 ```
 
-**Explanation:**
-- Use `INNER JOIN` to combine customers with their orders
-- Filter with `WHERE o.Total > 100` to only include orders exceeding $100
-- Only customers who have placed orders over $100 will appear in results
+**My thought process:** I use an `INNER JOIN` to combine customers with their orders based on the CustomerId foreign key relationship. Then I filter with `WHERE o.Total > 100` to only show orders exceeding $100. This means only customers who have placed orders over $100 will appear in my results.
 
 ---
 
@@ -73,7 +36,7 @@ WHERE o.Total > 100;
 
 **Question:** Using the same tables, write a query that returns how many orders each customer has placed. Include customers who have placed zero orders.
 
-**Answer:**
+**My Answer:**
 ```sql
 SELECT c.CustomerId, c.Name, c.Email, COUNT(o.OrderId) AS OrderCount
 FROM Customers c
@@ -81,11 +44,7 @@ LEFT JOIN Orders o ON c.CustomerId = o.CustomerId
 GROUP BY c.CustomerId, c.Name, c.Email;
 ```
 
-**Explanation:**
-- Use `LEFT JOIN` to include ALL customers, even those without orders
-- `COUNT(o.OrderId)` counts only non-NULL OrderIds (returns 0 for customers with no orders)
-- `GROUP BY` groups results by customer so we get one row per customer
-- If we used `COUNT(*)` instead, customers with no orders would show 1 instead of 0
+**My thought process:** The key here is "include customers who have placed zero orders" - this tells me I need a `LEFT JOIN` instead of `INNER JOIN`. The `LEFT JOIN` keeps all customers even if they have no matching orders. I use `COUNT(o.OrderId)` specifically because it counts only non-NULL values, so customers with no orders will correctly show 0. If I used `COUNT(*)` instead, those customers would incorrectly show 1.
 
 ---
 
@@ -100,15 +59,11 @@ LEFT JOIN Orders o ON c.CustomerId = o.CustomerId
 WHERE o.Status = 'Completed';
 ```
 
-**Answer:** The `WHERE` clause filters out all customers who have never placed an order.
+**My Answer:** The `WHERE` clause is filtering out all customers who have never placed an order.
 
-**The Problem:**
-- `LEFT JOIN` correctly includes customers with no orders (their order columns are NULL)
-- But `WHERE o.Status = 'Completed'` eliminates rows where `o.Status` is NULL
-- Customers with no orders have NULL for all order columns, so they get filtered out
-- The query ends up behaving like an `INNER JOIN`
+**My thought process:** I see that the `LEFT JOIN` is correct for including customers with no orders - their order columns would be NULL. But here's the problem: the `WHERE o.Status = 'Completed'` condition eliminates any rows where `o.Status` is NULL. Since customers with no orders have NULL for all order columns, they get filtered out. The query ends up behaving like an `INNER JOIN`.
 
-**Corrected Query (to find customers who never placed an order):**
+**My corrected query:**
 ```sql
 SELECT c.Name, c.Email
 FROM Customers c
@@ -116,31 +71,4 @@ LEFT JOIN Orders o ON c.CustomerId = o.CustomerId
 WHERE o.OrderId IS NULL;
 ```
 
-**Explanation:**
-- After the `LEFT JOIN`, customers with no orders will have NULL values in all order columns
-- `WHERE o.OrderId IS NULL` keeps only those rows where no matching order was found
-- This correctly returns customers who have never placed an order
-
-**Alternative using NOT EXISTS:**
-```sql
-SELECT c.Name, c.Email
-FROM Customers c
-WHERE NOT EXISTS (
-    SELECT 1 
-    FROM Orders o 
-    WHERE o.CustomerId = c.CustomerId
-);
-```
-
----
-
-## Key Concepts Summary
-
-| Concept | Use Case |
-|---------|----------|
-| `INNER JOIN` | Only matching rows from both tables |
-| `LEFT JOIN` | All rows from left table, matching from right (NULL if no match) |
-| `COUNT(column)` | Counts non-NULL values only |
-| `COUNT(*)` | Counts all rows including NULLs |
-| `WHERE` after `LEFT JOIN` | Can accidentally filter out NULL rows, negating the LEFT JOIN |
-| `IS NULL` check | Use to find non-matching rows after LEFT JOIN |
+After the `LEFT JOIN`, customers with no orders will have NULL values in all order columns. By checking `WHERE o.OrderId IS NULL`, I keep only the rows where no matching order was found - which gives me exactly the customers who have never placed an order.
