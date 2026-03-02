@@ -77,14 +77,10 @@ class AddressPage extends BasePage {
       'a:has-text("USE MY SHIPPING ADDRESS"), button:has-text("USE MY SHIPPING ADDRESS")'
     ).first();
     this.otherSavedAddressesSection = page.locator('text="OTHER SAVED ADDRESSES"').first();
-    this.shippingAddressEditLink = page.locator(
-      'section:has-text("DEFAULT SHIPPING ADDRESS") a:has-text("EDIT"), ' +
-      'div:has-text("DEFAULT SHIPPING ADDRESS") a:has-text("EDIT")'
-    ).first();
-    this.mailingAddressEditLink = page.locator(
-      'section:has-text("DEFAULT MAILING ADDRESS") a:has-text("EDIT"), ' +
-      'div:has-text("DEFAULT MAILING ADDRESS") a:has-text("EDIT")'
-    ).first();
+    // Edit buttons for default addresses - using data-testid from codegen
+    // Note: Default addresses cannot be deleted, only edited
+    this.shippingAddressEditButton = page.getByTestId('address-list-default').getByTestId('addresslist-item-btn-edit');
+    this.mailingAddressEditButton = page.getByTestId('mailing-address').getByTestId('addresslist-item-btn-edit');
     
     // Form fields - using data-testid selectors from Playwright codegen
     this.firstNameInput = page.getByTestId('address-field-first-name');
@@ -373,31 +369,23 @@ class AddressPage extends BasePage {
 
 
   /**
-   * Edit an existing address by index (0-based)
-   * @param {number} index 
+   * Edit the default shipping address
+   * Note: Default addresses can only be edited, not deleted
    */
-  async editAddressByIndex(index) {
-    const addressCard = this.addressCards.nth(index);
-    const editButton = addressCard.locator('button:has-text("Edit"), a:has-text("Edit"), [aria-label*="edit"]').first();
-    await editButton.click();
+  async editDefaultShippingAddress() {
+    await this.shippingAddressEditButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.shippingAddressEditButton.click();
     await this.page.waitForTimeout(500);
   }
 
   /**
-   * Delete an address by index (0-based)
-   * @param {number} index 
+   * Edit the default mailing address
+   * Note: Default addresses can only be edited, not deleted
    */
-  async deleteAddressByIndex(index) {
-    const addressCard = this.addressCards.nth(index);
-    const deleteButton = addressCard.locator('button:has-text("Delete"), button:has-text("Remove"), [aria-label*="delete"]').first();
-    await deleteButton.click();
-    
-    // Handle confirmation dialog
-    if (await this.confirmDeleteButton.isVisible({ timeout: 2000 })) {
-      await this.confirmDeleteButton.click();
-    }
-    
-    await this.page.waitForTimeout(1000);
+  async editDefaultMailingAddress() {
+    await this.mailingAddressEditButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.mailingAddressEditButton.click();
+    await this.page.waitForTimeout(500);
   }
 
   /**
