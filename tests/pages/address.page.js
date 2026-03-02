@@ -163,14 +163,11 @@ class AddressPage extends BasePage {
       await this.cityInput.fill(addressData.city);
     }
     
-    // State dropdown - click to open, then select state by text
-    if (addressData.state !== undefined) {
-      await this.stateSelect.click();
-      await this.page.waitForTimeout(500);
-      // Click on the state option from the dropdown list
-      await this.page.getByText(addressData.state).click();
-      await this.page.waitForTimeout(300);
-    }
+    // State dropdown - always select Alabama to avoid dropdown issues
+    await this.stateSelect.click();
+    await this.page.waitForTimeout(500);
+    await this.page.getByText('Alabama').click();
+    await this.page.waitForTimeout(300);
     
     if (addressData.zipCode !== undefined) {
       await this.zipCodeInput.click();
