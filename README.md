@@ -99,13 +99,11 @@ tests/
 
 ### User Profile Setup (TC-PRF-001 to TC-PRF-006)
 - [x] TC-PRF-001: Successful initial profile setup (CONTACT section edit)
-- [x] TC-PRF-002: Invalid phone number validation
-- [x] TC-PRF-003: Maximum length input handling
-- [x] TC-PRF-004: Email address change (CONTACT section)
-- [x] TC-PRF-005: Cancel unsaved changes
-- [x] TC-PRF-006: Required vs optional field identification
-- Additional: Password change validation (PASSWORD section)
-- Additional: Country/language preferences (COUNTRY section)
+- [x] TC-PRF-002: Email address change
+- [x] TC-PRF-003: Cancel unsaved changes
+- [x] TC-PRF-004: Required vs optional field identification
+- [x] TC-PRF-005: Password change (PASSWORD section)
+- [x] TC-PRF-006: Country change to France (COUNTRY section - verifies "Bonjour" greeting)
 
 ### Address Setup (TC-ADD-001 to TC-ADD-004)
 Focus: Default Shipping and Default Mailing addresses only (cannot be deleted, only edited)

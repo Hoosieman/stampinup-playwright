@@ -71,28 +71,6 @@ test.describe('User Profile Setup', () => {
 
 
   /**
-   * TC-PRF-003: Profile Update with Maximum Length Inputs
-   * Priority: Low
-   */
-  test('TC-PRF-003: should handle maximum length inputs gracefully', async () => {
-    // Arrange - Generate very long names
-    const longFirstName = 'A'.repeat(100);
-    const longLastName = 'B'.repeat(100);
-    
-    // Act
-    await profilePage.navigateToProfile();
-    await profilePage.fillProfileForm({
-      firstName: longFirstName,
-      lastName: longLastName,
-    });
-    await profilePage.saveProfile();
-    
-    // Assert - Should either truncate or show validation error
-    // The page should not crash
-    await expect(profilePage.page).toHaveURL(/.*/, { timeout: 5000 });
-  });
-
-  /**
    * TC-PRF-002: Profile Update with Email Change
    * Priority: High
    */

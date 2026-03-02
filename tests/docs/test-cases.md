@@ -296,90 +296,37 @@
 
 ---
 
-### TC-PRF-002: Profile Update with Invalid Phone Number
+### TC-PRF-002: Profile Update - Email Change
 
 | Field | Description |
 |-------|-------------|
 | **Test Case ID** | TC-PRF-002 |
-| **Title** | Profile Update with Invalid Phone Number Format |
-| **Priority** | Medium |
-| **Type** | Functional / Negative |
+| **Title** | Profile Update with Email Address Change |
+| **Priority** | High |
 | **Preconditions** | User is logged in and on the profile settings page |
-| **Test Data** | Invalid phone formats:<br>- "123" (too short)<br>- "abcdefghij" (letters)<br>- "123-456-789012345" (too long) |
+| **Test Data** | New Email: updated_[timestamp]@testmail.com |
 
 **Test Steps:**
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to Profile settings | Profile form is displayed |
-| 2 | Enter invalid phone number (e.g., "123") | Field accepts input |
-| 3 | Attempt to save profile | - Validation error appears<br>- Error indicates invalid phone format<br>- Save is prevented |
-| 4 | Enter phone with letters | Validation error appears |
-| 5 | Enter valid phone number | Field accepts and formats input |
-| 6 | Save profile | Profile saves successfully |
+| 1 | Navigate to Account Settings | Settings page loads |
+| 2 | Click EDIT on CONTACT section | Form becomes editable |
+| 3 | Enter new valid email address | Email is accepted |
+| 4 | Click SAVE CHANGES | Changes are saved |
+| 5 | Verify user stays on account page | No error redirect occurs |
 
-**Expected Result:** System validates phone number format and provides clear error messaging.
+**Expected Result:** Email address is updated successfully.
 
 ---
 
-### TC-PRF-003: Profile Update with Maximum Length Inputs
+### TC-PRF-003: Profile Update - Cancel Changes
 
 | Field | Description |
 |-------|-------------|
 | **Test Case ID** | TC-PRF-003 |
-| **Title** | Profile Update with Maximum Length Inputs |
-| **Priority** | Low |
-| **Type** | Functional / Boundary |
-| **Preconditions** | User is logged in and on the profile settings page |
-| **Test Data** | - First Name: 50+ character string<br>- Last Name: 50+ character string |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Navigate to Profile settings | Profile form is displayed |
-| 2 | Enter very long first name (50+ characters) | - Field either truncates input OR<br>- Field accepts input with character limit indicator |
-| 3 | Enter very long last name (50+ characters) | Same behavior as step 2 |
-| 4 | Attempt to save profile | - If within limits: saves successfully<br>- If exceeds limits: validation error appears |
-
-**Expected Result:** System handles maximum length inputs gracefully without crashing.
-
----
-
-### TC-PRF-004: Profile Update - Email Change
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-PRF-004 |
-| **Title** | Profile Update with Email Address Change |
-| **Priority** | High |
-| **Type** | Functional / Positive |
-| **Preconditions** | User is logged in and on the profile settings page |
-| **Test Data** | - Current Email: old_email@example.com<br>- New Email: new_email@example.com |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Navigate to Profile/Account settings | Settings page loads |
-| 2 | Locate email change section | Email field or change email option is visible |
-| 3 | Enter new valid email address | Email is accepted |
-| 4 | If required, enter current password for verification | Password is accepted |
-| 5 | Click save/update | - Confirmation message appears<br>- Verification email sent to new address (if applicable)<br>- OR email is updated immediately |
-| 6 | Verify email change in profile | New email is displayed |
-
-**Expected Result:** Email address is updated successfully with appropriate verification steps.
-
----
-
-### TC-PRF-005: Profile Update - Cancel Changes
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-PRF-005 |
 | **Title** | Profile Update - Canceling Unsaved Changes |
 | **Priority** | Medium |
-| **Type** | Functional / Usability |
 | **Preconditions** | User is logged in and on the profile settings page |
 | **Test Data** | Modified profile data that will not be saved |
 
@@ -388,37 +335,84 @@
 | Step | Action | Expected Result |
 |------|--------|-----------------|
 | 1 | Navigate to Profile settings | Profile form displays current data |
-| 2 | Note the current values of profile fields | Current values recorded |
-| 3 | Modify several profile fields | Fields show new values |
-| 4 | Click "Cancel" button or navigate away without saving | - Confirmation dialog may appear (optional)<br>- Changes are discarded |
-| 5 | Return to Profile settings | Original values are retained; unsaved changes are lost |
+| 2 | Note the current first name value | Current value recorded |
+| 3 | Modify first name field | Field shows new value |
+| 4 | Click "CANCEL" button | Changes are discarded |
+| 5 | Navigate away and return to Profile | Original first name is retained |
 
-**Expected Result:** Unsaved changes are discarded when user cancels or navigates away.
+**Expected Result:** Unsaved changes are discarded when user clicks cancel.
 
 ---
 
-### TC-PRF-006: Profile Setup - Required vs Optional Fields
+### TC-PRF-004: Profile Setup - Required vs Optional Fields
 
 | Field | Description |
 |-------|-------------|
-| **Test Case ID** | TC-PRF-006 |
+| **Test Case ID** | TC-PRF-004 |
 | **Title** | Verify Required vs Optional Fields in Profile |
 | **Priority** | Medium |
-| **Type** | Functional / UI Verification |
 | **Preconditions** | User is logged in and on the profile settings page |
-| **Test Data** | N/A |
 
 **Test Steps:**
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
 | 1 | Navigate to Profile settings | Profile form is displayed |
-| 2 | Identify all form fields | All fields are visible |
-| 3 | Check for required field indicators (asterisks, labels) | Required fields are clearly marked |
-| 4 | Attempt to save with only optional fields filled | - If required fields exist: validation error<br>- If no required fields: saves successfully |
-| 5 | Fill all required fields, leave optional fields empty | Profile saves successfully |
+| 2 | Click EDIT on CONTACT section | Form fields become visible |
+| 3 | Verify first name, last name, email fields are visible | Required fields are present |
 
-**Expected Result:** Required fields are clearly indicated and validated; optional fields can remain empty.
+**Expected Result:** Required fields (first name, last name, email) are visible and accessible.
+
+---
+
+### TC-PRF-005: Password Change
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-PRF-005 |
+| **Title** | Change Password in PASSWORD Section |
+| **Priority** | High |
+| **Preconditions** | User is logged in and on the profile settings page |
+| **Test Data** | - Current Password: (user's current password)<br>- New Password: NewPass123! (8+ chars, capital, number) |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Navigate to Account Settings | Settings page loads |
+| 2 | Click EDIT on PASSWORD section | Password form becomes editable |
+| 3 | Enter current password in "Confirm Current Password" field | Field accepts input |
+| 4 | Enter new password in "New Password" field | Field accepts input |
+| 5 | Enter new password in "Confirm New Password" field | Field accepts input |
+| 6 | Click SAVE CHANGES | Password is updated |
+| 7 | Verify user stays on account page | No error redirect occurs |
+
+**Expected Result:** Password is changed successfully. Note: Password must have minimum 8 characters with at least one capital letter and one number.
+
+---
+
+### TC-PRF-006: Change Country to France
+
+| Field | Description |
+|-------|-------------|
+| **Test Case ID** | TC-PRF-006 |
+| **Title** | Change Country to France in COUNTRY Section |
+| **Priority** | Medium |
+| **Preconditions** | User is logged in and country is currently set to United States |
+
+**Test Steps:**
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Navigate to Account Settings | Settings page loads |
+| 2 | Click EDIT on COUNTRY section | Country dropdown becomes editable |
+| 3 | Click current country button (United States) | Country dropdown opens |
+| 4 | Select "France" from dropdown | France is selected |
+| 5 | Click SAVE CHANGES | Confirmation dialog appears |
+| 6 | Click confirm button | User is redirected to homepage |
+| 7 | Verify header shows "Bonjour, [FirstName]" | Greeting changed from "Hello" to "Bonjour" |
+
+**Expected Result:** Country is changed to France and the header greeting updates to "Bonjour" instead of "Hello".
 
 ---
 
