@@ -73,9 +73,8 @@ class AddressPage extends BasePage {
     this.defaultShippingAddressSection = page.locator('text="DEFAULT SHIPPING ADDRESS"').first();
     this.defaultMailingAddressSection = page.locator('text="DEFAULT MAILING ADDRESS"').first();
     this.noDefaultMailingMessage = page.locator('text="There is no default address selected."').first();
-    this.useMyShippingAddressLink = page.locator(
-      'a:has-text("USE MY SHIPPING ADDRESS"), button:has-text("USE MY SHIPPING ADDRESS")'
-    ).first();
+    // "Use My Shipping Address" button - copies shipping to mailing address
+    this.useMyShippingAddressButton = page.getByRole('button', { name: 'Use My Shipping Address' });
     this.otherSavedAddressesSection = page.locator('text="OTHER SAVED ADDRESSES"').first();
     // Edit buttons for default addresses - using data-testid from codegen
     // Note: Default addresses cannot be deleted, only edited
@@ -310,21 +309,22 @@ class AddressPage extends BasePage {
   }
 
   /**
-   * Click "USE MY SHIPPING ADDRESS" link to copy shipping address to mailing address
+   * Click "Use My Shipping Address" button to copy shipping address to mailing address
    * TC-ADD-010: Use shipping address for default mailing address
    */
   async useShippingAddressForMailing() {
     await this.navigateToAddressBook();
-    await this.useMyShippingAddressLink.click();
+    await this.useMyShippingAddressButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.useMyShippingAddressButton.click();
     await this.page.waitForTimeout(1000);
   }
 
   /**
-   * Verify "USE MY SHIPPING ADDRESS" link is visible (when no default mailing set)
+   * Verify "Use My Shipping Address" button is visible (when no default mailing set)
    * @returns {Promise<boolean>}
    */
-  async isUseShippingAddressLinkVisible() {
-    return this.useMyShippingAddressLink.isVisible({ timeout: 3000 }).catch(() => false);
+  async isUseShippingAddressButtonVisible() {
+    return this.useMyShippingAddressButton.isVisible({ timeout: 3000 }).catch(() => false);
   }
 
   /**
