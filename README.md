@@ -22,10 +22,10 @@ tests/
 │   ├── profile.page.js        # Profile settings page object
 │   └── address.page.js        # Address book page object
 ├── sql/
-│   └── sql-answers.md         # SQL interview questions and answers
+    └── sql-answers.md         # SQL interview questions and answers
 ```
 
-## Site Behavior Notes (Observed)
+## Site Behavior Notes
 
 ### Account Creation Flow
 - **Create Account is a MODAL POPUP** - Not a separate page
@@ -44,7 +44,7 @@ tests/
   1. "Join Stampin' Rewards!" popup appears
      - Options: "GET STARTED" or "MAYBE LATER"
   2. Header displays "Hello, [FIRST NAME]" in top right corner
-- **No Terms & Conditions checkbox** observed in the modal
+- **No Terms & Conditions checkbox**
 
 ### User Profile Setup Flow
 - **Account Settings page is a DEDICATED PAGE** at `/account/settings`
@@ -54,17 +54,17 @@ tests/
 **1. CONTACT Section (left side):**
 - View mode shows: First Name, Last Name, Email, Phone Number, Preferred Method of Contact, Birthdate
 - Edit mode: Fields become editable inputs
-- Buttons: "SAVE CHANGES" (pink), "CANCEL"
+- Buttons: "SAVE CHANGES", "CANCEL"
 
 **2. PASSWORD Section (below CONTACT):**
 - Fields: Confirm Current Password, New Password, Confirm New Password
 - Requirement: "Password must have a minimum of 8 characters with at least one capital letter and one number"
-- Buttons: "SAVE CHANGES" (pink), "CANCEL"
+- Buttons: "SAVE CHANGES", "CANCEL"
 
 **3. COUNTRY Section (right side):**
 - View mode shows: Country with flag, Preferred Language
 - Edit mode: Country dropdown, Preferred Language dropdown
-- Buttons: "SAVE CHANGES" (pink), "CANCEL"
+- Buttons: "SAVE CHANGES", "CANCEL"
 
 
 ### Address Setup Flow
