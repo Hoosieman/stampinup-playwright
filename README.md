@@ -116,16 +116,15 @@ Focus: Default Shipping and Default Mailing addresses only (cannot be deleted, o
 
 ### Prerequisites
 - Node.js 18+
-- pnpm (or npm/yarn)
 
 ### Installation
 
 ```bash
 # Install dependencies
-pnpm install
+npm install
 
 # Install Playwright browsers
-pnpm exec playwright install
+npx playwright install
 ```
 
 ### Environment Variables
@@ -141,42 +140,42 @@ TEST_USER_PASSWORD=your_test_password
 
 ```bash
 # Run all tests
-pnpm test
+npx playwright test
+
+# Run all tests in headed mode (see browser)
+npx playwright test --headed
 
 # Run tests with UI mode (interactive)
-pnpm test:ui
-
-# Run tests in headed mode (see browser)
-pnpm test:headed
+npx playwright test --ui
 
 # Run tests in debug mode
-pnpm test:debug
+npx playwright test --debug
 
 # View test report
-pnpm test:report
+npx playwright show-report
 ```
 
 ### Run Specific Test Suites
 
 ```bash
 # Run only account creation tests
-pnpm exec playwright test account-creation
+npx playwright test tests/e2e/account-creation.spec.js --headed
 
 # Run only profile tests
-pnpm exec playwright test user-profile
+npx playwright test tests/e2e/user-profile.spec.js --headed
 
 # Run only address tests
-pnpm exec playwright test address-setup
+npx playwright test tests/e2e/address-setup.spec.js --headed
 ```
 
 ### Run on Specific Browsers
 
 ```bash
 # Run on Chrome only
-pnpm exec playwright test --project=chromium
+npx playwright test --project=chromium
 
 # Run on Firefox only
-pnpm exec playwright test --project=firefox
+npx playwright test --project=firefox
 ```
 
 ## Test Data
