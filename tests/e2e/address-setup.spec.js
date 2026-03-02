@@ -65,8 +65,8 @@ test.describe('Address Setup', () => {
    * Priority: High
    */
   test('TC-ADD-001: should successfully add new address as default shipping', async () => {
-    // Arrange
-    const addressData = TestAddresses.texas();
+    // Arrange - Use Alabama address (matches hardcoded state selection)
+    const addressData = TestAddresses.alabama();
     addressData.isDefaultShipping = true;
     
     // Act

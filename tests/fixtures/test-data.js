@@ -120,6 +120,21 @@ const TestAddresses = {
   // Valid US address
   validUS: () => generateValidUSAddress(),
 
+  // Alabama address (default for all address tests)
+  alabama: () => ({
+    firstName: 'John',
+    lastName: 'Smith',
+    addressLine1: '123 Main Street',
+    addressLine2: 'Suite 100',
+    city: 'Birmingham',
+    state: 'Alabama',
+    zipCode: '35203',
+    country: 'United States',
+    phone: '205-555-1234',
+    isDefaultShipping: true,
+    isDefaultMailing: false,
+  }),
+
   // Address in Texas (specific for testing)
   texas: () => ({
     firstName: 'John',
