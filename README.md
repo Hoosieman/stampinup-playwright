@@ -10,7 +10,7 @@ tests/
 │   └── test-cases.md          # Detailed test case documentation
 ├── e2e/
 │   ├── account-creation.spec.js       # Account registration tests (TC-ACC-001 to TC-ACC-008)
-│   ├── address-setup.spec.js          # Address management tests (TC-ADD-001 to TC-ADD-010)
+│   ├── address-setup.spec.js          # Address management tests (TC-ADD-001 to TC-ADD-004)
 │   └── user-profile.spec.js           # Profile setup tests (TC-PRF-001 to TC-PRF-006)
 ├── fixtures/
 │   └── test-data.js           # Test data factories and constants
@@ -69,40 +69,19 @@ tests/
 
 
 ### Address Setup Flow
-- **Add Address page:** `/account/address/create`
 - **Address List page:** `/account/address`
 - **Access:** Click "Hello, [Name]" dropdown in header > "Addresses"
-- **Left sidebar navigation:** ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, MY LISTS, SUBSCRIPTIONS, DEMONSTRATOR, REWARDS, NOTIFICATIONS, SIGN OUT
 
 **Address List Page (`/account/address`):**
-- Note: "Updates made on this page don't apply to your subscriptions..."
-- **DEFAULT SHIPPING ADDRESS** section (left) with EDIT link
-- **DEFAULT MAILING ADDRESS** section (right):
-  - If no default: "There is no default address selected." with **"USE MY SHIPPING ADDRESS"** link
-  - If set: Shows address with EDIT link
-- **OTHER SAVED ADDRESSES** section
-- **"+ ADD NEW ADDRESS"** button
+- **DEFAULT SHIPPING ADDRESS** section with EDIT button (`address-list-default`)
+- **DEFAULT MAILING ADDRESS** section with EDIT button (`mailing-address`)
+  - If no default mailing: "Use My Shipping Address" button appears
+- **Note:** Default addresses can only be edited, not deleted
 
-**Add Address Form Fields (all required except Address 2):**
-- First Name, Last Name (side by side)
-- Address (main street address)
-- Address 2 (optional - apt, suite, etc.)
-- City
-- State (dropdown)
-- ZIP Code
-- Phone Number
-- **Checkboxes:**
-  - "Make this my default shipping address"
-  - "Make this my default mailing address"
-- **Buttons:** "SAVE ADDRESS" (pink), "CANCEL"
-- **Validation errors** appear in red below each field:
-  - "The First Name field is required."
-  - "The Last Name field is required."
-  - "The Address field is required."
-  - "The City field is required."
-  - "The State field is required."
-  - "The Zip Code field is required."
-  - "The Phone Number field is required."
+**Add Address Form Fields:**
+- First Name, Last Name, Address, Address 2 (optional), City, State, ZIP Code, Phone Number
+- **Checkboxes:** "Make this my default shipping/mailing address"
+- **Buttons:** "SAVE ADDRESS" (`address-save`), "CANCEL"
 
 ---
 
@@ -128,17 +107,13 @@ tests/
 - Additional: Password change validation (PASSWORD section)
 - Additional: Country/language preferences (COUNTRY section)
 
-### Address Setup (TC-ADD-001 to TC-ADD-010)
-- [x] TC-ADD-001: Successful address setup
-- [x] TC-ADD-002: Invalid ZIP code validation
-- [x] TC-ADD-003: Missing required fields validation
-- [x] TC-ADD-004: Multiple address support
-- [x] TC-ADD-005: Default address management
-- [x] TC-ADD-006: Edit existing address
-- [x] TC-ADD-007: Delete address
-- [x] TC-ADD-008: PO Box address handling
-- [x] TC-ADD-009: International address support
-- [x] TC-ADD-010: Use shipping address for default mailing address
+### Address Setup (TC-ADD-001 to TC-ADD-004)
+Focus: Default Shipping and Default Mailing addresses only (cannot be deleted, only edited)
+
+- [x] TC-ADD-001: Add new address as default shipping
+- [x] TC-ADD-002: Edit default shipping address
+- [x] TC-ADD-003: Edit default mailing address
+- [x] TC-ADD-004: Use shipping address for default mailing address
 
 ## Setup
 
