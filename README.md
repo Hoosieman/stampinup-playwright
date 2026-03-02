@@ -155,7 +155,7 @@ npx playwright test --debug
 npx playwright show-report
 ```
 
-### Run Specific Test Suites
+### Run Specific Test Suites (headed optional)
 
 ```bash
 # Run only account creation tests
