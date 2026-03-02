@@ -65,11 +65,9 @@ class AddressPage extends BasePage {
     this.sidebarMyOrders = page.locator('text="MY ORDERS", a:has-text("My Orders")').first();
     this.sidebarSignOut = page.locator('text="SIGN OUT", a:has-text("Sign Out")').first();
     
-    // Add address button (if on address list page)
-    this.addAddressButton = page.locator(
-      'button:has-text("Add Address"), button:has-text("Add New Address"), ' +
-      'a:has-text("Add Address"), a:has-text("ADD NEW ADDRESS"), a[href*="/address/create"]'
-    ).first();
+    // Add new address button - only visible AFTER first address is added
+    // When adding the first address, the form fields are already displayed
+    this.addNewAddressButton = page.getByTestId('btn-create');
     
     // Address list page elements (observed at /account/address)
     this.defaultShippingAddressSection = page.locator('text="DEFAULT SHIPPING ADDRESS"').first();
@@ -170,11 +168,18 @@ class AddressPage extends BasePage {
 
   /**
    * Navigate to Add New Address form
-   * Goes to address book first, then clicks "+ ADD NEW ADDRESS"
+   * Note: When adding first address, form fields are already visible on address page
+   * When adding additional addresses, need to click "btn-create" button first
    */
   async navigateToAddAddress() {
     await this.navigateToAddressBook();
-    await this.clickAddAddress();
+    // Check if "Add New Address" button exists (means user already has addresses)
+    // If so, click it. If not, form is already visible for first address
+    const addButtonVisible = await this.addNewAddressButton.isVisible({ timeout: 2000 }).catch(() => false);
+    if (addButtonVisible) {
+      await this.addNewAddressButton.click();
+      await this.page.waitForTimeout(500);
+    }
   }
 
   /**
@@ -197,10 +202,11 @@ class AddressPage extends BasePage {
   }
 
   /**
-   * Click add new address button
+   * Click add new address button (only works after first address is added)
    */
   async clickAddAddress() {
-    await this.addAddressButton.click();
+    await this.addNewAddressButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.addNewAddressButton.click();
     await this.page.waitForTimeout(500);
   }
 
