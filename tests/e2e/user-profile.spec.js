@@ -155,6 +155,23 @@ test.describe('User Profile Setup', () => {
   });
 
   /**
+   * TC-PRF-005: Change Country to France
+   * Priority: Medium
+   */
+  test('TC-PRF-005: should change country to France and show Bonjour greeting', async () => {
+    // Arrange - Get current user's first name
+    const profileData = await profilePage.getCurrentProfileData();
+    const firstName = profileData.firstName || 'Gabrielle'; // Fallback to known name
+    
+    // Act
+    await profilePage.navigateToProfile();
+    await profilePage.changeCountryToFrance();
+    
+    // Assert - Header should now show "Bonjour, [FirstName]" instead of "Hello"
+    await profilePage.verifyCountryChangedToFrance(firstName);
+  });
+
+  /**
    * Additional Test: Profile page loads correctly
    * Priority: High
    */
@@ -200,7 +217,7 @@ test.describe('User Profile Setup', () => {
     });
     
     // Assert
-    await expect(profilePage.saveButton).toBeVisible();
-    await expect(profilePage.saveButton).toBeEnabled();
+    await expect(profilePage.saveChangesButton).toBeVisible();
+    await expect(profilePage.saveChangesButton).toBeEnabled();
   });
 });

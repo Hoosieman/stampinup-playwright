@@ -74,8 +74,10 @@ class ProfilePage extends BasePage {
     this.countryCard = page.getByTestId('account-card-country');
     this.countryEditLink = page.getByTestId('account-card-country').getByTestId('edit-contact-setting');
     
-    // Country dropdown (in edit mode)
-    this.countrySelect = page.getByTestId('country-select');
+    // Country dropdown (in edit mode) - click current country button, then select option
+    this.countryDropdownButton = page.getByTestId('observer-form').getByRole('button', { name: 'United States' });
+    this.franceOption = page.getByRole('option', { name: 'France' });
+    this.unitedStatesOption = page.getByRole('option', { name: 'United States' });
     
     // Confirm dialog after country change
     this.confirmDialogButton = page.getByTestId('confirm-dialog-btn-confirm');
@@ -202,33 +204,25 @@ class ProfilePage extends BasePage {
   }
 
   /**
-   * Fill COUNTRY section form
-   * After changing country, a confirm dialog appears and redirects to homepage with localized greeting
-   * @param {Object} countryData 
+   * Change country to France
+   * Full flow: edit country section -> click US button -> select France -> save -> confirm dialog
+   * After confirming, redirects to homepage with "Bonjour" greeting
    */
-  async fillCountryForm(countryData) {
+  async changeCountryToFrance() {
     // Click EDIT to enable form fields
     await this.editCountrySection();
     
-    // Click country dropdown and select option
-    if (countryData.country !== undefined) {
-      await this.countrySelect.click();
-      await this.page.waitForTimeout(300);
-      // Select country from dropdown using role option
-      const countryOption = this.page.getByRole('option', { name: countryData.country });
-      await countryOption.click();
-      await this.page.waitForTimeout(300);
-    }
-  }
-
-  /**
-   * Change country and confirm
-   * Full flow: edit country section -> select country -> save -> confirm dialog -> verify localized greeting
-   * @param {string} country - Country name (e.g., "France")
-   */
-  async changeCountry(country) {
-    await this.fillCountryForm({ country });
-    await this.saveProfile();
+    // Click current country button (United States) to open dropdown
+    await this.countryDropdownButton.click();
+    await this.page.waitForTimeout(300);
+    
+    // Select France from dropdown
+    await this.franceOption.click();
+    await this.page.waitForTimeout(300);
+    
+    // Save changes
+    await this.saveChangesButton.click();
+    await this.page.waitForTimeout(500);
     
     // Confirm the country change dialog
     await this.confirmDialogButton.waitFor({ state: 'visible', timeout: 5000 });
@@ -237,17 +231,12 @@ class ProfilePage extends BasePage {
   }
 
   /**
-   * Verify country was changed to France (checks for "Bonjour" in header)
+   * Verify country was changed to France (checks for "Bonjour, [FirstName]" in header)
+   * @param {string} firstName - Expected first name in greeting
    */
-  async verifyCountryChangedToFrance() {
-    await expect(this.bonjourButton).toBeVisible({ timeout: 10000 });
-  }
-
-  /**
-   * Verify country is set to US/English (checks for "Hello" in header)
-   */
-  async verifyCountryIsEnglish() {
-    await expect(this.helloButtonAlt).toBeVisible({ timeout: 10000 });
+  async verifyCountryChangedToFrance(firstName) {
+    const bonjourWithName = this.page.getByRole('button', { name: new RegExp(`Bonjour\\s*,?\\s*${firstName}`, 'i') });
+    await expect(bonjourWithName).toBeVisible({ timeout: 10000 });
   }
 
   /**
