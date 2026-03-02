@@ -12,7 +12,7 @@ WHERE Status = 'Failed'
   AND OrderDate >= DATEADD(DAY, -30, GETDATE());
 ```
 
-**My thought process:** I needed to filter on two conditions, the status must be Failed and the order date must be within the last 30 days. I used `DATEADD` to get 30 days ago from today's date with `GETDATE()`.
+**My thought process:** I needed to filter on two conditions, the status must be failed and the order date must be within the last 30 days. I used `DATEADD` to get 30 days ago from today's date with `GETDATE()`.
 
 ---
 
@@ -28,7 +28,7 @@ INNER JOIN Orders o ON c.CustomerId = o.CustomerId
 WHERE o.Total > 100;
 ```
 
-**My thought process:** I used an `INNER JOIN` to join customers with their orders based on the CustomerId foreign key relationship. I filtered with `WHERE o.Total > 100` to only show orders over $100. This means only customers who have placed orders over $100 will appear in my result.
+**My thought process:** I used an `INNER JOIN` to join customers with their orders based on the CustomerId foreign key relationship. I filtered with `WHERE o.Total > 100` to only show orders over $100. This means only customers who have placed orders over $100 will appear in the result.
 
 ---
 
@@ -44,7 +44,7 @@ LEFT JOIN Orders o ON c.CustomerId = o.CustomerId
 GROUP BY c.CustomerId, c.Name, c.Email;
 ```
 
-**My thought process:** Inluding customers who have placed zero orders told me I needed a `LEFT JOIN` instead of `INNER JOIN`. The `LEFT JOIN` keeps all customers even if they have no matching orders. I used `COUNT(o.OrderId)` because it counts only non NULL values, so customers with no orders would correctly show 0.
+**My thought process:** Including all customers who have placed zero orders told me I needed a `LEFT JOIN` instead of `INNER JOIN`. The `LEFT JOIN` keeps all customers even if they have no matches. I used `COUNT(o.OrderId)` because it counts only non NULL values, so customers with no orders would correctly show 0.
 
 ---
 
@@ -59,7 +59,7 @@ LEFT JOIN Orders o ON c.CustomerId = o.CustomerId
 WHERE o.Status = 'Completed';
 ```
 
-**My Answer:** The `WHERE` clause is filtering out all customers who have never placed an order.
+**My Answer:** The `WHERE` is filtering out all customers who have never placed an order.
 
 **My thought process:** I saw that the `LEFT JOIN` is correct for including customers with no orders, their order columns would be NULL. But the `WHERE o.Status = 'Completed'` condition counts out any rows where `o.Status` is NULL. Since customers with no orders have NULL for all order columns, they get filtered out. This ends up behaving almost like an `INNER JOIN`.
 
