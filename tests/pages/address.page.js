@@ -56,9 +56,9 @@ class AddressPage extends BasePage {
     this.zipCodeInput = page.getByTestId('address-field-postalCode');
     this.phoneInput = page.getByTestId('address-telephone');
     
-    // Default address checkboxes (Vuetify ripple elements)
-    this.defaultShippingCheckbox = page.locator('.v-input--selection-controls__ripple').first();
-    this.defaultMailingCheckbox = page.locator('div:nth-child(5) > .col > .v-input > .v-input__control > .v-input__slot > .v-input--selection-controls__input > .v-input--selection-controls__ripple');
+    // Default address checkboxes - using codegen selectors
+    this.defaultShippingCheckbox = page.locator('div').filter({ hasText: /^Make this my default shipping address$/ }).nth(4);
+    this.defaultMailingCheckbox = page.locator('div').filter({ hasText: /^Make this my default mailing address$/ }).nth(4);
     
     // Action buttons - using data-testid
     this.saveAddressButton = page.getByTestId('address-save');
