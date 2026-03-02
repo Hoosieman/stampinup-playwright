@@ -85,7 +85,7 @@
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to the registration page | Registration form is displayed |
+| 1 | Navigate to the CREATE ACCOUNT page | Registration form is displayed |
 | 2 | Enter an email address that is already registered | Email field accepts the input |
 | 3 | Fill in all other required fields with valid data | All fields accept the input |
 | 4 | Click "Create Account" button | - Error message is displayed indicating email is already registered<br>- User is prompted to sign in or reset password<br>- Account is NOT created |
@@ -109,7 +109,7 @@
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to the registration page | Registration form is displayed |
+| 1 | Navigate to the CREATE ACCOUNT page | Registration form is displayed |
 | 2 | Enter invalid email format (e.g., "invalidemail") | Field accepts input |
 | 3 | Move focus to next field or attempt to submit | - Validation error appears<br>- Error message indicates invalid email format<br>- Form submission is prevented |
 | 4 | Repeat steps 2-3 with each invalid email format | Each invalid format triggers appropriate validation error |
@@ -133,7 +133,7 @@
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to the registration page | Registration form is displayed |
+| 1 | Navigate to the CREATE ACCOUNT page | Registration form is displayed |
 | 2 | Enter valid email address | Email is accepted |
 | 3 | Enter weak password (e.g., "123") | Password field shows strength indicator as weak |
 | 4 | Attempt to submit the form | - Validation error appears<br>- Error message indicates password requirements<br>- Form submission is prevented |
@@ -158,7 +158,7 @@
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to the registration page | Registration form is displayed |
+| 1 | Navigate to the CREATE ACCOUNT page | Registration form is displayed |
 | 2 | Enter valid email address | Email is accepted |
 | 3 | Enter password in password field | Password is accepted |
 | 4 | Enter different password in confirm password field | - Mismatch error appears<br>- Visual indicator shows passwords don't match |
@@ -183,7 +183,7 @@
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to the registration page | Registration form is displayed |
+| 1 | Navigate to the CREATE ACCOUNT page | Registration form is displayed |
 | 2 | Leave all fields empty | Fields remain empty |
 | 3 | Click "Create Account" button | - Validation errors appear for all required fields<br>- Error messages clearly indicate which fields are required<br>- Form submission is prevented |
 | 4 | Verify each required field is highlighted/indicated | Required field indicators are visible |
@@ -207,7 +207,7 @@
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to the registration page | Registration form is displayed |
+| 1 | Navigate to the CREATE ACCOUNT page | Registration form is displayed |
 | 2 | Enter name with hyphen (e.g., "Jean-Pierre") | Name is accepted |
 | 3 | Enter name with space (e.g., "Mary Ann") | Name is accepted |
 | 4 | Enter name with apostrophe (e.g., "O'Connor") | Name is accepted |
@@ -232,7 +232,7 @@
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to the registration page | Registration form is displayed |
+| 1 | Navigate to the CREATE ACCOUNT page | Registration form is displayed |
 | 2 | Fill in all required fields with valid data | All fields populated |
 | 3 | Ensure Terms and Conditions checkbox is NOT checked | Checkbox remains unchecked |
 | 4 | Click "Create Account" button | - Error message appears indicating T&C must be accepted<br>- Form submission is prevented |
@@ -485,7 +485,7 @@
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to Address Book | Address page loads with default shipping address |
+| 1 | Navigate to Address Page | Address page loads with default shipping address |
 | 2 | Click Edit button on default shipping address | Edit form opens with current data |
 | 3 | Update the city field | Field accepts new value |
 | 4 | Click "SAVE ADDRESS" | Address is updated |
@@ -511,7 +511,7 @@
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to Address Book | Address page loads with default mailing address |
+| 1 | Navigate to Address Page | Address page loads with default mailing address |
 | 2 | Click Edit button on default mailing address | Edit form opens with current data |
 | 3 | Update the city field | Field accepts new value |
 | 4 | Click "SAVE ADDRESS" | Address is updated |
@@ -537,7 +537,7 @@
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to Address Book | Address list page loads |
+| 1 | Navigate to Address Page | Address list page loads |
 | 2 | Verify "Use My Shipping Address" button is visible | Button is clickable |
 | 3 | Click "Use My Shipping Address" button | Button is clicked |
 | 4 | Verify mailing address section is populated | Mailing address section shows address data |
