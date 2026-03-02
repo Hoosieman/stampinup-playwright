@@ -121,7 +121,10 @@ class AddressPage extends BasePage {
       'a:has-text("Set as Default")'
     ).first();
     
-    // Address list elements
+    // Address list elements - using data-testid from codegen
+    // To verify address was added, check that address text appears in the default address list
+    this.defaultAddressList = page.getByTestId('address-list-default');
+    
     this.addressCards = page.locator(
       '.address-card, .address-item, [data-testid="address-card"], ' +
       '.saved-address, .address-block'
@@ -135,37 +138,6 @@ class AddressPage extends BasePage {
       '.default-badge, .default-label, text=/default/i, ' +
       '[data-testid="default-badge"]'
     );
-    
-    // Messages
-    this.successMessage = page.locator(
-      '.success-message, .alert-success, [role="alert"]:has-text("success"), ' +
-      '[role="alert"]:has-text("saved"), .notification-success'
-    ).first();
-    
-    this.errorMessage = page.locator(
-      '.error-message, .alert-error, .alert-danger, [role="alert"]:has-text("error")'
-    ).first();
-    
-    // Field errors
-    this.addressLine1Error = page.locator(
-      '[data-error="address1"], .address1-error, .address-error, ' +
-      '.field-error:near(input[name*="address1" i])'
-    ).first();
-    
-    this.cityError = page.locator(
-      '[data-error="city"], .city-error, ' +
-      '.field-error:near(input[name*="city" i])'
-    ).first();
-    
-    this.stateError = page.locator(
-      '[data-error="state"], .state-error, ' +
-      '.field-error:near(select[name*="state" i])'
-    ).first();
-    
-    this.zipCodeError = page.locator(
-      '[data-error="zip"], .zip-error, .postal-error, ' +
-      '.field-error:near(input[name*="zip" i])'
-    ).first();
     
     // Confirmation dialog
     this.confirmDeleteButton = page.locator(
@@ -381,38 +353,18 @@ class AddressPage extends BasePage {
   }
 
   /**
-   * Verify address was saved successfully
+   * Verify address was saved successfully by checking it appears in the default address list
+   * Note: Site does not show success/error messages - verify by checking address appears in list
+   * @param {string} addressText - Part of the address to look for (e.g., street name)
    */
-  async verifyAddressSaved() {
-    await expect(this.successMessage).toBeVisible({ timeout: 5000 });
+  async verifyAddressSaved(addressText) {
+    // After saving, we should be back on the address list page
+    // Verify the address appears in the default address list
+    const addressInList = this.defaultAddressList.getByText(addressText);
+    await expect(addressInList).toBeVisible({ timeout: 5000 });
   }
 
-  /**
-   * Verify ZIP code validation error
-   */
-  async verifyZipCodeValidationError() {
-    const zipErrorVisible = await this.zipCodeError.isVisible({ timeout: 3000 }).catch(() => false);
-    const generalErrorWithZip = await this.errorMessage.textContent()
-      .then(text => text?.toLowerCase().includes('zip') || text?.toLowerCase().includes('postal'))
-      .catch(() => false);
-    
-    expect(zipErrorVisible || generalErrorWithZip).toBeTruthy();
-  }
 
-  /**
-   * Verify required field validation error
-   * @param {'address' | 'city' | 'state' | 'zip'} fieldName 
-   */
-  async verifyRequiredFieldError(fieldName) {
-    const errorMap = {
-      address: this.addressLine1Error,
-      city: this.cityError,
-      state: this.stateError,
-      zip: this.zipCodeError,
-    };
-    
-    await expect(errorMap[fieldName]).toBeVisible({ timeout: 3000 });
-  }
 
   /**
    * Edit an existing address by index (0-based)
