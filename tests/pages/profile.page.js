@@ -84,30 +84,8 @@ class ProfilePage extends BasePage {
     this.bonjourButton = page.getByRole('button', { name: /Bonjour\s*,/i }); // French
     this.helloButtonAlt = page.getByRole('button', { name: /Hello\s*,/i }); // English/default
     
-    this.cancelButton = page.locator(
-      'a:has-text("CANCEL"), a:has-text("Cancel"), button:has-text("Cancel")'
-    ).first();
-    
-    // Messages
-    this.successMessage = page.locator(
-      '.success-message, .alert-success, [role="alert"]:has-text("success"), ' +
-      '[role="alert"]:has-text("updated"), .notification-success'
-    ).first();
-    
-    this.errorMessage = page.locator(
-      '.error-message, .alert-error, .alert-danger, [role="alert"]:has-text("error")'
-    ).first();
-    
-    // Field errors
-    this.phoneError = page.locator(
-      '[data-error="phone"], .phone-error, #phone-error, ' +
-      '.field-error:near(input[type="tel"])'
-    ).first();
-    
-    this.emailError = page.locator(
-      '[data-error="email"], .email-error, #email-error, ' +
-      '.field-error:near(input[type="email"])'
-    ).first();
+    // Cancel button - same for all sections
+    this.cancelButton = page.getByTestId('cancel-changes');
   }
 
   /**
@@ -310,26 +288,8 @@ class ProfilePage extends BasePage {
   }
 
   /**
-   * Verify profile update success
-   */
-  async verifyProfileUpdateSuccess() {
-    await expect(this.successMessage).toBeVisible({ timeout: 5000 });
-  }
-
-  /**
-   * Verify phone validation error
-   */
-  async verifyPhoneValidationError() {
-    const phoneErrorVisible = await this.phoneError.isVisible({ timeout: 3000 }).catch(() => false);
-    const generalErrorWithPhone = await this.errorMessage.textContent()
-      .then(text => text?.toLowerCase().includes('phone'))
-      .catch(() => false);
-    
-    expect(phoneErrorVisible || generalErrorWithPhone).toBeTruthy();
-  }
-
-  /**
    * Verify profile data was saved correctly
+   * Note: Site does not show success/error messages - verify by checking field values
    * @param {Object} expectedData 
    */
   async verifyProfileData(expectedData) {
