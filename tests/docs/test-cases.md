@@ -455,7 +455,7 @@
 | **Title** | Add New Address as Default Shipping Address |
 | **Priority** | High |
 | **Preconditions** | 1. User is logged in<br>2. User navigates to Addresses via "Hello, [Name]" dropdown |
-| **Test Data** | - First Name: John<br>- Last Name: Doe<br>- Address: 123 Main Street<br>- City: Austin<br>- State: Texas<br>- ZIP Code: 78701<br>- Phone Number: 512-555-1234 |
+| **Test Data** | - First Name: John<br>- Last Name: Smith<br>- Address: 123 Main Street<br>- City: Birmingham<br>- State: Alabama<br>- ZIP Code: 35203<br>- Phone Number: 205-555-1234 |
 
 **Test Steps:**
 
