@@ -211,9 +211,9 @@ class ProfilePage extends BasePage {
         await this.page.getByRole('button', { name: profileData.birthMonth }).click();
         await this.page.waitForTimeout(200);
       }
-      // Select day (e.g., '14')
+      // Select day (e.g., '6') - use exact: true to avoid matching '16', '26', etc.
       if (profileData.birthDay) {
-        await this.page.getByRole('button', { name: profileData.birthDay }).click();
+        await this.page.getByRole('button', { name: profileData.birthDay, exact: true }).click();
         await this.page.waitForTimeout(200);
       }
     }
