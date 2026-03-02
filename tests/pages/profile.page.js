@@ -51,11 +51,14 @@ class ProfilePage extends BasePage {
     this.emailInput = page.getByTestId('account-card-email');
     this.phoneInput = page.getByTestId('account-card-phone');
     
-    // Preferred contact method dropdown (Vuetify)
-    this.preferredContactInput = page.getByRole('textbox', { name: 'Preferred Method of Contact' });
-    this.preferredContactEmailOption = page.locator('div').filter({ hasText: /^Email$/ }).nth(5);
+    // Preferred contact method dropdown - click button then select option
+    this.preferredContactButton = page.getByRole('button', { name: 'Preferred Method of Contact' });
+    this.preferredContactNoneOption = page.getByRole('option', { name: 'None Selected' });
+    this.preferredContactEmailOption = page.getByRole('option', { name: 'Email' });
+    this.preferredContactPhoneOption = page.getByRole('option', { name: 'Phone Call' });
+    this.preferredContactTextOption = page.getByRole('option', { name: 'Text Message' });
     
-    // Birthday date picker
+    // Birthday date picker - click picker, then select year, month, day
     this.birthdatePicker = page.getByTestId('birthday-date-picker');
     
     // Save button for contact section
@@ -176,29 +179,42 @@ class ProfilePage extends BasePage {
       await this.phoneInput.fill(profileData.phone);
     }
     
-    // Preferred contact method - Vuetify dropdown
+    // Preferred contact method - click button to open dropdown, then select option
     if (profileData.preferredContact !== undefined) {
-      await this.preferredContactInput.click();
+      await this.preferredContactButton.click();
       await this.page.waitForTimeout(300);
-      // Select the option (e.g., "Email")
-      const option = this.page.locator('div').filter({ hasText: new RegExp(`^${profileData.preferredContact}$`) }).nth(5);
-      await option.click();
-      await this.page.waitForTimeout(300);
+      // Select the option based on value
+      const optionMap = {
+        'None Selected': this.preferredContactNoneOption,
+        'Email': this.preferredContactEmailOption,
+        'Phone Call': this.preferredContactPhoneOption,
+        'Text Message': this.preferredContactTextOption,
+      };
+      const option = optionMap[profileData.preferredContact];
+      if (option) {
+        await option.click();
+        await this.page.waitForTimeout(300);
+      }
     }
     
-    // Birthday date picker - complex Vuetify date picker
-    if (profileData.birthdate !== undefined) {
+    // Birthday date picker - click picker, select year, month, day
+    if (profileData.birthYear || profileData.birthMonth || profileData.birthDay) {
       await this.birthdatePicker.click();
       await this.page.waitForTimeout(300);
-      // Select year, month, day from picker
+      // Select year (e.g., '2003')
       if (profileData.birthYear) {
         await this.page.getByText(profileData.birthYear).click();
+        await this.page.waitForTimeout(200);
       }
+      // Select month (e.g., 'May')
       if (profileData.birthMonth) {
         await this.page.getByRole('button', { name: profileData.birthMonth }).click();
+        await this.page.waitForTimeout(200);
       }
+      // Select day (e.g., '14')
       if (profileData.birthDay) {
-        await this.page.getByRole('button', { name: profileData.birthDay, exact: true }).click();
+        await this.page.getByRole('button', { name: profileData.birthDay }).click();
+        await this.page.waitForTimeout(200);
       }
     }
   }
