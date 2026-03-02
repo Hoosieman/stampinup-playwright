@@ -23,7 +23,6 @@ tests/
 │   └── address.page.js        # Address book page object
 ├── sql/
 │   └── sql-answers.md         # SQL interview questions and answers
-└── README.md
 ```
 
 ## Site Behavior Notes (Observed)
