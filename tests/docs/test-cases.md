@@ -14,7 +14,6 @@
 2. [Account Creation Test Cases](#1-account-creation-test-cases)
 3. [User Profile Setup Test Cases](#2-user-profile-setup-test-cases)
 4. [Address Setup Test Cases](#3-address-setup-test-cases)
-5. [Traceability Matrix](#traceability-matrix)
 
 ---
 
