@@ -3,45 +3,20 @@ const { BasePage } = require('./base.page');
 
 /**
  * Page Object Model for Address Book/Address Settings Page
- * Covers: TC-ADD-001 through TC-ADD-010
+ * Covers: TC-ADD-001 through TC-ADD-004
  * 
- * SITE BEHAVIOR NOTES (Observed):
- * - Add Address page is at /account/address/create
- * - Address List page is at /account/address
- * - Access: Click "Hello, [Name]" dropdown > "Addresses" in header
- * - Left sidebar navigation: ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, MY LISTS, 
- *   SUBSCRIPTIONS, DEMONSTRATOR, REWARDS, NOTIFICATIONS, SIGN OUT
+ * Focus: Default Shipping and Default Mailing addresses only
+ * Note: Default addresses can only be edited, not deleted
+ * 
+ * ACCESS: Click "Hello, [Name]" dropdown > "Addresses" in header
  * 
  * ADDRESS LIST PAGE (/account/address):
- * - Note: "Updates made on this page don't apply to your subscriptions..."
- * - DEFAULT SHIPPING ADDRESS section (left) with EDIT link
- * - DEFAULT MAILING ADDRESS section (right):
- *   - If no default: "There is no default address selected." with "USE MY SHIPPING ADDRESS" link
- *   - If set: Shows address with EDIT link
- * - OTHER SAVED ADDRESSES section
- * - "+ ADD NEW ADDRESS" button
+ * - DEFAULT SHIPPING ADDRESS section with EDIT button
+ * - DEFAULT MAILING ADDRESS section with EDIT button or "Use My Shipping Address" button
  * 
- * ADD ADDRESS FORM Fields (all required except Address 2):
- * - First Name, Last Name (side by side)
- * - Address (main address line)
- * - Address 2 (optional)
- * - City
- * - State (dropdown)
- * - ZIP Code
- * - Phone Number
- * - Checkbox: "Make this my default shipping address"
- * - Checkbox: "Make this my default mailing address"
- * 
- * Buttons: "SAVE ADDRESS" (pink), "CANCEL"
- * 
- * Validation errors appear in red below each field:
- * - "The First Name field is required."
- * - "The Last Name field is required."
- * - "The Address field is required."
- * - "The City field is required."
- * - "The State field is required."
- * - "The Zip Code field is required."
- * - "The Phone Number field is required."
+ * ADD ADDRESS FORM Fields:
+ * - First Name, Last Name, Address, Address 2 (optional), City, State, ZIP Code, Phone
+ * - Checkboxes: "Make this my default shipping/mailing address"
  */
 class AddressPage extends BasePage {
   /**
@@ -58,24 +33,14 @@ class AddressPage extends BasePage {
     this.accountDropdown = page.getByRole('button', { name: /Hello\s*,/i });
     this.addressesMenuLink = page.getByRole('menuitem', { name: 'Addresses' });
     
-    // Left sidebar navigation
-    this.sidebarAccountSettings = page.locator('text="ACCOUNT SETTINGS", a:has-text("Account Settings")').first();
-    this.sidebarAddresses = page.locator('text="ADDRESSES", a:has-text("Addresses")').first();
-    this.sidebarPayment = page.locator('text="PAYMENT", a:has-text("Payment")').first();
-    this.sidebarMyOrders = page.locator('text="MY ORDERS", a:has-text("My Orders")').first();
-    this.sidebarSignOut = page.locator('text="SIGN OUT", a:has-text("Sign Out")').first();
+
     
     // Add new address button - only visible AFTER first address is added
     // When adding the first address, the form fields are already displayed
     this.addNewAddressButton = page.getByTestId('btn-create');
     
-    // Address list page elements (observed at /account/address)
-    this.defaultShippingAddressSection = page.locator('text="DEFAULT SHIPPING ADDRESS"').first();
-    this.defaultMailingAddressSection = page.locator('text="DEFAULT MAILING ADDRESS"').first();
-    this.noDefaultMailingMessage = page.locator('text="There is no default address selected."').first();
     // "Use My Shipping Address" button - copies shipping to mailing address
     this.useMyShippingAddressButton = page.getByRole('button', { name: 'Use My Shipping Address' });
-    this.otherSavedAddressesSection = page.locator('text="OTHER SAVED ADDRESSES"').first();
     // Edit buttons for default addresses - using data-testid from codegen
     // Note: Default addresses cannot be deleted, only edited
     this.shippingAddressEditButton = page.getByTestId('address-list-default').getByTestId('addresslist-item-btn-edit');
@@ -99,49 +64,9 @@ class AddressPage extends BasePage {
     this.saveAddressButton = page.getByTestId('address-save');
     this.cancelButton = page.getByTestId('cancelButton');
     
-    this.editAddressButton = page.locator(
-      'button:has-text("Edit"), a:has-text("Edit"), [data-testid="edit-address"], ' +
-      '[aria-label*="edit address" i]'
-    ).first();
-    
-    this.deleteAddressButton = page.locator(
-      'button:has-text("Delete"), button:has-text("Remove"), ' +
-      '[data-testid="delete-address"], [aria-label*="delete address" i]'
-    ).first();
-    
-    this.setDefaultButton = page.locator(
-      'button:has-text("Set as Default"), button:has-text("Make Default"), ' +
-      'a:has-text("Set as Default")'
-    ).first();
-    
-    // Address list elements - using data-testid from codegen
-    // To verify address was added, check that address text appears in the default address list
+    // Default address list - for verifying address was saved
     this.defaultAddressList = page.getByTestId('address-list-default');
-    
-    this.addressCards = page.locator(
-      '.address-card, .address-item, [data-testid="address-card"], ' +
-      '.saved-address, .address-block'
-    );
-    
-    this.emptyAddressMessage = page.locator(
-      'text=/no address|no saved address|add your first address/i'
-    );
-    
-    this.defaultAddressBadge = page.locator(
-      '.default-badge, .default-label, text=/default/i, ' +
-      '[data-testid="default-badge"]'
-    );
-    
-    // Confirmation dialog
-    this.confirmDeleteButton = page.locator(
-      '.confirm-dialog button:has-text("Delete"), .confirm-dialog button:has-text("Yes"), ' +
-      '[role="dialog"] button:has-text("Delete"), [role="dialog"] button:has-text("Confirm")'
-    ).first();
-    
-    this.cancelDeleteButton = page.locator(
-      '.confirm-dialog button:has-text("Cancel"), [role="dialog"] button:has-text("Cancel"), ' +
-      '[role="dialog"] button:has-text("No")'
-    ).first();
+    this.mailingAddressSection = page.getByTestId('mailing-address');
   }
 
   /**
@@ -290,27 +215,7 @@ class AddressPage extends BasePage {
   }
 
   /**
-   * Get count of saved addresses
-   * @returns {Promise<number>}
-   */
-  async getAddressCount() {
-    await this.page.waitForTimeout(500); // Allow list to load
-    return this.addressCards.count();
-  }
-
-  /**
-   * Check if address book is empty
-   * @returns {Promise<boolean>}
-   */
-  async isAddressBookEmpty() {
-    const emptyVisible = await this.emptyAddressMessage.isVisible({ timeout: 2000 }).catch(() => false);
-    const cardCount = await this.getAddressCount();
-    return emptyVisible || cardCount === 0;
-  }
-
-  /**
    * Click "Use My Shipping Address" button to copy shipping address to mailing address
-   * TC-ADD-010: Use shipping address for default mailing address
    */
   async useShippingAddressForMailing() {
     await this.navigateToAddressBook();
@@ -320,7 +225,7 @@ class AddressPage extends BasePage {
   }
 
   /**
-   * Verify "Use My Shipping Address" button is visible (when no default mailing set)
+   * Verify "Use My Shipping Address" button is visible
    * @returns {Promise<boolean>}
    */
   async isUseShippingAddressButtonVisible() {
@@ -328,40 +233,10 @@ class AddressPage extends BasePage {
   }
 
   /**
-   * Verify default mailing address is set (no "USE MY SHIPPING ADDRESS" link visible)
-   * @returns {Promise<boolean>}
-   */
-  async isDefaultMailingAddressSet() {
-    const noDefaultMsg = await this.noDefaultMailingMessage.isVisible({ timeout: 2000 }).catch(() => false);
-    return !noDefaultMsg;
-  }
-
-  /**
-   * Get default shipping address text
-   * @returns {Promise<string>}
-   */
-  async getDefaultShippingAddressText() {
-    const section = this.page.locator('section:has-text("DEFAULT SHIPPING ADDRESS"), div:has-text("DEFAULT SHIPPING ADDRESS")').first();
-    return section.textContent();
-  }
-
-  /**
-   * Get default mailing address text
-   * @returns {Promise<string>}
-   */
-  async getDefaultMailingAddressText() {
-    const section = this.page.locator('section:has-text("DEFAULT MAILING ADDRESS"), div:has-text("DEFAULT MAILING ADDRESS")').first();
-    return section.textContent();
-  }
-
-  /**
-   * Verify address was saved successfully by checking it appears in the default address list
-   * Note: Site does not show success/error messages - verify by checking address appears in list
-   * @param {string} addressText - Part of the address to look for (e.g., street name)
+   * Verify address was saved by checking it appears in the default address list
+   * @param {string} addressText - Part of the address to look for (e.g., street name or city)
    */
   async verifyAddressSaved(addressText) {
-    // After saving, we should be back on the address list page
-    // Verify the address appears in the default address list
     const addressInList = this.defaultAddressList.getByText(addressText);
     await expect(addressInList).toBeVisible({ timeout: 5000 });
   }
@@ -386,80 +261,6 @@ class AddressPage extends BasePage {
     await this.mailingAddressEditButton.waitFor({ state: 'visible', timeout: 5000 });
     await this.mailingAddressEditButton.click();
     await this.page.waitForTimeout(500);
-  }
-
-  /**
-   * Set address as default by index
-   * @param {number} index 
-   */
-  async setDefaultAddressByIndex(index) {
-    const addressCard = this.addressCards.nth(index);
-    const setDefaultBtn = addressCard.locator('button:has-text("Set as Default"), button:has-text("Make Default")').first();
-    
-    if (await setDefaultBtn.isVisible()) {
-      await setDefaultBtn.click();
-      await this.page.waitForTimeout(500);
-    }
-  }
-
-  /**
-   * Get index of default address
-   * @returns {Promise<number>}
-   */
-  async getDefaultAddressIndex() {
-    const cards = await this.addressCards.all();
-    
-    for (let i = 0; i < cards.length; i++) {
-      const card = cards[i];
-      const hasDefaultBadge = await card.locator('text=/default/i, .default-badge').isVisible();
-      if (hasDefaultBadge) {
-        return i;
-      }
-    }
-    
-    return -1; // No default found
-  }
-
-  /**
-   * Verify only one default address exists
-   */
-  async verifyOnlyOneDefaultAddress() {
-    const defaultBadges = await this.page.locator(
-      '.address-card .default-badge, .address-item .default-badge, ' +
-      '.address-card:has-text("Default"), .address-item:has-text("Default")'
-    ).count();
-    
-    expect(defaultBadges).toBeLessThanOrEqual(1);
-  }
-
-  /**
-   * Verify address appears in list with expected data
-   * @param {Object} expectedData 
-   */
-  async verifyAddressInList(expectedData) {
-    const addressText = await this.addressCards.first().textContent();
-    
-    if (expectedData.addressLine1) {
-      expect(addressText).toContain(expectedData.addressLine1);
-    }
-    if (expectedData.city) {
-      expect(addressText).toContain(expectedData.city);
-    }
-    if (expectedData.state) {
-      expect(addressText?.toUpperCase()).toContain(expectedData.state.toUpperCase());
-    }
-    if (expectedData.zipCode) {
-      expect(addressText).toContain(expectedData.zipCode);
-    }
-  }
-
-  /**
-   * Verify PO Box warning (if applicable)
-   * @returns {Promise<boolean>}
-   */
-  async checkForPOBoxWarning() {
-    const warning = this.page.locator('text=/PO Box|shipping restriction/i');
-    return warning.isVisible({ timeout: 2000 }).catch(() => false);
   }
 }
 

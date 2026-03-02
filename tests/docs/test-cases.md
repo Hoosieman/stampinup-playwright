@@ -453,268 +453,102 @@
 > - "The Zip Code field is required."
 > - "The Phone Number field is required."
 
-### TC-ADD-001: Successful Address Setup for New User
+### TC-ADD-001: Add New Address as Default Shipping
 
 | Field | Description |
 |-------|-------------|
 | **Test Case ID** | TC-ADD-001 |
-| **Title** | Successful Address Setup in Account Settings |
+| **Title** | Add New Address as Default Shipping Address |
 | **Priority** | High |
-| **Type** | Functional / Positive |
-| **Preconditions** | 1. User has created a new account<br>2. User is logged in<br>3. No addresses are saved in the account |
-| **Test Data** | - First Name: John<br>- Last Name: Doe<br>- Address: 123 Main Street<br>- Address 2: Apt 4B<br>- City: Austin<br>- State: Texas<br>- ZIP Code: 78701<br>- Phone Number: 512-555-1234 |
+| **Preconditions** | 1. User is logged in<br>2. User navigates to Addresses via "Hello, [Name]" dropdown |
+| **Test Data** | - First Name: John<br>- Last Name: Doe<br>- Address: 123 Main Street<br>- City: Austin<br>- State: Texas<br>- ZIP Code: 78701<br>- Phone Number: 512-555-1234 |
 
 **Test Steps:**
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to /account/address/create | Add New Address page loads with form |
-| 2 | Verify page heading shows "ADD NEW ADDRESS" | Form is displayed with empty fields |
-| 3 | Enter First Name | Field accepts input |
-| 4 | Enter Last Name | Field accepts input |
-| 5 | Enter Address | Field accepts input |
-| 6 | Enter Address 2 (optional) | Field accepts input |
-| 7 | Enter City | Field accepts input |
-| 8 | Select State from dropdown | State is selected |
-| 9 | Enter ZIP Code | ZIP code is accepted |
-| 10 | Enter Phone Number | Phone number is accepted |
-| 11 | Check "Make this my default shipping address" | Checkbox is selected |
-| 12 | Click "SAVE ADDRESS" button (pink) | - Success message is displayed<br>- Address is saved and visible in address list<br>- Address is marked as default |
+| 1 | Log in and click "Hello, [Name]" > "Addresses" | Address page loads |
+| 2 | Fill in address form fields | All fields accept input |
+| 3 | Check "Make this my default shipping address" | Checkbox is selected |
+| 4 | Click "SAVE ADDRESS" button | Address is saved |
+| 5 | Verify address appears in default shipping section | Address text visible in address-list-default |
 
-**Expected Result:** Address is saved successfully and available for use in checkout.
-
-**Postconditions:** Address exists in user's address book.
+**Expected Result:** Address is saved and displayed in the default shipping address section.
 
 ---
 
-### TC-ADD-002: Address Setup with Invalid ZIP Code
+### TC-ADD-002: Edit Default Shipping Address
 
 | Field | Description |
 |-------|-------------|
 | **Test Case ID** | TC-ADD-002 |
-| **Title** | Address Setup with Invalid ZIP Code Format |
+| **Title** | Edit Default Shipping Address |
 | **Priority** | High |
-| **Type** | Functional / Negative |
-| **Preconditions** | User is logged in and on the add address page |
-| **Test Data** | Invalid ZIP codes (US):<br>- "123" (too short)<br>- "ABCDE" (letters)<br>- "123456789" (too long)<br>- "12 345" (space in middle) |
+| **Preconditions** | User is logged in and has a default shipping address |
+| **Test Data** | Updated city name |
 
 **Test Steps:**
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to Add Address form | Form is displayed |
-| 2 | Fill in all fields with valid data except ZIP | Fields accept input |
-| 3 | Enter invalid ZIP code (e.g., "123") | Field accepts input |
-| 4 | Click "Save Address" | - Validation error appears<br>- Error indicates invalid ZIP code format<br>- Address is NOT saved |
-| 5 | Enter valid ZIP code (e.g., "78701") | Field accepts input |
-| 6 | Click "Save Address" | Address is saved successfully |
+| 1 | Navigate to Address Book | Address page loads with default shipping address |
+| 2 | Click Edit button on default shipping address | Edit form opens with current data |
+| 3 | Update the city field | Field accepts new value |
+| 4 | Click "SAVE ADDRESS" | Address is updated |
+| 5 | Verify updated city appears in shipping section | New city visible in address list |
 
-**Expected Result:** System validates ZIP code format based on selected country.
+**Expected Result:** Default shipping address can be edited and changes are saved.
+
+**Note:** Default addresses cannot be deleted, only edited.
 
 ---
 
-### TC-ADD-003: Address Setup with Missing Required Fields
+### TC-ADD-003: Edit Default Mailing Address
 
 | Field | Description |
 |-------|-------------|
 | **Test Case ID** | TC-ADD-003 |
-| **Title** | Address Setup with Missing Required Fields |
+| **Title** | Edit Default Mailing Address |
 | **Priority** | High |
-| **Type** | Functional / Negative |
-| **Preconditions** | User is logged in and on the add address page |
-| **Test Data** | Partial address data - missing required fields |
+| **Preconditions** | User is logged in and has a default mailing address |
+| **Test Data** | Updated city name |
 
 **Test Steps:**
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to /account/address/create | Form is displayed |
-| 2 | Leave all fields empty and click "SAVE ADDRESS" | Validation errors appear for all required fields |
-| 3 | Verify error messages appear | - "The First Name field is required."<br>- "The Last Name field is required."<br>- "The Address field is required."<br>- "The City field is required."<br>- "The State field is required."<br>- "The Zip Code field is required."<br>- "The Phone Number field is required." |
-| 4 | Fill First Name only, click "SAVE ADDRESS" | First Name error clears, others remain |
-| 5 | Fill all required fields | All fields populated |
-| 6 | Click "SAVE ADDRESS" | Address is saved successfully |
+| 1 | Navigate to Address Book | Address page loads with default mailing address |
+| 2 | Click Edit button on default mailing address | Edit form opens with current data |
+| 3 | Update the city field | Field accepts new value |
+| 4 | Click "SAVE ADDRESS" | Address is updated |
+| 5 | Verify updated city appears in mailing section | New city visible in mailing-address section |
 
-**Expected Result:** System validates all required address fields individually with clear error messages.
+**Expected Result:** Default mailing address can be edited and changes are saved.
+
+**Note:** Default addresses cannot be deleted, only edited.
 
 ---
 
-### TC-ADD-004: Adding Multiple Addresses
+### TC-ADD-004: Use Shipping Address for Default Mailing Address
 
 | Field | Description |
 |-------|-------------|
 | **Test Case ID** | TC-ADD-004 |
-| **Title** | Adding Multiple Addresses to Account |
-| **Priority** | Medium |
-| **Type** | Functional / Positive |
-| **Preconditions** | 1. User is logged in<br>2. User has at least one address saved |
-| **Test Data** | - Address 1: Home address (existing)<br>- Address 2: Work address (new)<br>- Address 3: Alternate address (new) |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Navigate to Address Book | Existing address is displayed |
-| 2 | Click "Add New Address" | Address form is displayed |
-| 3 | Enter second address with different data | Form accepts input |
-| 4 | Save address | - Second address is saved<br>- Both addresses visible in address book |
-| 5 | Add third address | Third address appears in list |
-| 6 | Verify all addresses are distinct and correctly saved | All addresses show correct information |
-
-**Expected Result:** User can add and maintain multiple addresses in their account.
-
----
-
-### TC-ADD-005: Setting Default Address
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-ADD-005 |
-| **Title** | Setting and Changing Default Address |
-| **Priority** | Medium |
-| **Type** | Functional / Positive |
-| **Preconditions** | User has multiple addresses saved in account |
-| **Test Data** | Multiple existing addresses |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Navigate to Address Book | Multiple addresses displayed |
-| 2 | Identify current default address | Default address is indicated (badge/label) |
-| 3 | Click "Set as Default" on a non-default address | Confirmation may appear |
-| 4 | Confirm action if prompted | - Selected address becomes default<br>- Previous default is no longer marked as default |
-| 5 | Verify only one default address exists | Only one address shows default indicator |
-
-**Expected Result:** User can change default address; only one default address allowed at a time.
-
----
-
-### TC-ADD-006: Edit Existing Address
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-ADD-006 |
-| **Title** | Editing an Existing Address |
-| **Priority** | High |
-| **Type** | Functional / Positive |
-| **Preconditions** | User has at least one address saved |
-| **Test Data** | - Original: 123 Main Street<br>- Updated: 456 Oak Avenue |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Navigate to Address Book | Addresses are displayed |
-| 2 | Click "Edit" on existing address | Edit form opens with current address data |
-| 3 | Verify all current data is pre-populated | All fields show current values |
-| 4 | Modify Address Line 1 | Field accepts new value |
-| 5 | Modify City | Field accepts new value |
-| 6 | Click "Save" or "Update" | - Success message appears<br>- Updated address is displayed in list |
-| 7 | Verify changes persisted | Edited address shows new values |
-
-**Expected Result:** Existing addresses can be edited and changes are saved correctly.
-
----
-
-### TC-ADD-007: Delete Address
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-ADD-007 |
-| **Title** | Deleting an Address from Account |
-| **Priority** | Medium |
-| **Type** | Functional / Positive |
-| **Preconditions** | User has multiple addresses saved (cannot delete if only one) |
-| **Test Data** | Existing address to be deleted |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Navigate to Address Book | Multiple addresses displayed |
-| 2 | Note the total number of addresses | Count recorded |
-| 3 | Click "Delete" or "Remove" on a non-default address | Confirmation dialog appears |
-| 4 | Confirm deletion | - Address is removed<br>- Success message appears<br>- Address count decreases by 1 |
-| 5 | Verify address no longer appears in list | Deleted address is gone |
-
-**Expected Result:** Address is permanently deleted from the account.
-
----
-
-### TC-ADD-008: Address Validation with PO Box
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-ADD-008 |
-| **Title** | Address Setup with PO Box |
-| **Priority** | Medium |
-| **Type** | Functional / Edge Case |
-| **Preconditions** | User is logged in and on add address page |
-| **Test Data** | - Address Line 1: PO Box 12345<br>- City: Austin<br>- State: TX<br>- ZIP: 78701 |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Navigate to Add Address form | Form is displayed |
-| 2 | Enter "PO Box 12345" in Address Line 1 | Field accepts input |
-| 3 | Complete remaining required fields | All fields populated |
-| 4 | Click "Save Address" | - Address is saved OR<br>- Warning about PO Box shipping restrictions appears |
-| 5 | If warning appears, verify it's informational | User can proceed with appropriate notice |
-
-**Expected Result:** System handles PO Box addresses appropriately with any necessary warnings about shipping restrictions.
-
----
-
-### TC-ADD-009: International Address Setup
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-ADD-009 |
-| **Title** | International Address Setup |
-| **Priority** | Medium |
-| **Type** | Functional / Positive |
-| **Preconditions** | User is logged in and international shipping is supported |
-| **Test Data** | - Country: Canada<br>- Address: 789 Maple Road<br>- City: Toronto<br>- Province: Ontario<br>- Postal Code: M5V 1J1 |
-
-**Test Steps:**
-
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | Navigate to Add Address form | Form is displayed |
-| 2 | Select Country as "Canada" | - Country is selected<br>- Form may update to show Province instead of State<br>- Postal code format may change |
-| 3 | Enter Canadian address details | Fields accept input |
-| 4 | Enter Canadian postal code format (e.g., "M5V 1J1") | Postal code is accepted |
-| 5 | Click "Save Address" | Address is saved successfully |
-
-**Expected Result:** System supports international address formats with appropriate field labels and validation.
-
----
-
-### TC-ADD-010: Use Shipping Address for Default Mailing Address
-
-| Field | Description |
-|-------|-------------|
-| **Test Case ID** | TC-ADD-010 |
 | **Title** | Copy Shipping Address to Default Mailing Address |
 | **Priority** | Medium |
-| **Type** | Functional / Positive |
-| **Preconditions** | 1. User is logged in<br>2. User has a default shipping address set<br>3. User has NO default mailing address set |
+| **Preconditions** | 1. User is logged in<br>2. User has a default shipping address set |
 | **Test Data** | Existing shipping address |
 
 **Test Steps:**
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Navigate to /account/address | Address list page loads |
-| 2 | Verify DEFAULT SHIPPING ADDRESS section shows saved address | Shipping address is displayed with EDIT link |
-| 3 | Verify DEFAULT MAILING ADDRESS section shows "There is no default address selected." | No mailing address message appears |
-| 4 | Verify "USE MY SHIPPING ADDRESS" link is visible | Link is clickable |
-| 5 | Click "USE MY SHIPPING ADDRESS" link | - Link is clicked<br>- Page may reload or update |
-| 6 | Verify DEFAULT MAILING ADDRESS section now shows the shipping address | - "There is no default address selected." message is gone<br>- Shipping address details now appear in mailing section<br>- EDIT link appears for mailing address |
+| 1 | Navigate to Address Book | Address list page loads |
+| 2 | Verify "Use My Shipping Address" button is visible | Button is clickable |
+| 3 | Click "Use My Shipping Address" button | Button is clicked |
+| 4 | Verify mailing address section is populated | Mailing address section shows address data |
 
-**Expected Result:** Clicking "USE MY SHIPPING ADDRESS" copies the default shipping address to become the default mailing address, eliminating the need to re-enter the same address.
+**Expected Result:** Clicking "Use My Shipping Address" copies the default shipping address to become the default mailing address.
 
 ---
 
