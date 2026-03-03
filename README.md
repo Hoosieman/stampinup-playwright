@@ -1,4 +1,4 @@
-# Stampin' Up! E2E Test Suite
+# StampinUp! E2E Test Suite
 
 A comprehensive Playwright test suite for testing account creation, profile setup, and address management on www.stampinup.com.
 
