@@ -3,7 +3,6 @@ const { BasePage } = require('./base.page');
 
 /**
  * Page Object Model for Login Page
- * Used for authentication before profile/address tests
  * 
  * Login flow:
  * 1. Click "Sign in" button (data-testid: menu-user-btn-signin)
@@ -67,7 +66,7 @@ class LoginPage extends BasePage {
   }
 
   /**
-   * Verify successful login - "Hello, [Name]" button visible
+   * Verify successful login - "Hello, [Name]" is visible
    */
   async verifyLoginSuccess() {
     await expect(this.helloButton).toBeVisible({ timeout: 10000 });
