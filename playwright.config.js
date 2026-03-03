@@ -1,14 +1,7 @@
 // @ts-check
 const { defineConfig, devices } = require('@playwright/test');
 
-/**
- * Playwright Configuration for Stampin' Up! E2E Tests
- * 
- * This configuration is set up for testing against www.stampinup.com
- * Run tests with: pnpm test
- * Run with UI: pnpm test:ui
- * Run headed: pnpm test:headed
- */
+//I set a timeout between tests because my IP was whitelisted, requiring captcha 
 
 module.exports = defineConfig({
   // Test directory
