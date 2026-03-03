@@ -1,5 +1,7 @@
 const { faker } = require('@faker-js/faker');
 
+//this is not completely needed, but can be useful for Blitz testing account creations
+
 /**
  * Test Data Factory
  * Generates realistic test data for Stampin' Up! E2E tests
@@ -252,7 +254,6 @@ const InvalidPhoneNumbers = [
 
 /**
  * Test credentials for existing user scenarios
- * Note: In real tests, these would be environment variables or test fixtures
  */
 const ExistingTestUser = {
   email: process.env.TEST_USER_EMAIL || 'coleto11@icloud.com',
