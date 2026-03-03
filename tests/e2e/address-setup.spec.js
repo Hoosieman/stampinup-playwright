@@ -18,7 +18,6 @@ const {
  * - Left sidebar: ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, etc.
  * 
  * ADDRESS LIST PAGE (/account/address):
- * - Note: "Updates made on this page don't apply to your subscriptions..."
  * - DEFAULT SHIPPING ADDRESS section (left) with EDIT link
  * - DEFAULT MAILING ADDRESS section (right):
  *   - If no default: "There is no default address selected." with "USE MY SHIPPING ADDRESS" link
@@ -37,7 +36,7 @@ const {
  * Validation errors (in red below fields):
  * - "The First Name field is required."
  * - "The Last Name field is required."
- * - "The Address field is required."
+ * - "The Address field is required." (Address line 1)
  * - "The City field is required."
  * - "The State field is required."
  * - "The Zip Code field is required."
