@@ -67,7 +67,7 @@ class SignupPage extends BasePage {
     // Sign In link at bottom of modal ("Already have an account?")
     this.signInLinkInModal = page.locator('a:has-text("SIGN IN"), a:has-text("Sign In")').first();
     
-    // Live validation error locators - these appear WHILE typing, not after submit
+    // Live validation error locators, these appear WHILE typing
     // Password shows "Weak" indicator when password is too weak
     this.passwordWeakIndicator = page.getByText('Weak');
     this.passwordError = page.getByText('Weak'); // "Weak" is the password error indicator
@@ -224,8 +224,7 @@ class SignupPage extends BasePage {
   }
 
   /**
-   * Verify registration was successful
-   * Success flow on stampinup.com:
+   * Verify registration was successful:
    * 1. "Join Stampin' Rewards!" popup appears - click "MAYBE LATER"
    * 2. Confirm dialog appears - click "Close"
    * 3. Header shows "Hello, [FIRST NAME]" button
