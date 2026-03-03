@@ -1,7 +1,4 @@
-/**
- * Page Object Model Exports
- * Central export file for all page objects
- */
+//Central export file for all page objects
 
 const { BasePage } = require('./base.page');
 const { LoginPage } = require('./login.page');
