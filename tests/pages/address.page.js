@@ -5,8 +5,8 @@ const { BasePage } = require('./base.page');
  * Page Object Model for Address Book/Address Settings Page
  * Covers: TC-ADD-001 through TC-ADD-004
  * 
- * Focus: Default Shipping and Default Mailing addresses only
- * Note: Default addresses can only be edited, not deleted
+ * Focus: Default Shipping and Default Mailing addresses
+ * I noticed Default addresses can only be edited, not deleted
  * 
  * ACCESS: Click "Hello, [Name]" dropdown > "Addresses" in header
  * 
@@ -35,14 +35,13 @@ class AddressPage extends BasePage {
     
 
     
-    // Add new address button - only visible AFTER first address is added
     // When adding the first address, the form fields are already displayed
     this.addNewAddressButton = page.getByTestId('btn-create');
     
     // "Use My Shipping Address" button - copies shipping to mailing address
     this.useMyShippingAddressButton = page.getByRole('button', { name: 'Use My Shipping Address' });
     // Edit buttons for default addresses - using data-testid from codegen
-    // Note: Default addresses cannot be deleted, only edited
+    
     this.shippingAddressEditButton = page.getByTestId('address-list-default').getByTestId('addresslist-item-btn-edit');
     this.mailingAddressEditButton = page.getByTestId('mailing-address').getByTestId('addresslist-item-btn-edit');
     
@@ -238,20 +237,16 @@ class AddressPage extends BasePage {
 
 
 
-  /**
-   * Edit the default shipping address
-   * Note: Default addresses can only be edited, not deleted
-   */
+  
+  //Edit the default shipping address
   async editDefaultShippingAddress() {
     await this.shippingAddressEditButton.waitFor({ state: 'visible', timeout: 5000 });
     await this.shippingAddressEditButton.click();
     await this.page.waitForTimeout(500);
   }
 
-  /**
-   * Edit the default mailing address
-   * Note: Default addresses can only be edited, not deleted
-   */
+  
+  //Edit the default mailing address
   async editDefaultMailingAddress() {
     await this.mailingAddressEditButton.waitFor({ state: 'visible', timeout: 5000 });
     await this.mailingAddressEditButton.click();
