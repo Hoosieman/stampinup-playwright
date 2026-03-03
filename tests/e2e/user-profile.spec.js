@@ -41,8 +41,7 @@ test.describe('User Profile Setup', () => {
     loginPage = new LoginPage(page);
     profilePage = new ProfilePage(page);
     
-    // Login before each test
-    // Note: In a real scenario, you'd use test fixtures or storage state
+    // Login before each test (usually should use storage state)
     await loginPage.login(ExistingTestUser.email, ExistingTestUser.password);
   });
 
@@ -142,8 +141,8 @@ test.describe('User Profile Setup', () => {
     const currentUrl = await profilePage.getCurrentUrl();
     expect(currentUrl).toContain('account');
     
-    // Note: In a real test, you would log out and log back in with the new password
-    // to fully verify the password change. For this test, we just verify no errors occurred.
+    // Note: In a next real test with more time, I would log out and log back in with the new password
+    
   });
 
   /**
