@@ -75,9 +75,10 @@ test.describe('User Profile Setup', () => {
    */
   test('TC-PRF-002: should allow email address change', async () => {
     // Arrange
+    const originalEmail = 'coleto11@icloud.com';
     const newEmail = `updated_${Date.now()}@testmail.com`;
     
-    // Act
+    // Act - Change to new email
     await profilePage.navigateToProfile();
     await profilePage.fillProfileForm({
       email: newEmail,
@@ -87,6 +88,13 @@ test.describe('User Profile Setup', () => {
     // Assert - Verify we're still on account page (no error redirect)
     const currentUrl = await profilePage.getCurrentUrl();
     expect(currentUrl).toContain('account');
+    
+    // Revert - Change email back to original
+    await profilePage.navigateToProfile();
+    await profilePage.fillProfileForm({
+      email: originalEmail,
+    });
+    await profilePage.saveProfile();
   });
 
   /**
@@ -129,20 +137,21 @@ test.describe('User Profile Setup', () => {
    * Note: Password must have minimum 8 characters with at least one capital letter and one number
    */
   test('TC-PRF-005: should allow changing password', async () => {
-    // Arrange - Use current password and create a valid new password
-    const currentPassword = ExistingTestUser.password;
-    const newPassword = 'NewPass123!'; // Meets requirements: 8+ chars, capital, number
+    // Arrange
+    const originalPassword = 'TestingAccount';
+    const newPassword = 'NewPass123!';
     
-    // Act
+    // Act - Change to new password
     await profilePage.navigateToProfile();
-    await profilePage.changePassword(currentPassword, newPassword);
+    await profilePage.changePassword(originalPassword, newPassword);
     
     // Assert - Verify we're still on account page (no error redirect)
     const currentUrl = await profilePage.getCurrentUrl();
     expect(currentUrl).toContain('account');
     
-    // Note: In a next real test with more time, I would log out and log back in with the new password
-    
+    // Revert - Change password back to original
+    await profilePage.navigateToProfile();
+    await profilePage.changePassword(newPassword, originalPassword);
   });
 
   /**
