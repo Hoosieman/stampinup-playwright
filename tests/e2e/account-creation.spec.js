@@ -103,7 +103,6 @@ test.describe('Account Creation', () => {
    * Priority: High
    * 
    * Site behavior observed:
-   * - Password field shows strength indicator ("Weak" in red)
    * - Error message: "The Password field must be at least 8 characters long."
    */
   test.describe('TC-ACC-004: Weak Password Validation', () => {
@@ -172,7 +171,6 @@ test.describe('Account Creation', () => {
     
     // Assert - Should either succeed or not show a name-specific error
     // The registration might fail for other reasons on a live site
-    // but special characters in names should be accepted
     const url = await signupPage.getCurrentUrl();
     
     // If registration failed, it shouldn't be due to name validation
