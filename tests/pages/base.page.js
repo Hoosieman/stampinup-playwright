@@ -1,9 +1,8 @@
 const { expect } = require('@playwright/test');
 
-/**
- * Base Page Object containing common functionality
- * All other page objects should extend this class
- */
+
+//Base Page Object containing common functionality
+
 class BasePage {
   /**
    * @param {import('@playwright/test').Page} page 
@@ -11,7 +10,7 @@ class BasePage {
   constructor(page) {
     this.page = page;
     
-    // Initialize common locators - using data-testid selectors (most stable)
+    // Initialize common locators using data-testid selectors
     this.signInLink = page.getByTestId('menu-user-btn-signin');
     this.cartIcon = page.locator('[data-testid="cart-icon"], .cart-icon, [aria-label*="cart"]').first();
     this.searchInput = page.getByRole('searchbox').or(page.locator('input[type="search"], input[placeholder*="search" i]')).first();
@@ -27,10 +26,8 @@ class BasePage {
     await this.waitForPageLoad();
   }
 
-  /**
-   * Wait for page to fully load
-   * Note: Avoiding 'networkidle' as sites with analytics/chat widgets never reach idle state
-   */
+  
+  //Wait for page to fully load
   async waitForPageLoad() {
     await this.page.waitForLoadState('domcontentloaded');
     // Use 'load' instead of 'networkidle' - more reliable for sites with continuous network activity
@@ -39,9 +36,8 @@ class BasePage {
     await this.page.waitForTimeout(500);
   }
 
-  /**
-   * Click sign in link from header
-   */
+  
+  //Click sign in link from header
   async clickSignIn() {
     await this.signInLink.click();
     // Wait for modal/page transition rather than full page load
@@ -111,7 +107,7 @@ class BasePage {
         await cookieButton.click();
       }
     } catch {
-      // Cookie banner not present, continue
+      // if Cookie banner not present
     }
   }
 
@@ -153,7 +149,7 @@ class BasePage {
   }
 
   /**
-   * Verify success message is displayed
+   * Verify success message is displayed if applicable
    * @param {string} [expectedText] 
    */
   async verifySuccessMessage(expectedText) {
@@ -169,7 +165,7 @@ class BasePage {
   }
 
   /**
-   * Verify error message is displayed
+   * Verify error message is displayed if applicable
    * @param {string} [expectedText] 
    */
   async verifyErrorMessage(expectedText) {
