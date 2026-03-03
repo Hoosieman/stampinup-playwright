@@ -17,15 +17,12 @@ const { BasePage } = require('./base.page');
  * 2. PASSWORD Section (below CONTACT):
  *    Fields: Confirm Current Password, New Password, Confirm New Password
  *    Requirement: "Password must have a minimum of 8 characters with at least one capital letter and one number"
- *    Buttons: "SAVE CHANGES" (pink), "CANCEL"
+ *    Buttons: "SAVE CHANGES", "CANCEL"
  * 
  * 3. COUNTRY Section (right side):
  *    View mode shows: Country with flag, Preferred Language
  *    Edit mode: Country dropdown, Preferred Language dropdown
- *    Buttons: "SAVE CHANGES" (pink), "CANCEL"
- * 
- * Left sidebar: ACCOUNT SETTINGS, ADDRESSES, PAYMENT, MY ORDERS, MY LISTS, 
- *               SUBSCRIPTIONS, DEMONSTRATOR, REWARDS, NOTIFICATIONS, SIGN OUT
+ *    Buttons: "SAVE CHANGES", "CANCEL"
  */
 class ProfilePage extends BasePage {
   /**
@@ -294,7 +291,6 @@ class ProfilePage extends BasePage {
 
   /**
    * Verify profile data was saved by checking the first name in header button
-   * More reliable than checking form field values
    * @param {Object} expectedData 
    */
   async verifyProfileData(expectedData) {
